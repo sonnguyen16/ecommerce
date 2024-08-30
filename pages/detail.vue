@@ -267,4 +267,13 @@ function toggleDescription() {
   height: 200px;
   background: linear-gradient(to top, #f9fafb, rgba(249, 250, 251, 0));
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
 </style>
