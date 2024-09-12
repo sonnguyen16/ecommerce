@@ -1,0 +1,18 @@
+<template>
+  <div class="rounded-xl bg-white px-2 py-3 sticky top-4">
+    <h4 class="font-semibold ms-3">Danh mục</h4>
+    <ul class="mt-3">
+      <li v-for="category in data" :key="category.name" class="flex items-center p-2 gap-2">
+        <img :src="MEDIA_ENDPOINT + category.image" alt="category" class="w-8 h-8 rounded-xl"/>
+        <span class="font-normal">{{ category.name }}</span>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { MEDIA_ENDPOINT } from "~/lib/constants";
+import type {Category} from "~/lib/schema";
+
+const { data } : { data: Category[] } = await useFetchData<Category[]>({url: 'categories'})
+</script>
