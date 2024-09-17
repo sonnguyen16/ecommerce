@@ -13,31 +13,43 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const [ profileResponse, provincesResponse ] : any = await Promise.all([
-  useFetchData({url: 'auth/profile', requiresToken: true}),
-  useFetchData({url: 'provinces'}),
-])
-
-const provincesData : Ref<any> = provincesResponse.data
-const profileData : any = profileResponse.data?.value?.data
-
-
 const genderOptions = [
-  { code: 1, name: 'Nam' },
-  { code: 2, name: 'Nữ' },
-  { code: 3, name: 'Khác' }
+  {code: 1, name: 'Nam'},
+  {code: 2, name: 'Nữ'},
+  {code: 3, name: 'Khác'}
 ]
 
+const [profileResponse, provincesResponse]: any = await Promise.all([
+  useFetchData({url: 'auth/profile', requiresToken: true, server: false}),
+  useFetchData({url: 'provinces', server: false}),
+])
+
+let provincesData: Ref<any> = provincesResponse.data
+let profileData: Ref<any> = profileResponse.data
+
 const form = ref({
-  name: profileData?.name || '',
-  address: profileData?.address || '',
-  province: profileData?.province || '',
-  district: profileData?.district || '',
-  ward: profileData?.ward || '',
-  gender: profileData?.gender || '',
-  birthday: profileData?.birthday || '',
-  avatar: profileData?.avatar || ''
+  name: '',
+  address: '',
+  province: '',
+  district: '',
+  ward: '',
+  gender: 1,
+  birthday: '2000-01-01',
+  avatar: null,
 })
+
+watchEffect(() => {
+  if (profileData.value) {
+    form.value = {
+      ...profileData.value,
+      province: profileData.value.province || '',
+      district: profileData.value.district || '',
+      ward: profileData.value.ward || '',
+      gender: profileData.value.gender || 1,
+      birthday: profileData.value.birthday || '2000-01-01'
+    }
+  }
+});
 
 const errorList = ref({
   name: [],
@@ -87,7 +99,6 @@ const wards = computed(() => {
                   </div>
                 </div>
                 <div class="col-span-4">
-                  <!-- Họ & Tên field -->
                   <div class="flex">
                     <label class="w-1/5 text-gray-700 font-medium">Họ & Tên</label>
                     <Input class="w-4/5" v-model="form.name" type="text" placeholder="Nhập họ tên" :errors="errorList.name?.[0]"/>
@@ -96,7 +107,6 @@ const wards = computed(() => {
                     <label class="w-1/5 text-gray-700">Ngày sinh</label>
                     <Input class="w-4/5" v-model="form.birthday" type="date" :errors="errorList.birthday?.[0]"/>
                   </div>
-
                 </div>
                 <div class="col-span-5 ms-3">
                   <div class="flex">
@@ -129,6 +139,7 @@ const wards = computed(() => {
               </div>
             </form>
           </div>
+
           <div class="col-span-4 ps-10 space-y-8">
             <div class="mt-5">
               <h2 class="font-bold text-gray-800">Số điện thoại và email</h2>
@@ -154,7 +165,6 @@ const wards = computed(() => {
               </div>
             </div>
 
-            <!-- Security Section -->
             <div>
               <h2 class="font-bold text-gray-800">Bảo mật</h2>
               <div class="flex items-center justify-between py-2">
@@ -186,18 +196,4 @@ const wards = computed(() => {
       </div>
   </ProfileLayout>
 </template>
-<style scoped>
-* {
-  font-weight: 400;
-}
 
-/* assets/css/main.css */
-.page-enter-active, .page-leave-active {
-  transition: opacity 0.5s;
-}
-
-.page-enter, .page-leave-to /* .page-leave-active trong <2.1.8 */ {
-  opacity: 0;
-}
-
-</style>

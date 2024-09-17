@@ -14,5 +14,5 @@
 import { MEDIA_ENDPOINT } from "~/lib/constants";
 import type {Category} from "~/lib/schema";
 
-const { data } : { data: Category[] } = await useFetchData<Category[]>({url: 'categories'})
+const { data }: { data : Ref<Category[]> } = await useFetchData<Category[]>({url: 'categories'})
 </script>

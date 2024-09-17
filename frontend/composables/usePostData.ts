@@ -1,6 +1,7 @@
-import {API_ENDPOINT} from "~/lib/constants";
-import {type FetchResponse} from "ofetch";
+import {API_ENDPOINT, cookieOptions, headers} from "~/lib/constants";
+import {type FetchContext, type FetchResponse} from "ofetch";
 import {type TokenResponse} from "~/lib/schema";
+
 
 export default async function usePostData<T>({
     url,
@@ -14,18 +15,6 @@ export default async function usePostData<T>({
     method?: any
 }): Promise<any> {
 
-    const cookieOptions: any = {
-        sameSite: 'lax',
-        path: '/',
-        domain: 'localhost',
-        secure: false,
-        httpOnly: false,
-    }
-
-    const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
     function setCookie(data: any){
         useCookie('access_token', {
             ...cookieOptions,
@@ -38,14 +27,34 @@ export default async function usePostData<T>({
         }).value = data.refresh_token.token
     }
 
-    const auth_urls = ['auth/login', 'auth/register', 'auth/refresh-token']
+    const auth_urls = ['auth/login', 'auth/register']
 
     return await $fetch(`${API_ENDPOINT}${url}`, {
         method,
         body,
-        headers: {
-            ...headers,
-            'Authorization': requiresToken ? `Bearer ${useCookie('access_token').value}` : ''
+        async onRequest(context: FetchContext){
+            if(requiresToken) {
+                const accessToken = useCookie('access_token').value
+                if (!accessToken) {
+                    const refreshToken = useCookie('refresh_token').value
+                    if (!refreshToken) {
+                        navigateTo('/login')
+                    }
+                    const {tokens}: any = await $fetch(`${API_ENDPOINT}auth/refresh-token`, {
+                        headers: {
+                            ...headers,
+                            'Authorization': `Bearer ${refreshToken}`
+                        }
+                    })
+
+                    setCookie(tokens)
+                }
+
+                context.options.headers = {
+                    ...headers,
+                    Authorization: requiresToken ? `Bearer ${useCookie('access_token').value}` : ''
+                }
+            }
         },
         onResponse({response}: { response: FetchResponse<any> }) {
             if (response.status === 200 && auth_urls.includes(url)) {

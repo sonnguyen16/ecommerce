@@ -8,7 +8,7 @@ import {
 } from "@heroicons/vue/24/outline";
 const logout = async () => {
   try {
-    await usePostData({url: 'auth/logout', requiresToken: true})
+    await useFetchData({url: 'auth/logout', requiresToken: true})
   }catch (e: any){
     console.log(e)
   }finally {

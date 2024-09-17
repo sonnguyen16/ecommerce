@@ -41,6 +41,7 @@ class AuthController extends Controller
             $credentials = $request->only('phone', 'password');
 
             if (Auth::attempt($credentials)) {
+                $request->user()->tokens()->delete();
                 $token = $this->generateTokens(Auth::user());
                 return response()->json([
                     'message' => 'Đăng nhập thành công',
@@ -59,10 +60,7 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
-        return response()->json([
-            'message' => 'Lấy thông tin người dùng thành công',
-            'data' => Auth::user()
-        ]);
+        return response()->json(Auth::user());
     }
 
     public function generateTokens($user, $rtExpireTime = null): array
@@ -91,13 +89,16 @@ class AuthController extends Controller
 
         $token = substr($request->header('Authorization'), 7);
         $check = PersonalAccessToken::findToken($token);
+
         if (!$check) {
             return response()->json([
                 'message' => 'Token không hợp lệ'
             ], 401);
         }
         $rtExpireTime = $check->expires_at;
+
         $request->user()->tokens()->delete();
+
         $tokens = $this->generateTokens($user, $rtExpireTime);
 
         return response()->json([
@@ -108,7 +109,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-       $request->user()->currentAccessToken()->delete();
+       $request->user()->tokens()->delete();
        return response()->json(['message' => 'Đăng xuất thành công']);
     }
 }

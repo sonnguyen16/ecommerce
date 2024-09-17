@@ -1,28 +1,20 @@
-import {AUTH_ENDPOINT} from "~/lib/constants";
+import {AUTH_ENDPOINT, cookieOptions, headers} from "~/lib/constants";
 export default defineNuxtRouteMiddleware( async (to, from) => {
     let accessToken = useCookie('access_token').value
 
     if(!accessToken) {
         const refreshToken = useCookie('refresh_token').value
         if(!refreshToken) {
+            if(to.path.includes('/cart')) return
             return navigateTo('/login')
         }
         try {
             const data: any = await $fetch(`${AUTH_ENDPOINT}refresh-token`, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${refreshToken}`
+                    ...headers,
+                    Authorization: `Bearer ${refreshToken}`
                 },
             })
-
-            const cookieOptions: any = {
-                sameSite: 'lax',
-                path: '/',
-                domain: 'localhost',
-                secure: false,
-                httpOnly: false,
-            }
 
             useCookie('access_token', {
                 ...cookieOptions,
@@ -36,6 +28,7 @@ export default defineNuxtRouteMiddleware( async (to, from) => {
             }).value = data.tokens.refresh_token.token
 
         } catch (e: any) {
+            if(to.path.includes('/cart')) return
             return navigateTo('/login')
         }
     }

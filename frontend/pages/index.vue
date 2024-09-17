@@ -59,6 +59,6 @@ import {categories} from "~/lib/constants";
 import useFetchData from "~/composables/useFetchData";
 
 
-const { data } : { data: Product[] } = await useFetchData<Product[]>({url: 'products'})
+const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
 
 </script>

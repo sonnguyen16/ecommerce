@@ -8,9 +8,8 @@ const props = defineProps<{
   product: Product;
 }>();
 
-const price = props.product.discount ?
-    formatCash(Math.round(props.product.price - props.product.price / 100 * props.product.discount).toString())
-    : props.product.price?.toString();
+//caculate discount percent depend on product.price and product.sale_price
+const discount = Math.round((props.product.price - props.product.sale_price) / props.product.price * 100);
 
 </script>
 
@@ -27,9 +26,9 @@ const price = props.product.discount ?
             <StarIcon class="w-4 h-4 text-yellow-300"/>
           </template>
         </div>
-        <span class="text-red-500 font-semibold">{{ price }} đ</span>
-        <div v-if="product.discount" class="flex gap-2 items-center">
-          <span class="block p-1 rounded-lg bg-gray-100 font-normal text-sm">-{{product.discount}}%</span>
+        <span class="text-red-500 font-semibold">{{ formatCash(product.sale_price.toString()) }} đ</span>
+        <div class="flex gap-2 items-center">
+          <span class="block p-1 rounded-lg bg-gray-100 font-normal text-sm">-{{discount}}%</span>
           <span class="text-gray-400 line-through font-normal lg:text-[14px] text-sm">{{ formatCash(product.price?.toString())  }} đ</span>
         </div>
         <div class="w-full h-[1px] bg-gray-200 mt-6"></div>

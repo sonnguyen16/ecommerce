@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description');
             $table->string('unit');
-            $table->integer('price')->unsigned();
-            $table->integer('discount')->default(0);
+            $table->integer('price');
+            $table->integer('sale_price');
             $table->integer('quantity')->default(0);
             $table->integer('sold')->default(0);
             $table->string('thumbnail');
@@ -27,7 +27,6 @@ return new class extends Migration
             $table->foreignId('shop_id')->unsigned();
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
-            $table->string('seo_keywords')->nullable();
             $table->string('seo_url')->nullable();
             $table->softDeletes();
             $table->timestamps();

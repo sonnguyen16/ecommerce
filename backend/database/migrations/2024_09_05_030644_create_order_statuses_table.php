@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('order_statuses', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('order_id')->unsigned();
-            $table->enum('status', ['Đang xử lý', 'Đang giao', 'Đã giao', 'Đã hủy'])
-                ->default('Đang xử lý');
+            $table->tinyInteger('status')->unsigned()->default(1);
             $table->text('note')->nullable();
             $table->string('address')->nullable();
             $table->timestamps();

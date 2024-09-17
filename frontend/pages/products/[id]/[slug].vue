@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import MainLayout from "~/layouts/MainLayout.vue";
-import {CheckBadgeIcon} from "@heroicons/vue/24/solid";
-import {StarIcon} from "@heroicons/vue/24/solid";
+import {CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon} from "@heroicons/vue/24/solid";
 import {ref} from "vue";
-import useFetchData from "~/composables/usePostData";
+import useFetchData from "~/composables/useFetchData";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
 
 const { app_url, title } = useAppConfig()
 
-const { data }: { data: Ref<Product[]> } = await useFetchData(`products`)
+const { data } : { data : Ref<Product[]> } = await useFetchData({url: 'products'})
 
 const showFullDescription = ref<Boolean>(false);
 
@@ -19,6 +18,21 @@ const route = useRoute()
 const id = route.params.id
 
 const product: Product = data.value.find((item: Product) => String(item.id ) === id) as Product
+
+//caculate discount percent depend on product.price and product.sale_price
+const discount = Math.round((product.price - product.sale_price) / product.price * 100);
+
+const form = ref({
+  product_id: id,
+  quantity: 1,
+  total: product.sale_price
+})
+
+const message = ref('Thêm vào giỏ hàng thành công')
+
+const status = ref('success')
+
+const showToast = ref(false)
 
 function toggleDescription() {
   showFullDescription.value = !showFullDescription.value;
@@ -38,6 +52,58 @@ useSeoMeta({
   twitterImage: MEDIA_ENDPOINT + product.thumbnail,
   twitterCard: 'summary_large_image'
 })
+
+const increaseQuantity = () => {
+  form.value.quantity++;
+  form.value.total = form.value.quantity * product.price;
+}
+
+const decreaseQuantity = () => {
+  if (form.value.quantity > 1) {
+    form.value.quantity--;
+    form.value.total = form.value.quantity * product.price;
+  }
+}
+
+const addToCart = async () => {
+  const accessToken = useCookie('access_token').value
+
+  if(!accessToken){
+    let cart = []
+    if(localStorage.getItem('cart')){
+      cart = JSON.parse(localStorage.getItem('cart') as string)
+    }
+
+    const productIndex = cart.findIndex((item: any) => item.product_id === id)
+    if(productIndex > -1){
+      cart[productIndex].quantity += form.value.quantity
+    }else{
+      cart.push({
+        ...form.value,
+        product: product
+      })
+    }
+    localStorage.setItem('cart', JSON.stringify(cart))
+    showToastFunction('Thêm vào giỏ hàng thành công', 'success')
+    return
+  }
+
+  try {
+    await usePostData({url: 'add-to-cart', body: form.value, requiresToken: true})
+    showToastFunction('Thêm vào giỏ hàng thành công', 'success')
+  }catch (e: any) {
+    showToastFunction('Thêm vào giỏ hàng thất bại', 'error')
+  }
+}
+
+const showToastFunction = (msg: string, s: string) => {
+  message.value = msg
+  status.value = s
+  showToast.value = true
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
 
 </script>
 
@@ -98,8 +164,8 @@ useSeoMeta({
               <span class="font-normal text-gray-500 ms-2">Đã bán {{ product.sold }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-red-500 font-semibold text-2xl">{{ formatCash(Math.round(product.price - product.price / 100 * product.discount).toString()) }} đ</span>
-              <span v-if="product.discount" class="block p-1 rounded-lg bg-gray-100 font-normal text-sm">-{{product.discount}}%</span>
+              <span class="text-red-500 font-semibold text-2xl">{{ formatCash(product.sale_price.toString())}} đ</span>
+              <span class="block p-1 rounded-lg bg-gray-100 font-normal text-sm">-{{discount}}%</span>
             </div>
           </div>
 
@@ -174,9 +240,7 @@ useSeoMeta({
                       <div class="w-[1px] h-4 bg-gray-300 mx-2"></div>
                       <div class="flex items-center ml-2 text-gray-600">
                         <span class="text-sm">4.7</span>
-                        <svg class="h-4 w-4 text-yellow-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 17.27l5.18 3.73-1.64-5.81L20 9.91h-6.05L12 4 10.05 9.91H4l4.46 4.29-1.64 5.81z"/>
-                        </svg>
+                        <StarIcon class="h-3 w-3 text-yellow-300 mx-1"></StarIcon>
                         <span class="text-sm">(5.4tr+ đánh giá)</span>
                       </div>
                     </div>
@@ -189,16 +253,12 @@ useSeoMeta({
               <div class="mb-4">
                 <p class="text-gray-600">Số Lượng</p>
                 <div class="flex items-center mt-2">
-                  <button class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l">
-                    <svg class="h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
-                    </svg>
+                  <button @click.prevent="decreaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l">
+                    <MinusIcon class="h-4 w-4 text-gray-600"></MinusIcon>
                   </button>
-                  <input type="text" class="w-10 h-8 text-center border-t border-b border-gray-300" value="1">
-                  <button class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r">
-                    <svg class="h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
-                    </svg>
+                  <input type="text" class="w-10 h-8 text-center border-t border-b border-gray-300" v-model="form.quantity">
+                  <button @click.prevent="increaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r">
+                    <PlusIcon class="h-4 w-4 text-gray-600"></PlusIcon>
                   </button>
                 </div>
               </div>
@@ -206,13 +266,13 @@ useSeoMeta({
               <!-- Subtotal -->
               <div class="my-5">
                 <p class="text-lg mb-3">Tạm tính</p>
-                <p class="text-2xl font-semibold text-red-500">{{ formatCash(Math.round(product.price - product.price / 100 * product.discount).toString()) }} đ</p>
+                <p class="text-red-500 font-semibold text-2xl">{{ formatCash(form.total.toString()) }} đ</p>
               </div>
 
               <!-- Action Buttons -->
               <div class="space-y-2">
                 <button class="w-full bg-red-500 text-white py-2 rounded-lg">Mua ngay</button>
-                <button class="w-full border border-blue-500 text-blue-500 py-2 rounded-lg">Thêm vào giỏ</button>
+                <button @click.prevent="addToCart" class="w-full border border-blue-500 text-blue-500 py-2 rounded-lg">Thêm vào giỏ</button>
               </div>
             </div>
           </div>
@@ -222,6 +282,7 @@ useSeoMeta({
   <div class="bg-white container my-8 lg:block hidden">
     <Footer/>
   </div>
+  <Toast :message="message" :type="status" :show="showToast"/>
 </template>
 
 <style scoped>

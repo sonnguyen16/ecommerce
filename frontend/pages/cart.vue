@@ -1,18 +1,114 @@
 <script setup lang="ts">
 import { TrashIcon, TicketIcon } from "@heroicons/vue/24/outline";
 import MainLayout from "~/layouts/MainLayout.vue";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 
-const products = [
-  {
-    img: MEDIA_ENDPOINT + "/product1.png",
-    name: "Một thoáng ta rực rỡ ở nhân gian",
-  },
-  {
-    img: MEDIA_ENDPOINT + "/product2.png",
-    name: "Máy đọc sách New Kindle chính hãng",
-  },
-];
+
+definePageMeta({
+  middleware: 'auth'
+});
+
+let cart: Ref<any[]>
+
+const isAuthenticated = Boolean(useCookie('access_token').value)
+
+const message = ref('Thêm vào giỏ hàng thành công')
+
+const status = ref('success')
+
+const showToast = ref(false)
+
+if(!isAuthenticated) {
+  if(process.client){
+    cart = ref(JSON.parse(localStorage.getItem('cart') || '[]'));
+  }
+}else{
+  const { data } : { data: any } = await useFetchData({
+    url: 'cart',
+    requiresToken: true,
+    server: false,
+    cache: false,
+  });
+
+  cart = data
+}
+
+const increment = (id: number) => {
+  const index = cart.value.findIndex((c) => c.product.id === id);
+  if (index !== -1) {
+    cart.value[index].quantity++;
+  }
+};
+
+const decrement = (id: number) => {
+  const index = cart.value.findIndex((c) => c.product.id === id);
+  if (index !== -1) {
+    cart.value[index].quantity--;
+  }
+};
+
+const deleteProduct = (id: number) => {
+  const index = cart.value.findIndex((c) => c.product.id === id);
+  if (index !== -1) {
+    cart.value.splice(index, 1);
+  }
+};
+
+const updateCart = async () => {
+  if(!isAuthenticated){
+    localStorage.setItem('cart', JSON.stringify(cart.value));
+  }else{
+    try{
+      await usePostData({
+        url: 'add-many-to-cart',
+        body: { carts: cart.value },
+        requiresToken: true,
+      })
+    }catch (e){
+      console.log(e)
+    }
+  }
+}
+
+onBeforeRouteLeave(() => {
+  updateCart()
+})
+
+const order = async () => {
+  const total = cart.value.reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
+  const products = cart.value.map((c) => (
+      { product_id: c.product.id,
+        quantity: c.quantity,
+        total: c.product.sale_price * c.quantity,
+        price: c.product.sale_price
+      }
+      ))
+
+  try{
+    await usePostData({
+      url: 'order',
+      body: {
+        total,
+        products
+      },
+      requiresToken: true,
+    })
+    cart.value = []
+    showToastFunction('Đặt hàng thành công', 'success')
+  }catch (e){
+    showToastFunction('Đặt hàng thất bại', 'error')
+    console.log(e)
+  }
+}
+
+const showToastFunction = (msg: string, s: string) => {
+  message.value = msg
+  status.value = s
+  showToast.value = true
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
+
 </script>
 
 <template>
@@ -58,12 +154,18 @@ const products = [
                 Mua 3, giảm 5%
               </div>
 
-              <!-- Product Rows -->
-              <ProductCart
-                v-for="product in products"
-                :key="product.name"
-                :product="product"
-              />
+
+              <template v-if="cart">
+                <ProductCart
+                    v-for="c in cart"
+                    :key="c.id"
+                    :product="c.product"
+                    :quantity="c.quantity"
+                    @increment="increment"
+                    @decrement="decrement"
+                    @delete="deleteProduct"
+                />
+              </template>
 
               <!-- Shop Promotion -->
               <div class="pt-3 text-gray-500 text-sm border-t">
@@ -112,7 +214,7 @@ const products = [
               </div>
 
               <!-- Checkout Button -->
-              <button class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition">
+              <button @click.prevent="order" class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition">
                 Mua Hàng (0)
               </button>
             </div>
@@ -131,6 +233,7 @@ const products = [
       <Footer />
     </div>
   </div>
+  <Toast :message="message" :type="status" :show="showToast"/>
 </template>
 
 <style scoped>

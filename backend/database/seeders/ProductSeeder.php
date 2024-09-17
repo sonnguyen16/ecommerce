@@ -67,13 +67,17 @@ class ProductSeeder extends Seeder
 
         // Loop to insert products
         foreach ($products as $index => $product) {
+            $price = rand(100000, 1000000); // Random price between 100,000 and 1,000,000
+            do {
+                $salePrice = rand(100000, 1000000); // Random sale price between 100,000 and 1,000,000
+            } while ($salePrice >= $price); // Sale price must be less than price
             Product::create([
                 'name' => $product['name'],
                 'slug' => Str::slug($product['name']),
                 'description' => $faker->text(2000),
                 'unit' => 'pcs',
-                'price' => rand(100000, 1000000), // Random price between 100,000 and 1,000,000
-                'discount' => rand(0, 100), // Random discount percentage
+                'price' => $price, // Random price between 100,000 and 1,000,000
+                'sale_price' => $salePrice, // Random sale price between 100,000 and 1,000,000
                 'quantity' => rand(10, 100), // Random quantity between 10 and 100
                 'sold' => rand(0, 50), // Random sold count between 0 and 50
                 'thumbnail' => $product['img'],
@@ -82,7 +86,6 @@ class ProductSeeder extends Seeder
                 'shop_id' => 1, // Shop ID is 1
                 'seo_title' => $product['name'],
                 'seo_description' => $faker->text(400),
-                'seo_keywords' => $faker->words(5, true),
                 'seo_url' => Str::slug($product['name']),
             ]);
         }
