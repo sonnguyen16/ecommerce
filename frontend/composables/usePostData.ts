@@ -7,7 +7,7 @@ export default async function usePostData<T>({
     url,
     body = null,
     requiresToken = false,
-    method = 'POST'
+    method = 'POST',
 } : {
     url: string,
     body?: any,
@@ -55,7 +55,7 @@ export default async function usePostData<T>({
                         setCookie(tokens)
 
                         context.options.headers = {
-                            ...headers,
+                            ...context.options.headers,
                             Authorization: requiresToken ? `Bearer ${tokens.access_token.token}` : ''
                         }
                     }catch (e: any) {

@@ -43,7 +43,7 @@ useSeoMeta({
   ogTitle: product.seo_title,
   ogDescription: product.seo_description,
   ogImage: MEDIA_ENDPOINT + product.thumbnail,
-  ogUrl: app_url + route.fullPath,
+  ogUrl: app_url + `/products/${id}/${product.seo_url}`,
   ogSiteName: product.seo_title,
   ogType: 'article',
   twitterTitle: product.seo_title,
@@ -90,6 +90,12 @@ const addToCart = async () => {
   try {
     await usePostData({url: 'add-to-cart', body: form.value, requiresToken: true})
     showToastFunction('Thêm vào giỏ hàng thành công', 'success')
+    await useFetchData({
+      url: 'cart',
+      requiresToken: true,
+      server: false,
+      cache: false,
+    });
   }catch (e: any) {
     showToastFunction('Thêm vào giỏ hàng thất bại', 'error')
   }
@@ -163,7 +169,7 @@ const showToastFunction = (msg: string, s: string) => {
             <div class="flex my-2 items-center">
               <span class="me-2">4.8</span>
               <template v-for="i in 5">
-                <StarIcon :key="i" class="w-5 h-5 text-yellow-300"/>
+                <StarIcon class="w-5 h-5 text-yellow-300"/>
               </template>
               <span class="font-normal text-gray-500 ms-2">(2032)</span>
               <span class="w-[1px] h-[16px] mt-1 bg-gray-300 ms-3"></span>

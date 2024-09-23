@@ -90,31 +90,31 @@ const clearError = () => {
           <h2 class="text-2xl font-bold text-center text-blue-500 mb-4">Đăng ký</h2>
 
           <form @submit.prevent="onSubmit">
-            <div class="mb-3">
+            <div class="">
               <Input v-model="form.name" type="text" placeholder="Nhập họ tên" :errors="errorList.name?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Input v-model="form.phone" type="text" placeholder="Nhập số điện thoại" :errors="errorList.phone?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Input v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Select optionDefault="Chọn tỉnh/thành phố" v-model="form.province" :options="data" :errors="errorList.province?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Select optionDefault="Chọn quận/huyện" v-model="form.district" :options="districts"  :errors="errorList.district?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Select optionDefault="Chọn phường/xã" v-model="form.ward" :options="wards"  :errors="errorList.ward?.[0]"/>
             </div>
 
-            <div class="mb-3">
+            <div class="">
               <Input v-model="form.address" type="text" placeholder="Nhập địa chỉ nhận hàng" :errors="errorList.address?.[0]"/>
             </div>
 

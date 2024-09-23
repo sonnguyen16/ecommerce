@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function (){
 Route::prefix('shop')->middleware('auth:sanctum')->group(function (){
     Route::get('orders', [ShopOrderController::class, 'getOrders']);
     Route::get('products', [ShopProductController::class, 'getProducts']);
+    Route::post('products/store', [ShopProductController::class, 'storeProduct']);
 });
 
 Route::get('provinces', function (){

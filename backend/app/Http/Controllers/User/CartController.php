@@ -18,60 +18,48 @@ class CartController extends Controller
 
     public function addToCart(AddToCartRequest $request)
     {
-        try {
-            $validated = $request->validated();
+        $validated = $request->validated();
 
-            $cart = Cart::where('user_id', Auth::id())
-                ->where('product_id', $validated['product_id'])
-                ->first();
+        $cart = Cart::where('user_id', Auth::id())
+            ->where('product_id', $validated['product_id'])
+            ->first();
 
-            if ($cart) {
-                $cart->update([
-                    'quantity' => $cart->quantity + $validated['quantity'],
-                ]);
-
-                return response()->json([
-                    'message' => 'Thêm sản phẩm vào giỏ hàng thành công',
-                ]);
-            }
-
-            Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $validated['product_id'],
-                'quantity' => $validated['quantity'],
+        if ($cart) {
+            $cart->update([
+                'quantity' => $cart->quantity + $validated['quantity'],
             ]);
 
             return response()->json([
                 'message' => 'Thêm sản phẩm vào giỏ hàng thành công',
             ]);
-        }catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Có lỗi xảy ra',
-            ], 500);
         }
+
+        Cart::create([
+            'user_id' => Auth::id(),
+            'product_id' => $validated['product_id'],
+            'quantity' => $validated['quantity'],
+        ]);
+
+        return response()->json([
+            'message' => 'Thêm sản phẩm vào giỏ hàng thành công',
+        ]);
     }
 
     public function addManyToCart(Request $request)
     {
-        try {
-            Auth::user()->carts()->delete();
-            $carts = $request->input('carts');
-            foreach ($carts as $cart) {
-                Cart::create([
-                    'user_id' => Auth::id(),
-                    'product_id' => $cart['product_id'],
-                    'quantity' => $cart['quantity'],
-                ]);
-            }
-
-            return response()->json([
-                'message' => 'Thêm sản phẩm vào giỏ hàng thành công',
+        Auth::user()->carts()->delete();
+        $carts = $request->input('carts');
+        foreach ($carts as $cart) {
+            Cart::create([
+                'user_id' => Auth::id(),
+                'product_id' => $cart['product_id'],
+                'quantity' => $cart['quantity'],
             ]);
-        }catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Có lỗi xảy ra',
-            ], 500);
         }
+
+        return response()->json([
+            'message' => 'Thêm sản phẩm vào giỏ hàng thành công',
+        ]);
     }
 
 }

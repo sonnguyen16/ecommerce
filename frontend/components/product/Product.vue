@@ -23,7 +23,7 @@ const discount = Math.round((props.product.price - props.product.sale_price) / p
         <p class="font-normal line-clamp-2 lg:text-[14px] text-sm">{{ product.name }}</p>
         <div class="flex mt-1">
           <template v-for="i in 5">
-            <StarIcon :key="i" class="w-4 h-4 text-yellow-300"/>
+            <StarIcon class="w-4 h-4 text-yellow-300"/>
           </template>
         </div>
         <span class="text-red-500 font-semibold">{{ formatCash(product.sale_price.toString()) }} đ</span>

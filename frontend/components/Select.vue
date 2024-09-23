@@ -15,8 +15,8 @@ const model = defineModel()
             :class="[errors ? 'border border-red-500' : 'border border-gray-300']">
       <option value="">{{ optionDefault }}</option>
       <option v-for="option in options"
-              :value="option?.code"
-              :key="option?.code">{{ option?.name }}</option>
+              :value="option?.code || option?.id"
+              :key="option?.code || options?.id">{{ option?.name }}</option>
     </select>
     <InputError :message="errors" />
   </div>

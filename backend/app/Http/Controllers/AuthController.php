@@ -14,48 +14,33 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        try {
-            $validated = $request->validated();
-            $validated['password'] = bcrypt($validated['password']);
-            User::create($validated);
+        $validated = $request->validated();
+        $validated['password'] = bcrypt($validated['password']);
+        User::create($validated);
 
-            Auth::attempt($request->only('phone', 'password'));
-            $token = $this->generateTokens(Auth::user());
+        Auth::attempt($request->only('phone', 'password'));
+        $token = $this->generateTokens(Auth::user());
 
-            return response()->json([
-                'message' => 'Đăng ký thành công',
-                'tokens' => $token
-            ]);
-
-        }catch (\Exception $e){
-            return response()->json([
-                'message' => 'Đăng ký thất bại',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Đăng ký thành công',
+            'tokens' => $token
+        ]);
     }
 
     public function login(LoginRequest $request)
     {
-        try{
-            $credentials = $request->only('phone', 'password');
+        $credentials = $request->only('phone', 'password');
 
-            if (Auth::attempt($credentials)) {
-                $request->user()->tokens()->delete();
-                $token = $this->generateTokens(Auth::user());
-                return response()->json([
-                    'message' => 'Đăng nhập thành công',
-                    'tokens' => $token
-                ]);
-            }
-
-            return response()->json(['message' => 'Đăng nhập thất bại',], 401);
-        }catch (\Exception $e){
+        if (Auth::attempt($credentials)) {
+            $request->user()->tokens()->delete();
+            $token = $this->generateTokens(Auth::user());
             return response()->json([
-                'message' => 'Đăng nhập thất bại',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => 'Đăng nhập thành công',
+                'tokens' => $token
+            ]);
         }
+
+        return response()->json(['message' => 'Đăng nhập thất bại',], 401);
     }
 
     public function profile(Request $request)

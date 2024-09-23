@@ -7,7 +7,6 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
     url: 'orders',
     requiresToken: true,
     server: false,
-    cache: false,
 });
 
 </script>
@@ -39,7 +38,7 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
 
      <!-- Empty orders message -->
      <div class="">
-      <template v-if="!data">
+      <template v-if="data?.length == 0">
         <div class="flex justify-center mb-4">
           <img src="/empty-order.png" alt="Empty order illustration" class="w-60">
         </div>

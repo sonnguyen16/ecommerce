@@ -7,8 +7,8 @@ defineProps({
 </script>
 
 <template>
-  <div class="h-[16px]">
-    <p class="text-red-500 mt-[3px]">
+  <div class="h-[26px] flex items-center">
+    <p class="text-red-500">
       {{ message }}
     </p>
   </div>

@@ -58,11 +58,11 @@ const clearError = () => {
         <h2 class="text-2xl font-bold text-center text-blue-500 mb-4">Đăng nhập</h2>
 
         <form @submit.prevent="onSubmit">
-          <div class="mb-3">
+          <div class="">
             <Input v-model="form.phone" type="text" placeholder="Nhập số điện thoại" :errors="errorList.phone?.[0]" />
           </div>
 
-          <div class="mb-3">
+          <div class="">
             <Input v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
           </div>
 

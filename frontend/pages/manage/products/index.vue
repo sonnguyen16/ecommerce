@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import AdminLayout from "~/layouts/AdminLayout.vue";
-import { DocumentIcon, Bars3Icon} from "@heroicons/vue/24/outline";
+import { DocumentIcon, PencilSquareIcon} from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 import Pagination from "~/components/admin/Pagination.vue";
 import type {PaginationData, Product} from "~/lib/schema";
 
-const page = ref(1);
-
 let { data } : { data: Ref<PaginationData<Product>> } = await useFetchData({
-  url: `shop/products?page=${page}`,
+  url: `shop/products`,
   requiresToken: true,
   server: false,
+})
+
+const { data: categoriesData } = await useFetchData({
+  url: `categories`,
 })
 
 const fetchData = async (page: number) => {
@@ -38,27 +40,14 @@ const goToPage = async (p: number) => {
 <template>
   <AdminLayout>
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
-    <div class="bg-white rounded-xl p-4 mt-5 h-[calc(100vh-9.5rem)] space-y-5">
+    <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
       <div class="flex flex-wrap items-center gap-4">
+        <NuxtLink :to="`/manage/products/store/${null}`" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Thêm sản phẩm</NuxtLink>
         <input type="text" placeholder="Tìm theo từ khóa" class="px-4 py-2 w-60 focus:outline-none focus:ring focus:ring-blue-300 border border-gray-300 rounded-lg">
-
         <select class="px-4 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
-          <option selected>Tên Khách Hàng</option>
-          <option>Khách Hàng 1</option>
-          <option>Khách Hàng 2</option>
+          <option selected>Danh mục</option>
+          <option v-for="category in categoriesData" :key="category.id" :value="category.id">{{ category.name }}</option>
         </select>
-
-        <input type="date" class="px-4 py-2 border text-gray-500 border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
-
-        <select class="px-4 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
-          <option selected>Mọi lúc</option>
-          <option>Ngày cập nhật 1</option>
-          <option>Ngày cập nhật 2</option>
-        </select>
-
-        <button class="p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring focus:ring-blue-300">
-          <Bars3Icon class="h-6 w-6 text-gray-500" />
-        </button>
       </div>
 
       <div class="flex gap-4">
@@ -84,7 +73,7 @@ const goToPage = async (p: number) => {
           <div>Giá</div>
           <div>Phân loại</div>
           <div>Ngày tạo</div>
-
+          <div>Thao tác</div>
         </div>
       </div>
       <div v-if="data?.data?.length > 0">
@@ -100,6 +89,11 @@ const goToPage = async (p: number) => {
           <div>{{ formatCash(product.price.toString()) }} đ</div>
           <div>{{ product.category.name }}</div>
           <div>{{ new Date(product.created_at).toLocaleDateString() }}</div>
+          <div>
+            <NuxtLink :to="`/manage/products/store/${product.id}`" class="text-indigo-500 p-3">
+             <PencilSquareIcon class="w-5 h-5 inline-block" />  Sửa
+            </NuxtLink>
+          </div>
         </div>
       </div>
 

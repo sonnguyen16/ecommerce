@@ -25,7 +25,6 @@ if(!useCookie('refresh_token').value) {
     url: 'cart',
     requiresToken: true,
     server: false,
-    cache: false,
   });
 
   cart = data || []
@@ -120,6 +119,13 @@ const order = async () => {
     })
     cart.value = []
     showToastFunction('Đặt hàng thành công', 'success')
+
+    await useFetchData({
+      url: 'orders',
+      requiresToken: true,
+      server: false,
+      cache: false,
+    });
   }catch (e){
     showToastFunction('Đặt hàng thất bại', 'error')
     console.log(e)

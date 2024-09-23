@@ -4,8 +4,7 @@ export const MEDIA_ENDPOINT = BASE_URL + 'storage/';
 export const AUTH_ENDPOINT = API_ENDPOINT + 'auth/';
 
 export const headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
 }
 export const cookieOptions: any = {
     sameSite: 'lax',
