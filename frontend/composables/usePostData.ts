@@ -32,6 +32,10 @@ export default async function usePostData<T>({
     return await $fetch(`${API_ENDPOINT}${url}`, {
         method,
         body,
+        headers: {
+            ...headers,
+            'Authorization': requiresToken ? `Bearer ${useCookie('access_token').value}` : ''
+        },
         async onRequest(context: FetchContext){
             if(requiresToken) {
                 const accessToken = useCookie('access_token').value
@@ -40,19 +44,23 @@ export default async function usePostData<T>({
                     if (!refreshToken) {
                         navigateTo('/login')
                     }
-                    const {tokens}: any = await $fetch(`${API_ENDPOINT}auth/refresh-token`, {
-                        headers: {
+                    try{
+                        const { tokens }: any = await $fetch(`${API_ENDPOINT}auth/refresh-token`, {
+                            headers: {
+                                ...headers,
+                                'Authorization': `Bearer ${refreshToken}`
+                            }
+                        })
+
+                        setCookie(tokens)
+
+                        context.options.headers = {
                             ...headers,
-                            'Authorization': `Bearer ${refreshToken}`
+                            Authorization: requiresToken ? `Bearer ${tokens.access_token.token}` : ''
                         }
-                    })
-
-                    setCookie(tokens)
-                }
-
-                context.options.headers = {
-                    ...headers,
-                    Authorization: requiresToken ? `Bearer ${useCookie('access_token').value}` : ''
+                    }catch (e: any) {
+                        navigateTo('/login')
+                    }
                 }
             }
         },
@@ -60,6 +68,6 @@ export default async function usePostData<T>({
             if (response.status === 200 && auth_urls.includes(url)) {
                 setCookie(response._data.tokens as TokenResponse)
             }
-        }
+        },
     });
 }

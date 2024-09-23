@@ -35,10 +35,6 @@ class AppServiceProvider extends ServiceProvider
         };
 
         Sanctum::$accessTokenRetrievalCallback = function ($request) {
-            if (!$request->routeIs('refresh')) {
-                return str_replace('Bearer ', '', $request->headers->get('Authorization'));
-            }
-
             return str_replace('Bearer ', '', $request->headers->get('Authorization'));
         };
     }

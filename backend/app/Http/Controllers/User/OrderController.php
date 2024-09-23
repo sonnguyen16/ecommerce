@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
-use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -41,5 +41,12 @@ class OrderController extends Controller
                 'message' => 'Có lỗi xảy ra',
             ], 500);
         }
+    }
+
+    public function getOrders()
+    {
+        $orders = Order::where('user_id', Auth::id())->with('orderDetails.product')->get();
+
+        return response()->json($orders);
     }
 }

@@ -17,22 +17,22 @@
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Chính sách đổi trả</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Hướng dẫn trả góp</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Chính sách hàng nhập khẩu</a></li>
-          <li><a href="mailto:hotro@tiki.vn" class="font-normal text-gray-500 hover:underline">Hỗ trợ khách hàng: hotro@tiki.vn</a></li>
-          <li><a href="mailto:security@tiki.vn" class="font-normal text-gray-500 hover:underline">Báo lỗi bảo mật: security@tiki.vn</a></li>
+          <li><a href="mailto:hotro@gosell.vn" class="font-normal text-gray-500 hover:underline">Hỗ trợ khách hàng: hotro@gosell.vn</a></li>
+          <li><a href="mailto:security@gosell.vn" class="font-normal text-gray-500 hover:underline">Báo lỗi bảo mật: security@gosell.vn</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="font-semibold mb-4">Về Tiki</h2>
+        <h2 class="font-semibold mb-4">Về GoSell</h2>
         <ul>
-          <li><a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu Tiki</a></li>
-          <li><a href="#" class="font-normal text-gray-500 hover:underline">Tiki Blog</a></li>
+          <li><a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu GoSell</a></li>
+          <li><a href="#" class="font-normal text-gray-500 hover:underline">GoSell Blog</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Tuyển dụng</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Chính sách bảo mật thanh toán</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Chính sách bảo mật thông tin cá nhân</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Chính sách giải quyết khiếu nại</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Điều khoản sử dụng</a></li>
-          <li><a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu Tiki Xu</a></li>
-          <li><a href="#" class="font-normal text-gray-500 hover:underline">Tiếp thị liên kết cùng Tiki</a></li>
+          <li><a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu GoSell Xu</a></li>
+          <li><a href="#" class="font-normal text-gray-500 hover:underline">Tiếp thị liên kết cùng GoSell</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng doanh nghiệp</a></li>
         </ul>
       </div>
@@ -40,7 +40,7 @@
         <h2 class="font-semibold mb-4">Hợp tác và liên kết</h2>
         <ul>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Quy chế hoạt động Sàn GDTMĐT</a></li>
-          <li><a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng Tiki</a></li>
+          <li><a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng GoSell</a></li>
         </ul>
         <div class="mt-4">
           <h2 class="font-semibold ">Chứng nhận bởi</h2>
@@ -55,7 +55,7 @@
         <h2 class="font-semibold">Phương thức thanh toán</h2>
         <img src="/payment.png" width="150" alt="payment">
         <h2 class="font-semibold">Dịch vụ giao hàng</h2>
-        <img src="/delivery.png" width="120" alt="TIKINOW">
+        <img src="/logo.svg" width="120" alt="GoSellNOW">
       </div>
       <div class="">
         <h2 class="font-semibold">Kết nối với chúng tôi</h2>

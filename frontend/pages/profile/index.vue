@@ -8,10 +8,7 @@ import {
     CameraIcon
 } from "@heroicons/vue/24/outline";
 import ProfileLayout from "~/layouts/ProfileLayout.vue";
-
-definePageMeta({
-  middleware: 'auth'
-})
+import type {User} from "~/lib/schema";
 
 const genderOptions = [
   {code: 1, name: 'Nam'},
@@ -21,21 +18,24 @@ const genderOptions = [
 
 const [profileResponse, provincesResponse]: any = await Promise.all([
   useFetchData({url: 'auth/profile', requiresToken: true, server: false}),
-  useFetchData({url: 'provinces', server: false}),
+  useFetchData({url: 'provinces'}),
 ])
 
 let provincesData: Ref<any> = provincesResponse.data
-let profileData: Ref<any> = profileResponse.data
+let profileData: Ref<User> = profileResponse.data
 
-const form = ref({
+const form = ref<User>({
   name: '',
   address: '',
   province: '',
   district: '',
   ward: '',
+  id: 0,
+  password: '',
+  phone: '',
   gender: 1,
-  birthday: '2000-01-01',
-  avatar: null,
+  created_at: '',
+  updated_at: ''
 })
 
 watchEffect(() => {
@@ -59,7 +59,8 @@ const errorList = ref({
   ward: [],
   gender: [],
   birthday: [],
-  avatar: []
+  avatar: [],
+  phone: []
 })
 
 const districts = computed(() => {
@@ -148,7 +149,7 @@ const wards = computed(() => {
                   <PhoneIcon class="h-6 w-6 text-gray-600" />
                   <div class="space-y-1">
                     <p class="text-gray-700">Số điện thoại</p>
-                    <p class="text-gray-500">0817702334</p>
+                    <p class="text-gray-500">{{ form.phone }}</p>
                   </div>
                 </div>
                 <button class="text-blue-500 border border-blue-500 px-3 py-1 rounded">Cập nhật</button>

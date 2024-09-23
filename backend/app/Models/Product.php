@@ -28,4 +28,9 @@ class Product extends Model
         'seo_description',
         'seo_url',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

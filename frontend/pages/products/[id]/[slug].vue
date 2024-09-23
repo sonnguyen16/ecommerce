@@ -7,7 +7,7 @@ import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
 
-const { app_url, title } = useAppConfig()
+const { app_url } = useAppConfig()
 
 const { data } : { data : Ref<Product[]> } = await useFetchData({url: 'products'})
 
@@ -19,7 +19,6 @@ const id = route.params.id
 
 const product: Product = data.value.find((item: Product) => String(item.id ) === id) as Product
 
-//caculate discount percent depend on product.price and product.sale_price
 const discount = Math.round((product.price - product.sale_price) / product.price * 100);
 
 const form = ref({
@@ -55,20 +54,20 @@ useSeoMeta({
 
 const increaseQuantity = () => {
   form.value.quantity++;
-  form.value.total = form.value.quantity * product.price;
+  form.value.total = form.value.quantity * product.sale_price;
 }
 
 const decreaseQuantity = () => {
   if (form.value.quantity > 1) {
     form.value.quantity--;
-    form.value.total = form.value.quantity * product.price;
+    form.value.total = form.value.quantity * product.sale_price;
   }
 }
 
 const addToCart = async () => {
-  const accessToken = useCookie('access_token').value
+  const refreshToken = useCookie('refresh_token').value
 
-  if(!accessToken){
+  if(!refreshToken){
     let cart = []
     if(localStorage.getItem('cart')){
       cart = JSON.parse(localStorage.getItem('cart') as string)
@@ -94,6 +93,13 @@ const addToCart = async () => {
   }catch (e: any) {
     showToastFunction('Thêm vào giỏ hàng thất bại', 'error')
   }
+}
+
+const buyNow = async () => {
+  await addToCart()
+  setTimeout(() => {
+    navigateTo('/cart')
+  }, 2000)
 }
 
 const showToastFunction = (msg: string, s: string) => {
@@ -157,7 +163,7 @@ const showToastFunction = (msg: string, s: string) => {
             <div class="flex my-2 items-center">
               <span class="me-2">4.8</span>
               <template v-for="i in 5">
-                <StarIcon class="w-5 h-5 text-yellow-300"/>
+                <StarIcon :key="i" class="w-5 h-5 text-yellow-300"/>
               </template>
               <span class="font-normal text-gray-500 ms-2">(2032)</span>
               <span class="w-[1px] h-[16px] mt-1 bg-gray-300 ms-3"></span>
@@ -271,7 +277,7 @@ const showToastFunction = (msg: string, s: string) => {
 
               <!-- Action Buttons -->
               <div class="space-y-2">
-                <button class="w-full bg-red-500 text-white py-2 rounded-lg">Mua ngay</button>
+                <button @click.prevent="buyNow" class="w-full bg-red-500 text-white py-2 rounded-lg">Mua ngay</button>
                 <button @click.prevent="addToCart" class="w-full border border-blue-500 text-blue-500 py-2 rounded-lg">Thêm vào giỏ</button>
               </div>
             </div>
@@ -280,7 +286,7 @@ const showToastFunction = (msg: string, s: string) => {
     </div>
   </MainLayout>
   <div class="bg-white container my-8 lg:block hidden">
-    <Footer/>
+    <HomeFooter/>
   </div>
   <Toast :message="message" :type="status" :show="showToast"/>
 </template>

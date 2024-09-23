@@ -6,6 +6,8 @@ import {
   ShoppingCartIcon,
    XCircleIcon
 } from "@heroicons/vue/24/outline";
+
+const route = useRoute()
 const logout = async () => {
   try {
     await useFetchData({url: 'auth/logout', requiresToken: true})
@@ -17,6 +19,24 @@ const logout = async () => {
     navigateTo('/')
   }
 }
+
+const links = [
+  {
+    name: 'Thông tin tài khoản',
+    icon: UserCircleIcon,
+    to: '/profile'
+  },
+  {
+    name: 'Quản lý đơn hàng',
+    icon: ClipboardDocumentListIcon,
+    to: '/profile/tracking'
+  },
+  {
+    name: 'Shop của tôi',
+    icon: ShoppingCartIcon,
+    to: '/manage/orders'
+  }
+]
 </script>
 <template>
     <MainLayout>
@@ -25,25 +45,11 @@ const logout = async () => {
       <div class="grid grid-cols-10 gap-4 mt-3">
         <div class="col-span-2">
           <ul class="space-y-2">
-            <li >
-              <NuxtLink class="flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md" to="/profile">
-                <UserCircleIcon class="h-6 w-6 text-gray-600" />
-                <span class="text-gray-700 font-medium">Thông tin tài khoản</span>
+            <li v-for="link in links">
+              <NuxtLink :class="[route.path === link.to && 'bg-gray-200', 'flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md']" :to="link.to">
+                <component :is="link.icon" class="h-6 w-6 text-gray-600" />
+                <span class="text-gray-700 font-medium">{{ link.name }}</span>
               </NuxtLink>
-            </li>
-
-            <!-- Order Management -->
-            <li >
-              <NuxtLink class="flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md" to="/tracking">
-                <ClipboardDocumentListIcon class="h-6 w-6 text-gray-600" />
-                <span class="text-gray-700">Quản lý đơn hàng</span>
-              </NuxtLink>
-            </li>
-
-            <!-- Payment Information -->
-            <li class="flex items-center space-x-3 py-2 px-5 hover:bg-gray-200 rounded-md">
-              <ShoppingCartIcon class="h-6 w-6 text-gray-600" />
-              <span class="text-gray-700">Shop của tôi</span>
             </li>
 
             <!-- Product Reviews -->
@@ -59,7 +65,7 @@ const logout = async () => {
       </div>
     </MainLayout>
     <div class="bg-white container my-8">
-      <Footer />
+      <HomeFooter />
     </div>
 </template>
 <style scoped>

@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Shop\ShopOrderController;
+use App\Http\Controllers\Shop\ShopProductController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\CategoryController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\ProductController;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
 
 Route::get('products', [ProductController::class, 'getProducts']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
@@ -26,6 +28,12 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('add-many-to-cart', [CartController::class, 'addManyToCart']);
     Route::get('cart', [CartController::class, 'getCart']);
     Route::post('order', [OrderController::class, 'order']);
+    Route::get('orders', [OrderController::class, 'getOrders']);
+});
+
+Route::prefix('shop')->middleware('auth:sanctum')->group(function (){
+    Route::get('orders', [ShopOrderController::class, 'getOrders']);
+    Route::get('products', [ShopProductController::class, 'getProducts']);
 });
 
 Route::get('provinces', function (){

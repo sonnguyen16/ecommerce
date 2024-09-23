@@ -2,20 +2,20 @@
   <MainLayout>
     <div class="grid grid-cols-6 gap-8">
       <div class="col-span-1 xl:block hidden">
-          <Sidebar/>
+          <HomeSidebar/>
       </div>
       <div class="xl:col-span-5 col-span-full space-y-5">
         <div class="rounded-xl lg:bg-white lg:p-5">
-          <Carousel/>
+          <HomeCarousel/>
         </div>
-        <div class="rounded-xl bg-white p-4">
-          <div class="grid lg:grid-cols-10 gap-4 grid-cols-5">
-            <div v-for="category in categories" :key="category.name" class="flex flex-col items-center">
-              <img :src="category.img" alt="category" class="w-16 h-16 rounded-xl"/>
-              <span class="lg:text-sm text-[10px] text-gray-700">{{ category.name }}</span>
-            </div>
-          </div>
-        </div>
+<!--        <div class="rounded-xl bg-white p-4">-->
+<!--          <div class="grid lg:grid-cols-10 gap-4 grid-cols-5">-->
+<!--            <div v-for="category in categories" :key="category.name" class="flex flex-col items-center">-->
+<!--              <img :src="category.img" alt="category" class="w-16 h-16 rounded-xl"/>-->
+<!--              <span class="lg:text-sm text-[10px] text-gray-700">{{ category.name }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="rounded-xl bg-white p-5 py-4">
           <div class="flex justify-between items-center mb-4">
             <img src="/topdeal3.png" alt="topdeal" class="w-[200px]">
@@ -29,7 +29,7 @@
         </div>
         <div class="rounded-xl bg-white p-5 py-4">
           <div class="flex justify-between items-center  mb-4">
-            <h3 class="">Hàng ngoại giá hot</h3>
+            <h3 class="">Hàng mới giá hot</h3>
             <span class="text-blue-500 font-semibold">Xem thêm</span>
           </div>
           <div class="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-6">
@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="rounded-xl bg-white p-5 lg:block hidden">
-          <Footer/>
+          <HomeFooter/>
         </div>
       </div>
     </div>
@@ -55,9 +55,7 @@
 <script setup lang="ts">
 import MainLayout from "~/layouts/MainLayout.vue";
 import type {Product} from "~/lib/schema";
-import {categories} from "~/lib/constants";
 import useFetchData from "~/composables/useFetchData";
-
 
 const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
 

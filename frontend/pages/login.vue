@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MainLayout from "~/layouts/MainLayout.vue"
-import usePostData from "~/composables/usePostData";
 
 const form = ref({
   phone: '',
@@ -22,7 +21,7 @@ const onSubmit = async () => {
      if(e.status === 422){
        errorList.value = e.data.errors
      }else{
-       showToastFunc()
+       showToastFunc('Tài khoản hoặc mật khẩu không chính xác', 'error')
        console.log(e)
      }
    }finally {
@@ -31,9 +30,13 @@ const onSubmit = async () => {
 }
 
 const showToast = ref(false)
+const message = ref('')
+const type = ref('')
 
-const showToastFunc = () => {
+const showToastFunc = (msg: string, toastType: string) => {
   showToast.value = true
+  message.value = msg
+  type.value = toastType
   setTimeout(() => {
     showToast.value = false
   }, 3000)
@@ -73,11 +76,11 @@ const clearError = () => {
     </div>
   </MainLayout>
   <div class="bg-white container my-8 lg:block hidden">
-    <Footer/>
+    <HomeFooter/>
   </div>
   <Toast :show="showToast"
-         message="Đăng nhập thất bại"
-         type="error"/>
+         :message="message"
+         :type="type"/>
 </template>
 
 <style scoped>

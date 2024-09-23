@@ -25,36 +25,12 @@
       </div>
       <nav>
         <ul class="">
-          <li>
-            <NuxtLink to="/manage/order" :class="isCollapsed && 'justify-center'" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
-              <HomeIcon class="h-6 w-6 text-gray-400" />
-              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">Trang Chủ</span>
+          <template v-for="link in links">
+            <NuxtLink :to="link.to" :class="[isCollapsed && 'justify-center',link.to === route.path && 'bg-gray-200']" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
+              <component :is="link.icon" class="h-6 w-6 text-gray-400 min-w-6" />
+              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">{{ link.text }}</span>
             </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/manage/order" :class="isCollapsed && 'justify-center'" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
-              <ShoppingCartIcon class="h-6 w-6 text-gray-400" />
-              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">Sản Phẩm</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/manage/order" :class="isCollapsed && 'justify-center'" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
-              <DocumentIcon class="h-6 w-6 text-gray-400" />
-              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">Đơn Hàng</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/manage/order" :class="isCollapsed && 'justify-center'" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
-              <ShoppingBagIcon class="h-6 w-6 text-gray-400" />
-              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">Danh Mục</span>
-            </NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/manage/order" :class="isCollapsed && 'justify-center'" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
-              <DocumentIcon class="h-6 w-6 text-gray-400" />
-              <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">Dịch vụ</span>
-            </NuxtLink>
-          </li>
+          </template>
         </ul>
       </nav>
     </div>
@@ -64,10 +40,8 @@
 <script setup lang="ts">
 import {
     Bars3Icon,
-    HomeIcon,
     ShoppingCartIcon,
     DocumentIcon,
-    ShoppingBagIcon
 } from "@heroicons/vue/24/outline";
 
 const isCollapsed = ref(false);
@@ -75,7 +49,24 @@ const isCollapsed = ref(false);
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value;
 };
+
+const route = useRoute()
+
+const links = [
+  {
+    icon: ShoppingCartIcon,
+    text: "Sản Phẩm",
+    to: "/manage/products",
+  },
+  {
+    icon: DocumentIcon,
+    text: "Đơn Hàng",
+    to: "/manage/orders",
+  },
+];
 </script>
+
+
 
 <style scoped>
 </style>

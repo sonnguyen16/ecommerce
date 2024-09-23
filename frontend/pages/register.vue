@@ -2,7 +2,7 @@
 import MainLayout from "~/layouts/MainLayout.vue"
 import Toast from "~/components/Toast.vue";
 
-const { data } : any = await useFetch({u})
+const { data } : any = await useFetchData({url: 'provinces'})
 
 const form = ref({
   name: '',
@@ -128,7 +128,7 @@ const clearError = () => {
       </div>
   </MainLayout>
   <div class="bg-white container my-8 lg:block hidden">
-    <Footer/>
+    <HomeFooter/>
   </div>
   <Toast :show="showToast"
          :message="message"

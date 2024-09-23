@@ -3,3 +3,4 @@ export function formatCash(str: string) {
         return ((index % 3) ? next : (next + ',')) + prev
     })
 }
+

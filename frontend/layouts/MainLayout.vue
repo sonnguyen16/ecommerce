@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import '~/assets/css/input.css'
+import Navbar from "~/components/home/Navbar.vue";
 </script>
 
 <template>

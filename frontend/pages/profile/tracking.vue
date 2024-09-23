@@ -1,5 +1,15 @@
 <script lang="ts" setup>
 import ProfileLayout from "~/layouts/ProfileLayout.vue";
+import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline";
+import type {Order} from "~/lib/schema";
+
+const { data } : { data: Ref<any[]> } = await useFetchData({
+    url: 'orders',
+    requiresToken: true,
+    server: false,
+    cache: false,
+});
+
 </script>
 <template>
  <ProfileLayout>
@@ -22,20 +32,23 @@ import ProfileLayout from "~/layouts/ProfileLayout.vue";
        <div class="relative w-full">
          <input type="text" class="border border-gray-300 rounded w-full py-2 pl-10 pr-4 focus:outline-none focus:border-blue-500" placeholder="Tìm đơn hàng theo Mã đơn hàng, Nhà bán hoặc Tên sản phẩm">
          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    🔍
-                </span>
+            <MagnifyingGlassIcon class="h-5 w-5" />
+         </span>
        </div>
-       <button class="bg-white border border-gray-300 text-blue-500 rounded ml-2 px-4 py-2">Tìm</button>
      </div>
 
      <!-- Empty orders message -->
-     <div class="p-8 text-center">
-       <div class="flex justify-center mb-4">
-         <img src="https://frontend.tikicdn.com/_desktop-next/static/img/account/empty-order.png" alt="Empty order illustration" class="w-60">
-       </div>
-       <p class="text-gray-500">Chưa có đơn hàng</p>
+     <div class="">
+      <template v-if="!data">
+        <div class="flex justify-center mb-4">
+          <img src="/empty-order.png" alt="Empty order illustration" class="w-60">
+        </div>
+        <p class="text-gray-500 text-center">Chưa có đơn hàng</p>
+      </template>
+       <template v-if="data" v-for="(order, index) in data">
+         <Order :order="order" :index="index" />
+       </template>
      </div>
-
    </div>
  </ProfileLayout>
 </template>

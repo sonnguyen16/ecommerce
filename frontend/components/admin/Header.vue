@@ -8,7 +8,7 @@ import { UserCircleIcon, Cog6ToothIcon, BellAlertIcon, ShoppingBagIcon } from "@
     <div class="flex justify-between items-center">
       <span class="text-white flex items-center gap-3">
         <ShoppingBagIcon class="h-7 w-7" />
-        <span class="text-lg">Shop quần áo authentic</span>
+        <span class="text-lg">Shop của tôi</span>
       </span>
       <div class="flex items-center gap-8">
         <button>
