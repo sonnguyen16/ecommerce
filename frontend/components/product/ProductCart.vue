@@ -17,7 +17,6 @@ const props = defineProps({
 
 const emits = defineEmits(["increment", "decrement", "delete"]);
 
-//caculate discount percent depend on product.price and product.sale_price
 const discount = Math.round((props.product.price - props.product.sale_price) / props.product.price * 100);
 
 const increment = () => {

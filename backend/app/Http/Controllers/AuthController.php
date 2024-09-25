@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
@@ -97,5 +98,20 @@ class AuthController extends Controller
     {
        $request->user()->tokens()->delete();
        return response()->json(['message' => 'Đăng xuất thành công']);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $validated = $request->validated();
+        $user = Auth::user();
+
+        if($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $path = $avatar->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+
+        $user->update($validated);
+        return response()->json(['message' => 'Cập nhật thông tin thành công']);
     }
 }

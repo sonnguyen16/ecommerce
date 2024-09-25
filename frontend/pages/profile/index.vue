@@ -9,22 +9,14 @@ import {
 } from "@heroicons/vue/24/outline";
 import ProfileLayout from "~/layouts/ProfileLayout.vue";
 import type {User} from "~/lib/schema";
+import {MEDIA_ENDPOINT} from "~/lib/constants";
+import Toast from "~/components/Toast.vue";
 
 const genderOptions = [
   {code: 1, name: 'Nam'},
   {code: 2, name: 'Nữ'},
   {code: 3, name: 'Khác'}
 ]
-
-console.log(await useUserStore().getUser())
-
-const [profileResponse, provincesResponse]: any = await Promise.all([
-  useFetchData({url: 'auth/profile', requiresToken: true, server: false}),
-  useFetchData({url: 'provinces'}),
-])
-
-let provincesData: Ref<any> = provincesResponse.data
-let profileData: Ref<User> = profileResponse.data
 
 const form = ref<User>({
   name: '',
@@ -40,19 +32,6 @@ const form = ref<User>({
   updated_at: ''
 })
 
-watchEffect(() => {
-  if (profileData?.value) {
-    form.value = {
-      ...profileData.value,
-      province: profileData.value.province || '',
-      district: profileData.value.district || '',
-      ward: profileData.value.ward || '',
-      gender: profileData.value.gender || 1,
-      birthday: profileData.value.birthday || '2000-01-01'
-    }
-  }
-});
-
 const errorList = ref({
   name: [],
   address: [],
@@ -64,6 +43,36 @@ const errorList = ref({
   avatar: [],
   phone: []
 })
+
+const divAvatar = ref<HTMLElement | null>(null);
+
+const [profileResponse, provincesResponse]: any = await Promise.all([
+  useFetchData({url: 'auth/profile', requiresToken: true, server: false}),
+  useFetchData({url: 'provinces'}),
+])
+
+let provincesData: Ref<any> = provincesResponse.data
+let profileData: Ref<User> = profileResponse.data
+
+
+watchEffect(() => {
+  if (profileData?.value) {
+    form.value = {
+      ...profileData.value,
+      province: profileData.value.province || '',
+      district: profileData.value.district || '',
+      ward: profileData.value.ward || '',
+      gender: profileData.value.gender || 1,
+      birthday: profileData.value.birthday || '2000-01-01'
+    }
+
+    if(divAvatar.value){
+      divAvatar.value.style.backgroundImage = `url(${MEDIA_ENDPOINT}${profileData.value.avatar})`
+      divAvatar.value.style.backgroundSize = 'cover'
+      divAvatar.value.style.backgroundPosition = 'center'
+    }
+  }
+});
 
 const districts = computed(() => {
   if(form.value.province){
@@ -79,6 +88,80 @@ const wards = computed(() => {
   return []
 })
 
+watch(() => form.value.province, () => {
+  if(!districts.value.find((item: any) => item.code == form.value.district)){
+    form.value.district = ''
+    form.value.ward = ''
+  }
+});
+
+
+const onFileChange = (e: any) => {
+  const file = e.target.files[0]
+  form.value.avatar = file
+  const reader = new FileReader()
+  reader.onload = (e: any) => {
+    if(divAvatar.value){
+      divAvatar.value.style.backgroundImage = `url(${e.target.result})`
+      divAvatar.value.style.backgroundSize = 'cover'
+      divAvatar.value.style.backgroundPosition = 'center'
+    }
+  }
+  reader.readAsDataURL(file)
+}
+
+const onSubmit = async () => {
+  try{
+    clearError()
+    submitting.value = true
+    let formData = new FormData()
+
+    for (const key in form.value) {
+       //@ts-ignore
+       formData.append(key, form.value[key])
+    }
+
+    await usePostData({url: 'auth/profile/update', method: 'POST', body: formData, requiresToken: true})
+    showToastFunc('Cập nhật thông tin thành công', 'success')
+    await useFetchData({url: 'auth/profile', requiresToken: true, server: false, cache: false})
+  }catch (e: any){
+    if(e.status === 422){
+      errorList.value = e.data.errors
+    }else{
+      showToastFunc('Có lỗi xảy ra', 'error')
+    }
+  }finally {
+    submitting.value = false
+  }
+}
+
+const submitting = ref(false)
+const showToast = ref(false)
+const message = ref('')
+const type = ref('')
+
+const showToastFunc = (msg: string, toastType: string) => {
+  showToast.value = true
+  message.value = msg
+  type.value = toastType
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
+
+const clearError = () => {
+  errorList.value = {
+    name: [],
+    address: [],
+    province: [],
+    district: [],
+    ward: [],
+    gender: [],
+    birthday: [],
+    avatar: [],
+    phone: []
+  }
+}
 
 </script>
 <template>
@@ -86,18 +169,18 @@ const wards = computed(() => {
       <div class="bg-white rounded-md p-4">
         <div class="grid grid-cols-10">
           <div class="col-span-6  border-r-[1px] pr-10">
-            <form enctype="multipart/form-data">
+            <form @submit.prevent="onSubmit">
               <div class="grid grid-cols-5 gap-5">
                 <div class="col-span-5">
                   <h3 class="text-xl font-semibold">Thông tin cá nhân</h3>
                 </div>
                 <div class="flex space-x-4">
-                  <div class="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center relative">
+                  <div ref="divAvatar" class="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center relative">
                     <div class="absolute bottom-0 right-0 bg-gray-200 rounded-full p-1 border border-white">
                       <label for="avatar" class="cursor-pointer">
                         <CameraIcon class="h-6 w-6 text-gray-600" />
                       </label>
-                      <input type="file" id="avatar" class="hidden" />
+                      <input @change="onFileChange" type="file" id="avatar" class="hidden" />
                     </div>
                   </div>
                 </div>
@@ -137,7 +220,11 @@ const wards = computed(() => {
                     <Input class="w-4/5" v-model="form.address" type="text" placeholder="Nhập địa chỉ" :errors="errorList.address?.[0]"/>
                   </div>
 
-                  <button type="submit" class="bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 ms-[20%]">Lưu thay đổi</button>
+                  <button type="submit"
+                          class="bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 ms-[20%]">
+                    <Loading v-if="submitting" />
+                    <span v-else>Cập nhật</span>
+                  </button>
                 </div>
               </div>
             </form>
@@ -195,6 +282,9 @@ const wards = computed(() => {
           </div>
         </div>
       </div>
+    <Toast :show="showToast"
+           :message="message"
+           :type="type"/>
   </ProfileLayout>
 </template>
 

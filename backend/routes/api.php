@@ -21,6 +21,7 @@ Route::prefix('auth')->group(function (){
         Route::get('profile', [AuthController::class, 'profile'])->name('profile');
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('refresh-token', [AuthController::class, 'refresh'])->name('refresh');
+        Route::post('profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
     });
 });
 
