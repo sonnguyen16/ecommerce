@@ -6,15 +6,20 @@ import {MEDIA_ENDPOINT} from "~/lib/constants";
 import Pagination from "~/components/admin/Pagination.vue";
 import type {PaginationData, Product} from "~/lib/schema";
 
-let { data } : { data: Ref<PaginationData<Product>> } = await useFetchData({
-  url: `shop/products`,
-  requiresToken: true,
-  server: false,
-})
+const [productResponse, categoriesResponse] = await Promise.all([
+  useFetchData({
+    url: `shop/products`,
+    requiresToken: true,
+    server: false,
+  }),
+  useFetchData({
+    url: `categories`,
+  })
+])
 
-const { data: categoriesData } = await useFetchData({
-  url: `categories`,
-})
+let data = productResponse?.data
+
+let categoriesData = categoriesResponse?.data
 
 const fetchData = async (page: number) => {
   const { data: newData, error } : { data: Ref<PaginationData<Product>>, error: any } = await useFetchData({
@@ -42,7 +47,7 @@ const goToPage = async (p: number) => {
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
     <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
       <div class="flex flex-wrap items-center gap-4">
-        <NuxtLink :to="`/manage/products/store/${null}`" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Thêm sản phẩm</NuxtLink>
+        <NuxtLink :to="`/manage/products/${null}`" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Thêm sản phẩm</NuxtLink>
         <input type="text" placeholder="Tìm theo từ khóa" class="px-4 py-2 w-60 focus:outline-none focus:ring focus:ring-blue-300 border border-gray-300 rounded-lg">
         <select class="px-4 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
           <option selected>Danh mục</option>
@@ -65,7 +70,6 @@ const goToPage = async (p: number) => {
       <div class="mt-6 bg-gray-100 p-4 rounded-lg">
         <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
           <div class="flex items-center">
-            <input type="checkbox" class="form-checkbox h-5 w-5 border-gray-300 rounded-md text-blue-600">
             <span class="ml-2">Mã sản phẩm</span>
           </div>
           <div>Hình ảnh</div>
@@ -79,8 +83,7 @@ const goToPage = async (p: number) => {
       <div v-if="data?.data?.length > 0">
         <div v-for="(product, i) in data.data" :class="i === 0 ? 'px-4 pb-4' : 'p-4'" class="grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
           <div class="flex items-center">
-            <input type="checkbox" class="form-checkbox h-5 w-5 border-gray-300 rounded-md text-blue-600">
-            <a href="#" class="ml-2 text-blue-500 hover:underline">{{ product.id }}</a>
+            <NuxtLink :to="`/manage/products/${product.id}`" class="ml-2 text-blue-500 hover:underline">{{ product.id }}</NuxtLink>
           </div>
           <div>
             <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="product" class="w-16 h-16 object-cover rounded-lg">
@@ -90,7 +93,7 @@ const goToPage = async (p: number) => {
           <div>{{ product.category.name }}</div>
           <div>{{ new Date(product.created_at).toLocaleDateString() }}</div>
           <div>
-            <NuxtLink :to="`/manage/products/store/${product.id}`" class="text-indigo-500 p-3">
+            <NuxtLink :to="`/manage/products/${product.id}`" class="text-indigo-500 p-3">
              <PencilSquareIcon class="w-5 h-5 inline-block" />  Sửa
             </NuxtLink>
           </div>

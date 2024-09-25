@@ -28,4 +28,9 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+
+    public function locations()
+    {
+        return $this->hasMany(ShipmentLocation::class, 'order_detail_id', 'id')->orderBy('created_at', 'desc');
+    }
 }

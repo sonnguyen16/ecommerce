@@ -67,6 +67,7 @@ export interface OrderDetail {
     price: number;
     quantity: number;
     total: number;
+    status: number;
     created_at: string;
     updated_at: string;
 }

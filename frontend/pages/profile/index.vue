@@ -16,6 +16,8 @@ const genderOptions = [
   {code: 3, name: 'Khác'}
 ]
 
+console.log(await useUserStore().getUser())
+
 const [profileResponse, provincesResponse]: any = await Promise.all([
   useFetchData({url: 'auth/profile', requiresToken: true, server: false}),
   useFetchData({url: 'provinces'}),
@@ -39,7 +41,7 @@ const form = ref<User>({
 })
 
 watchEffect(() => {
-  if (profileData.value) {
+  if (profileData?.value) {
     form.value = {
       ...profileData.value,
       province: profileData.value.province || '',
@@ -135,7 +137,7 @@ const wards = computed(() => {
                     <Input class="w-4/5" v-model="form.address" type="text" placeholder="Nhập địa chỉ" :errors="errorList.address?.[0]"/>
                   </div>
 
-                  <button type="submit" class="bg-blue-500 text-white mt-4 rounded py-2 px-4 hover:bg-blue-600 ms-[20%]">Lưu thay đổi</button>
+                  <button type="submit" class="bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 ms-[20%]">Lưu thay đổi</button>
                 </div>
               </div>
             </form>
@@ -191,9 +193,7 @@ const wards = computed(() => {
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
   </ProfileLayout>
 </template>

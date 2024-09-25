@@ -1,0 +1,207 @@
+<script setup lang="ts">
+import AdminLayout from "~/layouts/AdminLayout.vue";
+import type {OrderDetail} from "~/lib/schema";
+import Toast from "~/components/Toast.vue";
+
+const [provinceResponse, ordersResponse] = await Promise.all([
+  useFetchData({url: 'provinces'}),
+  useFetchData({
+    url: `shop/orders`,
+    requiresToken: true,
+    server: false,
+  })
+])
+
+let data = ordersResponse?.data
+let provincesData = provinceResponse?.data
+
+const id = useRoute().params.id
+
+const statuses = [
+  { id: 1, name: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-600' },
+  { id: 2, name: 'Đang giao hàng', color: 'bg-blue-100 text-blue-600' },
+  { id: 3, name: 'Đã giao hàng', color: 'bg-green-100 text-green-600' },
+  { id: 4, name: 'Đã hủy', color: 'bg-red-100 text-red-600' },
+]
+
+let order_detail = computed(() => {
+  return data?.value?.orders?.data?.find((order: any) => order.id == id)
+})
+
+const user = computed(() => {
+  return order_detail?.value?.order?.user
+})
+
+const province = computed(() => {
+  return provincesData?.value?.find((p: any) => p?.code == user?.value?.province)
+})
+
+const district = computed(() => {
+  if(province){
+    return province?.value?.districts?.find((d: any) => d?.code === user?.value?.district)
+  }
+})
+
+const wards = computed(() => {
+  if(district){
+    return district?.value?.wards?.find((w: any) => w?.code === user?.value?.ward)
+  }
+})
+
+const form = ref({
+  order_detail_id: id,
+  status: order_detail?.value?.status,
+  address: '',
+  note: ''
+})
+
+watchEffect(() => {
+  form.value.status = order_detail?.value?.status
+})
+
+const errorList = ref({
+  status: [],
+  address: [],
+  note: []
+})
+
+const submitting = ref(false)
+const showToast = ref(false)
+const message = ref('')
+const type = ref('')
+const onSubmit = async () => {
+  try{
+    clearError()
+    submitting.value = true
+    await usePostData({
+      url: 'shop/orders/update',
+      method: 'POST',
+      body: form.value,
+      requiresToken: true
+    })
+
+    clearForm()
+    showToastFunc('Cập nhật trạng thái thành công', 'success')
+    const { data: refetchData } = await useFetchData({
+      url: `shop/orders`,
+      requiresToken: true,
+      server: false,
+      cache: false
+    })
+
+    data = refetchData
+  }catch (e: any){
+    if(e.status === 422){
+      errorList.value = e.data.errors
+    }else{
+      showToastFunc('Có lỗi xảy ra', 'error')
+      console.log(e.data)
+    }
+  }finally {
+    submitting.value = false
+  }
+}
+
+const clearError = () => {
+  errorList.value = {
+    status: [],
+    address: [],
+    note: []
+  }
+}
+
+const clearForm = () => {
+  form.value = {
+    ...form.value,
+    address: '',
+    note: ''
+  }
+}
+
+const showToastFunc = (msg: string, toastType: string) => {
+  showToast.value = true
+  message.value = msg
+  type.value = toastType
+  setTimeout(() => {
+    showToast.value = false
+  }, 3000)
+}
+
+</script>
+
+<template>
+  <AdminLayout>
+    <h1 class="text-2xl">Quản lý đơn hàng</h1>
+    <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5 grid md:grid-cols-3 gap-10">
+      <div class="col-span-2">
+        <div class="ps-3 space-y-3">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-700">Thông tin khách hàng</h2>
+         <div class="flex gap-6">
+           <div class="space-y-3">
+             <p><strong>Tên: </strong>{{ user?.name }}</p>
+             <p><strong>Email: </strong>{{ user?.email }}</p>
+             <p><strong>Số điện thoại: </strong>{{ user?.phone }}</p>
+             <p><strong>Ngày tạo: </strong>{{ new Date(order_detail?.created_at).toLocaleString() }}</p>
+           </div>
+           <div class="space-y-3">
+             <p><strong>Địa chỉ: </strong>{{ user?.address }}</p>
+             <p><strong>Phường/Xã: </strong>{{ wards?.name }}</p>
+             <p><strong>Quận/Huyện: </strong>{{ district?.name }}</p>
+             <p><strong>Tỉnh/Thành phố: </strong>{{ province?.name }}</p>
+           </div>
+         </div>
+        </div>
+        <div class="ps-3 mt-5">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-700">Chi tiết đơn hàng</h2>
+          <div class="grid-cols-7 grid items-center bg-gray-200 p-3 rounded-xl mb-3">
+            <div class="col-span-2 text-gray-500">
+              <p class="text-gray-700 ps-3">
+                Mã đơn hàng: <span class="text-blue-700">{{ order_detail?.id }}</span>
+              </p>
+            </div>
+            <div class="col-span-2 text-gray-500 text-center">Trạng thái</div>
+            <div class="col-span-1 text-gray-500 text-center">Đơn giá</div>
+            <div class="col-span-1 text-gray-500 text-center">Số lượng</div>
+            <div class="col-span-1 text-gray-500 text-end">Tổng tiền</div>
+          </div>
+          <OrderDetail v-if="order_detail" :orderdetail="order_detail" />
+        </div>
+        <div class="ps-3 mt-5">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-700">Cập nhật trạng thái</h2>
+          <form @submit.prevent="onSubmit">
+            <Select :errors="errorList?.status?.[0]" v-model="form.status" :options="statuses" option-default="Chọn trạng thái" class="max-w-[500px]" />
+            <Input :errors="errorList?.address?.[0]" v-model="form.address" placeholder="Địa chỉ hiện tại" class="max-w-[500px]"/>
+            <Input :errors="errorList?.note?.[0]" v-model="form.note" placeholder="Ghi chú" class="max-w-[500px]"/>
+            <button type="submit" class="px-6 py-[10px] bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+              <Loading v-if="submitting" />
+              <span v-else>Lưu trạng thái</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="col-span-1 pl-5">
+          <h2 class="text-xl font-semibold mb-5 text-indigo-700">Thông tin vận chuyển</h2>
+          <div class="relative border-l border-gray-300 pl-5">
+            <template v-for="(location, index) in order_detail?.locations">
+              <div class="mb-10 ml-6">
+                <span :class="[index === 0 ? 'bg-yellow-500' : 'bg-gray-200']" class="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full"></span>
+                <time class="mb-1 text-sm font-normal text-gray-400">
+                  {{ new Date(location.created_at).toLocaleDateString() }}
+                  <br>{{ new Date(location.created_at).toLocaleTimeString() }}
+                </time>
+                <p class="text-lg font-semibold text-gray-900">{{ location.note }}</p>
+                <p class="text-sm text-gray-500">{{ location.address }}</p>
+              </div>
+            </template>
+        </div>
+      </div>
+    </div>
+    <Toast :show="showToast"
+           :message="message"
+           :type="type"/>
+  </AdminLayout>
+</template>
+
+<style scoped>
+
+</style>

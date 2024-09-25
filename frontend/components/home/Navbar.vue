@@ -40,21 +40,22 @@ const links = [
       <div class="flex-1 mx-20">
         <div class="relative">
           <span
-            class="absolute top-1/2 left-3 -translate-y-1/2 flex text-gray-400 font-normal"
+            class="absolute top-1/2 left-3 -translate-y-1/2 flex text-gray-700 font-normal"
           >
             <MagnifyingGlassIcon class="w-6 h-6 me-1" />
             Tìm kiếm sản phẩm
           </span>
           <input
-            class="rounded-lg border-gray-300 w-full focus:border-blue-400"
-            type="text"
+              class="rounded-lg border-gray-300 w-full focus:border-blue-400"
+              type="text"
+              id="search"
           />
         </div>
         <ul class="flex gap-3 mt-2">
-          <li class="text-gray-400 font-normal">điện gia dụng</li>
-          <li class="text-gray-400 font-normal">điện thoại</li>
-          <li class="text-gray-400 font-normal">máy tính</li>
-          <li class="text-gray-400 font-normal">thời trang</li>
+          <li class="text-gray-700 font-normal">điện gia dụng</li>
+          <li class="text-gray-700 font-normal">điện thoại</li>
+          <li class="text-gray-700 font-normal">máy tính</li>
+          <li class="text-gray-700 font-normal">thời trang</li>
         </ul>
       </div>
       <div>

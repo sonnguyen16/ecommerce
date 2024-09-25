@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AdminLayout from "~/layouts/AdminLayout.vue"
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 const { data } = await useFetchData({
   url: `categories`,
@@ -51,20 +50,23 @@ if(id.toString() !== 'null') {
     server: false,
   })
 
-  const product = productsData?.value?.data?.find((p: any) => p.id == id)
-  if(product) {
-    form.value = {
-      ...product
-    }
+  watchEffect(() => {
+    const product = productsData?.value?.data?.find((p: any) => p.id == id)
 
-    if(product.attributes){
-      let result = '';
-      for (const [key, value] of Object.entries(JSON.parse(product?.attributes))) {
-        result += `${key}: ${value}\n`;
+    if(product) {
+      form.value = {
+        ...product
       }
-      form.value.attributes = result
+
+      if(product.attributes){
+        let result = '';
+        for (const [key, value] of Object.entries(JSON.parse(product?.attributes))) {
+          result += `${key}: ${value}\n`;
+        }
+        form.value.attributes = result
+      }
     }
-  }
+  })
 }
 
 
@@ -78,7 +80,12 @@ const onSubmit = async () => {
       formData.append(key, form.value[key])
     }
 
-    await usePostData({url: 'shop/products/store', method: 'POST', body: formData, requiresToken: true})
+    await usePostData({
+      url: 'shop/products/store',
+      method: 'POST',
+      body: formData,
+      requiresToken: true
+    })
 
     showToastFunc('Lưu sản phẩm thành công', 'success')
     if(!form.value.id){
@@ -161,85 +168,88 @@ const onFileChange = (e: any) => {
 <template>
   <AdminLayout>
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
-    <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
-      <form enctype="multipart/form-data" id="form" @submit.prevent="onSubmit" class="max-w-6xl">
+    <div class="rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)]  bg-white">
+      <form enctype="multipart/form-data" id="form" @submit.prevent="onSubmit" class="max-w-7xl">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Left Column -->
           <div>
             <div class="">
-              <label for="name" class="block text-sm font-medium text-gray-700">Tên sản phẩm</label>
+              <label for="name" class="block text-gray-600">Tên sản phẩm</label>
               <Input v-model="form.name" :errors="error_list?.name?.[0]" />
             </div>
 
             <div class="">
-              <label for="description" class="block text-sm font-medium text-gray-700">Mô tả</label>
+              <label for="description" class="block text-gray-600">Mô tả</label>
               <TextArea v-model="form.description" :errors="error_list?.description?.[0]" />
             </div>
 
             <div class="">
-              <label for="unit" class="block text-sm font-medium text-gray-700">Đơn vị</label>
+              <label for="unit" class="block text-gray-600">Đơn vị</label>
               <Input v-model="form.unit" :errors="error_list?.unit?.[0]" />
             </div>
 
             <div class="">
-              <label for="price" class="block text-sm font-medium text-gray-700">Giá gốc</label>
+              <label for="price" class="block text-gray-600">Giá gốc</label>
               <Input type="number" v-model="form.price" :errors="error_list?.price?.[0]" />
             </div>
 
             <div class="">
-              <label for="sale_price" class="block text-sm font-medium text-gray-700">Giá sale</label>
+              <label for="sale_price" class="block text-gray-600">Giá sale</label>
               <Input type="number" v-model="form.sale_price" :errors="error_list?.sale_price?.[0]" />
             </div>
 
             <div class="">
-              <label for="quantity" class="block text-sm font-medium text-gray-700">Số lượng</label>
+              <label for="quantity" class="block text-gray-600">Số lượng</label>
               <Input type="number" v-model="form.quantity" :errors="error_list?.quantity?.[0]" />
             </div>
 
             <div class="">
-              <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail</label>
+              <label for="thumbnail" class="block text-gray-600">Thumbnail</label>
               <input @change="onFileChange" type="file" id="thumbnail"
                      :class="[error_list?.thumbnail?.[0] ? 'border border-red-500' : 'border border-gray-300']"
                      class="rounded-lg border border-gray-300 w-full">
               <InputError :message="error_list?.thumbnail?.[0]" />
-              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"
-                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg" />
+<!--              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"-->
+<!--                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg" />-->
             </div>
           </div>
 
           <!-- Right Column -->
           <div class="flex flex-col">
             <div class="">
-              <label for="category_id" class="block text-sm font-medium text-gray-700">Danh mục</label>
+              <label for="category_id" class="block text-gray-600">Danh mục</label>
               <Select optionDefault="Chọn danh mục"
                       v-model="form.category_id" :options="data"
                       :errors="error_list?.category_id?.[0]"/>
             </div>
 
             <div class="">
-              <label for="seo_description" class="block text-sm font-medium text-gray-700">SEO Mô tả</label>
+              <label for="seo_description" class="block text-gray-600">SEO Mô tả</label>
               <TextArea v-model="form.seo_description" :errors="error_list?.seo_description?.[0]" />
             </div>
 
             <div class="">
-              <label for="seo_title" class="block text-sm font-medium text-gray-700">SEO Tiêu đề</label>
+              <label for="seo_title" class="block text-gray-600">SEO Tiêu đề</label>
               <Input v-model="form.seo_title" :errors="error_list?.seo_title?.[0]" />
             </div>
 
             <div class="">
-              <label for="seo_url" class="block text-sm font-medium text-gray-700">SEO URL</label>
+              <label for="seo_url" class="block text-gray-600">SEO URL</label>
               <Input v-model="form.seo_url" :errors="error_list?.seo_url?.[0]" />
             </div>
 
             <div class="">
-              <label for="attributes" class="block text-sm font-medium text-gray-700">Thuộc tính</label>
+              <label for="attributes" class="block text-gray-600">Thuộc tính</label>
               <TextArea v-model="form.attributes" :errors="error_list?.attributes?.[0]" />
             </div>
 
-            <div class="mt-[8px] flex gap-2">
+            <div class="mt-[14px] flex gap-2">
               <button type="submit" class="px-6 py-[10px] bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
                 <Loading v-if="submitting" />
                 <span v-else>Lưu sản phẩm</span>
+              </button>
+              <button @click.prevent="useRouter().back()" class="px-6 py-[10px] bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+                <span>Thoát</span>
               </button>
             </div>
           </div>

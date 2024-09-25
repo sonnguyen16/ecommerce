@@ -9,6 +9,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Shop\ShipmentLocationController;
 
 Route::get('products', [ProductController::class, 'getProducts']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
@@ -35,6 +36,7 @@ Route::prefix('shop')->middleware('auth:sanctum')->group(function (){
     Route::get('orders', [ShopOrderController::class, 'getOrders']);
     Route::get('products', [ShopProductController::class, 'getProducts']);
     Route::post('products/store', [ShopProductController::class, 'storeProduct']);
+    Route::post('orders/update', [ShipmentLocationController::class, 'store']);
 });
 
 Route::get('provinces', function (){

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from "~/layouts/AdminLayout.vue";
-import { DocumentIcon,  CurrencyDollarIcon } from "@heroicons/vue/24/outline";
+import { DocumentIcon,  CurrencyDollarIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
 import Pagination from "~/components/admin/Pagination.vue";
 
@@ -31,6 +31,13 @@ const goToPage = async (p: number) => {
   }
 }
 
+const statuses = [
+  { id: 1, value: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-600' },
+  { id: 2, value: 'Đang giao hàng', color: 'bg-blue-100 text-blue-600' },
+  { id: 3, value: 'Đã giao hàng', color: 'bg-green-100 text-green-600' },
+  { id: 4, value: 'Đã hủy', color: 'bg-red-100 text-red-600' },
+]
+
 </script>
 
 <template>
@@ -44,9 +51,7 @@ const goToPage = async (p: number) => {
 
         <select class="px-4 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300">
             <option selected>Trạng thái</option>
-            <option>Đã giao hàng</option>
-            <option>Đang giao hàng</option>
-            <option>Chờ xác nhận</option>
+            <option v-for="status in statuses" :value="status.id" >{{ status.value }}</option>
         </select>
       </div>
 
@@ -75,7 +80,6 @@ const goToPage = async (p: number) => {
       <div class="mt-6 bg-gray-100 p-4 rounded-lg">
         <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
           <div class="flex items-center">
-            <input type="checkbox" class="form-checkbox h-5 w-5 border-gray-300 rounded-md text-blue-600">
             <span class="ml-2">Mã Đơn Hàng</span>
           </div>
           <div>Trạng Thái</div>
@@ -83,23 +87,28 @@ const goToPage = async (p: number) => {
           <div>Tổng Tiền</div>
           <div>PT. Thanh Toán</div>
           <div>Ngày Đặt Hàng</div>
-          <div>Phí Giao Hàng</div>
+          <div>Thao tác</div>
         </div>
       </div>
       <div v-if="data?.orders?.data?.length">
         <div v-for="(ord_detail, _) in data?.orders?.data" :class="_ === 0 ? 'px-4 pb-4' : 'p-4'" class="grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
           <div class="flex items-center">
-            <input type="checkbox" class="form-checkbox h-5 w-5 border-gray-300 rounded-md text-blue-600">
-            <a href="#" class="ml-2 text-blue-500 hover:underline">{{ ord_detail.id }}</a>
+            <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="ml-2 text-blue-500 hover:underline">{{ ord_detail.id }}</NuxtLink>
           </div>
           <div>
-            <span class="px-2 py-1 text-sm font-medium bg-green-100 text-green-600 rounded-lg">Đã giao hàng</span>
+            <span :class="statuses.find(status => status.id === ord_detail.status).color" class="px-2 py-1 rounded-full">
+              {{ statuses.find(s => s.id === ord_detail.status).value }}
+            </span>
           </div>
           <div>{{ ord_detail.order.user.name }}</div>
           <div>{{ formatCash(ord_detail.total.toString()) }} đ</div>
           <div>Tiền mặt</div>
           <div>{{ new Date(ord_detail.created_at).toLocaleString() }}</div>
-          <div>Shop Owner</div>
+          <div class="flex gap-4">
+            <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="text-blue-500 hover:underline flex items-center">
+              <EyeIcon class="w-5 h-5" /> Xem
+            </NuxtLink>
+          </div>
         </div>
       </div>
       <Pagination

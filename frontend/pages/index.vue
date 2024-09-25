@@ -19,7 +19,7 @@
         <div class="rounded-xl bg-white p-5 py-4">
           <div class="flex justify-between items-center mb-4">
             <img src="/topdeal3.png" alt="topdeal" class="w-[200px]">
-            <span class="text-blue-500 font-semibold">Xem thêm</span>
+            <span class="text-indigo-700 font-semibold">Xem thêm</span>
           </div>
           <div class="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-6">
             <template v-for="product in data.slice(0, 6)">
@@ -30,7 +30,7 @@
         <div class="rounded-xl bg-white p-5 py-4">
           <div class="flex justify-between items-center  mb-4">
             <h3 class="">Hàng mới giá hot</h3>
-            <span class="text-blue-500 font-semibold">Xem thêm</span>
+            <span class="text-indigo-700 font-semibold">Xem thêm</span>
           </div>
           <div class="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-6">
             <template v-for="product in data.slice(6, 12)">

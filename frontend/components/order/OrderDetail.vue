@@ -10,29 +10,42 @@ const props = defineProps({
   },
 });
 
+const statuses = [
+  { id: 1, value: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-600' },
+  { id: 2, value: 'Đang giao hàng', color: 'bg-blue-100 text-blue-600' },
+  { id: 3, value: 'Đã giao hàng', color: 'bg-green-100 text-green-600' },
+  { id: 4, value: 'Đã hủy', color: 'bg-red-100 text-red-600' },
+]
+
+
 </script>
 
 <template>
     <div class="grid grid-cols-7 items-center py-2">
       <!-- Product Info -->
-      <div class="col-span-3">
+      <div class="col-span-2">
         <div class="flex items-center space-x-2">
           <img
               :src="MEDIA_ENDPOINT + orderdetail.product.thumbnail"
               alt="Product Image"
-              class="w-24 rounded-xl"
+              class="w-24"
           />
           <div class="">
             <p class="font-semibold text-gray-700">
               {{ orderdetail.product.name }}
             </p>
-            <p class="text-red-500 text-sm">Sách không hỗ trợ Bookcare</p>
           </div>
         </div>
       </div>
 
+      <div class="col-span-2 text-center">
+         <span :class="statuses.find(status => status.id === orderdetail.status).color" class="px-2 py-1 rounded-full">
+              {{ statuses.find(s => s.id === orderdetail.status).value }}
+         </span>
+      </div>
+
       <!-- Price -->
-      <div class="col-span-2 text-red-500 text-center">
+      <div class="col-span-1 text-red-500 text-center">
         <p>{{ formatCash(orderdetail.price.toString()) }} đ</p>
         <p class="line-through text-gray-400">{{ formatCash(orderdetail.product.price.toString()) }} đ</p>
       </div>

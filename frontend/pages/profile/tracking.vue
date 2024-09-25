@@ -9,6 +9,7 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
     server: false,
 });
 
+
 </script>
 <template>
  <ProfileLayout>
@@ -19,8 +20,7 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
      <!-- Tabs -->
      <div class="flex space-x-4 border-b border-gray-300 mb-4">
        <button class="text-blue-500 border-b-2 border-blue-500 py-2 px-4">Tất cả đơn</button>
-       <button class="text-gray-500 py-2 px-4">Chờ thanh toán</button>
-       <button class="text-gray-500 py-2 px-4">Đang xử lý</button>
+       <button class="text-gray-500 py-2 px-4">Chờ xác nhận</button>
        <button class="text-gray-500 py-2 px-4">Đang vận chuyển</button>
        <button class="text-gray-500 py-2 px-4">Đã giao</button>
        <button class="text-gray-500 py-2 px-4">Đã hủy</button>

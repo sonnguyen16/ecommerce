@@ -18,9 +18,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->unique();
-            $table->string('province')->nullable();
-            $table->string('district')->nullable();
-            $table->string('ward')->nullable();
+            $table->integer('province')->nullable();
+            $table->integer('district')->nullable();
+            $table->integer('ward')->nullable();
             $table->string('address')->nullable();
             $table->date('birthday')->nullable();
             $table->tinyInteger('gender')->default(1);

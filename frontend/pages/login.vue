@@ -20,9 +20,11 @@ const onSubmit = async () => {
    }catch (e: any){
      if(e.status === 422){
        errorList.value = e.data.errors
-     }else{
+     }else if(e.status === 401){
        showToastFunc('Tài khoản hoặc mật khẩu không chính xác', 'error')
-       console.log(e)
+     }else{
+       showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
+       console.log(e.data)
      }
    }finally {
      submitting.value = false

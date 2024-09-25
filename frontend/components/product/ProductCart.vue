@@ -52,7 +52,7 @@ const deleteProduct = () => {
           <p class="font-semibold text-gray-700">
             {{ product.name }}
           </p>
-          <p class="text-red-500 text-sm">Sách không hỗ trợ Bookcare</p>
+          <img src="/chinhhang.png" alt="chinhhang" class="w-[80px] lg:block inline-block mt-2">
         </div>
       </div>
 

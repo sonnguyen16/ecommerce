@@ -16,7 +16,7 @@ const logout = async () => {
   }finally {
     useCookie('access_token').value = ''
     useCookie('refresh_token').value = ''
-    navigateTo('/')
+    navigateTo('/login')
   }
 }
 

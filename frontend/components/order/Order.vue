@@ -23,8 +23,13 @@ const showFullOrderDetail : Ref<Boolean> = ref(false)
 <template>
   <div class="border-b">
     <div class="grid-cols-7 grid items-center ">
-      <div class="col-span-3 text-gray-500"><p class="text-gray-700 ps-3 mt-2">Mã đơn hàng: <span class="text-blue-700">{{ order.code }}</span></p></div>
-      <div v-if="index === 0" class="col-span-2 text-gray-500 text-center">Đơn giá</div>
+      <div class="col-span-2 text-gray-500">
+        <p class="text-gray-700 ps-3">
+        Mã đơn hàng: <span class="text-blue-700">{{ order.code }}</span>
+        </p>
+      </div>
+      <div v-if="index === 0" class="col-span-2 text-gray-500 text-center">Trạng thái</div>
+      <div v-if="index === 0" class="col-span-1 text-gray-500 text-center">Đơn giá</div>
       <div v-if="index === 0" class="col-span-1 text-gray-500 text-center">Số lượng</div>
       <div v-if="index === 0" class="col-span-1 text-gray-500 text-end">Tổng tiền</div>
     </div>

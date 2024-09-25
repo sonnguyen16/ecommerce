@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
       <div>
         <h2 class="font-semibold mb-2">Hỗ trợ khách hàng</h2>
-        <ul>
+        <ul class="space-y-1">
           <li>Hotline: <span class="font-semibold">1900-6035</span></li>
           <li class="text-gray-500 text-sm mb-3">(1000 đ/phút, 8-21h kể cả T7, CN)</li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Các câu hỏi thường gặp</a></li>
@@ -23,7 +23,7 @@
       </div>
       <div>
         <h2 class="font-semibold mb-4">Về GoSell</h2>
-        <ul>
+        <ul class="space-y-1">
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu GoSell</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">GoSell Blog</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Tuyển dụng</a></li>
@@ -38,7 +38,7 @@
       </div>
       <div>
         <h2 class="font-semibold mb-4">Hợp tác và liên kết</h2>
-        <ul>
+        <ul class="space-y-1">
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Quy chế hoạt động Sàn GDTMĐT</a></li>
           <li><a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng GoSell</a></li>
         </ul>

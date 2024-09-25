@@ -135,22 +135,22 @@ const showToastFunction = (msg: string, s: string) => {
                 <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="Book Cover" class="w-full rounded-lg border">
             </div>
             <div class="flex space-x-2">
-              <img src="/thumbnail1.png" alt="Thumbnail 1" class="w-20 h-20 object-cover rounded-md border-blue-500 border-2">
+              <img src="/thumbnail1.png" alt="Thumbnail 1" class="w-20 h-20 object-cover rounded-md border-indigo-700 border-2">
               <img src="/thumbnail2.png" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
               <img src="/thumbnail3.png" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
             </div>
             <div class="text-gray-700 mt-4">
               <ul class="space-y-2">
                 <li class="font-normal flex">
-                  <CheckBadgeIcon class="w-7 h-7 text-blue-500 me-2"/>
+                  <CheckBadgeIcon class="w-7 h-7 text-indigo-700 me-2"/>
                   Đảm bảo hàng chính hãng.
                 </li>
                 <li class="font-normal flex">
-                  <CheckBadgeIcon class="w-7 h-7 text-blue-500 me-2"/>
+                  <CheckBadgeIcon class="w-7 h-7 text-indigo-700 me-2"/>
                   Hoàn tiền 100% nếu phát hiện hàng giả.
                 </li>
                 <li class="font-normal flex">
-                  <CheckBadgeIcon class="w-7 h-7 text-blue-500 me-2"/>
+                  <CheckBadgeIcon class="w-7 h-7 text-indigo-700 me-2"/>
                   Giao hàng toàn quốc, chỉ từ 2h.
                 </li>
               </ul>
@@ -176,7 +176,7 @@ const showToastFunction = (msg: string, s: string) => {
               <span class="font-normal text-gray-500 ms-2">Đã bán {{ product.sold }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-red-500 font-semibold text-2xl">{{ formatCash(product.sale_price.toString())}} đ</span>
+              <span class="text-red-700 font-semibold text-2xl">{{ formatCash(product.sale_price.toString())}} đ</span>
               <span class="block p-1 rounded-lg bg-gray-100 font-normal text-sm">-{{discount}}%</span>
             </div>
           </div>
@@ -186,14 +186,14 @@ const showToastFunction = (msg: string, s: string) => {
               <p class="text-gray-600">Thông tin vận chuyển</p>
               <div class="flex items-center justify-between">
                 <p class="font-normal">Giao đến Hà Nội, Việt Nam</p>
-                <p class="text-blue-500 cursor-pointer">Đổi</p>
+                <p class="text-indigo-700 cursor-pointer">Đổi</p>
               </div>
             </div>
             <hr class="my-3">
 
             <!-- Shipping Option 1 -->
             <div class="flex items-center">
-              <span class="text-red-500 font-bold mr-2">NOW</span>
+              <span class="text-red-700 font-bold mr-2">NOW</span>
               <div class="flex-1">
                 <p class="text-gray-800">Giao siêu tốc 2h</p>
               </div>
@@ -202,7 +202,7 @@ const showToastFunction = (msg: string, s: string) => {
 
             <!-- Shipping Option 2 -->
             <div class="flex items-center mt-2">
-              <span class="text-blue-500 mr-2">🌅</span>
+              <span class="text-indigo-700 mr-2">🌅</span>
               <div class="flex-1">
                 <p class="text-gray-800">Giao đúng sáng mai</p>
               </div>
@@ -227,7 +227,7 @@ const showToastFunction = (msg: string, s: string) => {
                 {{ product.description }}
               </div>
             </div>
-            <button @click="toggleDescription" class="text-blue-500 mt-2">{{ showFullDescription ? 'Thu gọn' : 'Xem thêm' }}</button>
+            <button @click="toggleDescription" class="text-indigo-700 mt-2">{{ showFullDescription ? 'Thu gọn' : 'Xem thêm' }}</button>
           </div>
 
           <div class=" bg-white rounded-xl p-5">
@@ -243,12 +243,12 @@ const showToastFunction = (msg: string, s: string) => {
             <div class=" bg-white rounded-xl p-5 sticky top-3">
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center">
-                  <img src="/tiki.png" alt="Tiki Logo" class="h-10 mr-2">
+                  <img src="/logo.svg" alt="Tiki Logo" class="w-20 mr-2">
                   <div>
-                    <p>Tiki Trading</p>
+                    <p>GoSell Trading</p>
                     <div class="flex items-center">
-                      <CheckBadgeIcon class="h-4 w-4 text-blue-500 me-1"></CheckBadgeIcon>
-                      <p class="text-blue-500"> OFFICIAL</p>
+                      <CheckBadgeIcon class="h-4 w-4 text-indigo-700 me-1"></CheckBadgeIcon>
+                      <p class="text-indigo-700"> OFFICIAL</p>
                       <div class="w-[1px] h-4 bg-gray-300 mx-2"></div>
                       <div class="flex items-center ml-2 text-gray-600">
                         <span class="text-sm">4.7</span>
@@ -265,11 +265,11 @@ const showToastFunction = (msg: string, s: string) => {
               <div class="mb-4">
                 <p class="text-gray-600">Số Lượng</p>
                 <div class="flex items-center mt-2">
-                  <button @click.prevent="decreaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l">
+                  <button aria-label="decrease" @click.prevent="decreaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l">
                     <MinusIcon class="h-4 w-4 text-gray-600"></MinusIcon>
                   </button>
                   <input type="text" class="w-10 h-8 text-center border-t border-b border-gray-300" v-model="form.quantity">
-                  <button @click.prevent="increaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r">
+                  <button aria-label="increase" @click.prevent="increaseQuantity" class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r">
                     <PlusIcon class="h-4 w-4 text-gray-600"></PlusIcon>
                   </button>
                 </div>
@@ -278,13 +278,13 @@ const showToastFunction = (msg: string, s: string) => {
               <!-- Subtotal -->
               <div class="my-5">
                 <p class="text-lg mb-3">Tạm tính</p>
-                <p class="text-red-500 font-semibold text-2xl">{{ formatCash(form.total.toString()) }} đ</p>
+                <p class="text-red-700 font-semibold text-2xl">{{ formatCash(form.total.toString()) }} đ</p>
               </div>
 
               <!-- Action Buttons -->
               <div class="space-y-2">
-                <button @click.prevent="buyNow" class="w-full bg-red-500 text-white py-2 rounded-lg">Mua ngay</button>
-                <button @click.prevent="addToCart" class="w-full border border-blue-500 text-blue-500 py-2 rounded-lg">Thêm vào giỏ</button>
+                <button @click.prevent="buyNow" class="w-full bg-red-700 text-white py-2 rounded-lg">Mua ngay</button>
+                <button @click.prevent="addToCart" class="w-full border border-indigo-700 text-indigo-700 py-2 rounded-lg">Thêm vào giỏ</button>
               </div>
             </div>
           </div>

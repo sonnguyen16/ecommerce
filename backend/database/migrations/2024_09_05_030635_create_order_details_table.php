@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('price')->unsigned();
             $table->integer('quantity')->unsigned();
             $table->integer('total')->unsigned();
+            $table->tinyInteger('status')->unsigned()->default(1);
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

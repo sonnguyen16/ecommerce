@@ -11,6 +11,9 @@ const { title, app_url, icon, description } = useAppConfig()
 
 useHead({
   title: title,
+  htmlAttrs: {
+    lang: 'vi'
+  },
   link: [
     {
       rel: 'icon',
@@ -30,7 +33,7 @@ useSeoMeta({
   twitterTitle: title,
   twitterDescription: description,
   twitterImage: icon,
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
 })
 
 </script>

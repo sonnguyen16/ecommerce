@@ -33,10 +33,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->user()->tokens()->delete();
-            $token = $this->generateTokens(Auth::user());
+            $tokens = $this->generateTokens(Auth::user());
+
             return response()->json([
                 'message' => 'Đăng nhập thành công',
-                'tokens' => $token
+                'tokens' => $tokens
             ]);
         }
 
