@@ -17,11 +17,14 @@ const statuses = [
   { id: 4, value: 'Đã hủy', color: 'bg-red-100 text-red-600' },
 ]
 
+const viewDetail = () => {
+  useRouter().push(`/profile/tracking/${props.orderdetail.order.id}/${props.orderdetail.id}`)
+}
 
 </script>
 
 <template>
-    <div class="grid grid-cols-7 items-center py-2">
+    <div @click.prevent="viewDetail" class="grid grid-cols-7 items-center py-2 hover:bg-gray-200 rounded-md hover:cursor-pointer transition duration-200 px-3">
       <!-- Product Info -->
       <div class="col-span-2">
         <div class="flex items-center space-x-2">

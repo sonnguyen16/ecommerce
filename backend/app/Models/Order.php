@@ -15,6 +15,12 @@ class Order extends Model
         'user_id',
         'total',
         'code',
+        'name',
+        'phone',
+        'address',
+        'province',
+        'district',
+        'ward',
     ];
 
     public function orderDetails()

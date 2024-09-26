@@ -100,7 +100,7 @@ const statuses = [
               {{ statuses.find(s => s.id === ord_detail.status).value }}
             </span>
           </div>
-          <div>{{ ord_detail.order.user.name }}</div>
+          <div>{{ ord_detail.order.name }}</div>
           <div>{{ formatCash(ord_detail.total.toString()) }} đ</div>
           <div>Tiền mặt</div>
           <div>{{ new Date(ord_detail.created_at).toLocaleString() }}</div>

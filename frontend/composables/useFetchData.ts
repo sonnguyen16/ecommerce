@@ -1,6 +1,6 @@
 import {API_ENDPOINT, cookieOptions, headers} from "~/lib/constants";
 import type {NuxtApp} from "#app";
-import type {FetchContext} from "ofetch";
+import type {FetchContext, FetchResponse} from "ofetch";
 
 export default async function useFetchData<T>({
     url,
@@ -65,6 +65,11 @@ export default async function useFetchData<T>({
                         navigateTo('/login')
                     }
                 }
+            }
+        },
+        onResponseError(context: FetchContext & { response: FetchResponse<any> }){
+            if(context.response.status === 401){
+                navigateTo('/login')
             }
         },
         getCachedData(key: string, nuxtApp: NuxtApp) {

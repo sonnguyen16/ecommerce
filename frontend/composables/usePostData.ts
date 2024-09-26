@@ -64,6 +64,11 @@ export default async function usePostData<T>({
                 }
             }
         },
+        onResponseError(context: FetchContext & { response: FetchResponse<any> }){
+            if (context.response.status === 401) {
+                navigateTo('/login')
+            }
+        },
         onResponse({response}: { response: FetchResponse<any> }) {
             if (response.status === 200 && auth_urls.includes(url)) {
                 setCookie(response._data.tokens as TokenResponse)

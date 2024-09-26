@@ -4,7 +4,7 @@ import type {OrderDetail} from "~/lib/schema";
 import Toast from "~/components/Toast.vue";
 
 const [provinceResponse, ordersResponse] = await Promise.all([
-  useFetchData({url: 'provinces'}),
+  useFetchData({url: 'provinces', server: false}),
   useFetchData({
     url: `shop/orders`,
     requiresToken: true,
@@ -28,23 +28,23 @@ let order_detail = computed(() => {
   return data?.value?.orders?.data?.find((order: any) => order.id == id)
 })
 
-const user = computed(() => {
-  return order_detail?.value?.order?.user
+const order = computed(() => {
+  return order_detail?.value?.order
 })
 
 const province = computed(() => {
-  return provincesData?.value?.find((p: any) => p?.code == user?.value?.province)
+  return provincesData?.value?.find((p: any) => p?.code == order?.value?.province)
 })
 
 const district = computed(() => {
   if(province){
-    return province?.value?.districts?.find((d: any) => d?.code === user?.value?.district)
+    return province?.value?.districts?.find((d: any) => d?.code === order?.value?.district)
   }
 })
 
 const wards = computed(() => {
   if(district){
-    return district?.value?.wards?.find((w: any) => w?.code === user?.value?.ward)
+    return district?.value?.wards?.find((w: any) => w?.code === order?.value?.ward)
   }
 })
 
@@ -138,13 +138,12 @@ const showToastFunc = (msg: string, toastType: string) => {
           <h2 class="text-xl font-semibold mb-3 text-indigo-700">Thông tin khách hàng</h2>
          <div class="flex gap-6">
            <div class="space-y-3">
-             <p><strong>Tên: </strong>{{ user?.name }}</p>
-             <p><strong>Email: </strong>{{ user?.email }}</p>
-             <p><strong>Số điện thoại: </strong>{{ user?.phone }}</p>
+             <p><strong>Tên: </strong>{{ order?.name }}</p>
+             <p><strong>Số điện thoại: </strong>{{ order?.phone }}</p>
              <p><strong>Ngày tạo: </strong>{{ new Date(order_detail?.created_at).toLocaleString() }}</p>
+             <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
            </div>
            <div class="space-y-3">
-             <p><strong>Địa chỉ: </strong>{{ user?.address }}</p>
              <p><strong>Phường/Xã: </strong>{{ wards?.name }}</p>
              <p><strong>Quận/Huyện: </strong>{{ district?.name }}</p>
              <p><strong>Tỉnh/Thành phố: </strong>{{ province?.name }}</p>
@@ -182,7 +181,7 @@ const showToastFunc = (msg: string, toastType: string) => {
       <div class="col-span-1 pl-5">
           <h2 class="text-xl font-semibold mb-5 text-indigo-700">Thông tin vận chuyển</h2>
           <div class="relative border-l border-gray-300 pl-5">
-            <template v-for="(location, index) in order_detail?.locations">
+            <template v-if="order_detail?.locations?.length > 0" v-for="(location, index) in order_detail?.locations">
               <div class="mb-10 ml-6">
                 <span :class="[index === 0 ? 'bg-yellow-500' : 'bg-gray-200']" class="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full"></span>
                 <time class="mb-1 text-sm font-normal text-gray-400">
@@ -192,6 +191,9 @@ const showToastFunc = (msg: string, toastType: string) => {
                 <p class="text-lg font-semibold text-gray-900">{{ location.note }}</p>
                 <p class="text-sm text-gray-500">{{ location.address }}</p>
               </div>
+            </template>
+            <template v-else>
+              <p class="text-gray-500">Chưa có thông tin vận chuyển</p>
             </template>
         </div>
       </div>

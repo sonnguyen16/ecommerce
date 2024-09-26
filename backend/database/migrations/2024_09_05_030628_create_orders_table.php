@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->foreignId('user_id')->unsigned();
+            $table->string('name');
+            $table->string('phone');
+            $table->integer('province')->unsigned();
+            $table->integer('district')->unsigned();
+            $table->integer('ward')->unsigned();
+            $table->string('address');
             $table->integer('total')->unsigned();
             $table->timestamps();
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AdminLayout from "~/layouts/AdminLayout.vue"
+import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 const { data } = await useFetchData({
   url: `categories`,
@@ -209,8 +210,8 @@ const onFileChange = (e: any) => {
                      :class="[error_list?.thumbnail?.[0] ? 'border border-red-500' : 'border border-gray-300']"
                      class="rounded-lg border border-gray-300 w-full">
               <InputError :message="error_list?.thumbnail?.[0]" />
-<!--              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"-->
-<!--                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg" />-->
+              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"
+                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg" />
             </div>
           </div>
 
@@ -243,7 +244,7 @@ const onFileChange = (e: any) => {
               <TextArea v-model="form.attributes" :errors="error_list?.attributes?.[0]" />
             </div>
 
-            <div class="mt-[14px] flex gap-2">
+            <div class="mt-[10px] flex gap-2">
               <button type="submit" class="px-6 py-[10px] bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
                 <Loading v-if="submitting" />
                 <span v-else>Lưu sản phẩm</span>

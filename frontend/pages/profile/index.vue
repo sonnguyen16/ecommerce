@@ -54,7 +54,6 @@ const [profileResponse, provincesResponse]: any = await Promise.all([
 let provincesData: Ref<any> = provincesResponse.data
 let profileData: Ref<User> = profileResponse.data
 
-
 watchEffect(() => {
   if (profileData?.value) {
     form.value = {

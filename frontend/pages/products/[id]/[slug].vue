@@ -233,7 +233,7 @@ const showToastFunction = (msg: string, s: string) => {
           <div class=" bg-white rounded-xl p-5">
             <p class="text-xl mb-3">Sản phẩm tương tự</p>
             <div class="flex gap-3 lg:flex-wrap lg:overflow-hidden overflow-x-auto">
-              <template v-for="p in data.slice(0, 5)">
+              <template v-for="p in data">
                 <Product v-if="p.id != id && p.category_id == product.category_id" class="basis-[130px]" :product="p"/>
               </template>
             </div>

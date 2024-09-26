@@ -23,6 +23,12 @@ class OrderRequest extends FormRequest
     {
         return [
             'total' => 'required|numeric|min:0',
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'province' => 'required|integer',
+            'district' => 'required|integer',
+            'ward' => 'required|integer',
+            'address' => 'required|string',
             'products' => 'required|array',
             'products.*.product_id' => 'required|integer|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',

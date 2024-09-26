@@ -18,6 +18,12 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'total' => $validated['total'],
             'code' => time(),
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'province' => $validated['province'],
+            'district' => $validated['district'],
+            'ward' => $validated['ward'],
+            'address' => $validated['address'],
         ]);
 
         $products = $validated['products'];
@@ -39,7 +45,7 @@ class OrderController extends Controller
 
     public function getOrders()
     {
-        $orders = Order::where('user_id', Auth::id())->with('orderDetails.product')->get();
+        $orders = Order::where('user_id', Auth::id())->with('orderDetails.product', 'orderDetails.order', 'orderDetails.locations')->get();
 
         return response()->json($orders);
     }

@@ -16,7 +16,7 @@ class ShopOrderController extends Controller
         $orders = OrderDetail::query()
             ->whereHas('product', function ($query) use ($shop_id) {
                 $query->where('shop_id', $shop_id);
-            })->with(['product', 'order.user', 'locations'])->orderBy('created_at', 'desc');
+            })->with(['product', 'order', 'locations'])->orderBy('created_at', 'desc');
 
         $total_money = $orders->sum('total');
 

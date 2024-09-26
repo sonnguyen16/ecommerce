@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware( async (to, from) => {
     if(!accessToken) {
         const refreshToken = useCookie('refresh_token').value
         if(!refreshToken) {
-            if(to.path.includes('/cart')) return
             return navigateTo('/login')
         }
         try {
@@ -28,7 +27,6 @@ export default defineNuxtRouteMiddleware( async (to, from) => {
             }).value = data.tokens.refresh_token.token
 
         } catch (e: any) {
-            if(to.path.includes('/cart')) return
             return navigateTo('/login')
         }
     }

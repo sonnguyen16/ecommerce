@@ -5,6 +5,11 @@ import type {Cart} from "~/lib/schema";
 import {formatCash} from "~/lib/utils";
 
 let cart: Ref<Cart[]> = ref([]);
+const { data: profileData } = await useFetchData({
+  url: 'auth/profile',
+  requiresToken: true,
+  server: false,
+})
 
 const message = ref('Thêm vào giỏ hàng thành công')
 
@@ -112,6 +117,12 @@ const order = async () => {
     await usePostData({
       url: 'order',
       body: {
+        name: profileData?.value?.name,
+        phone: profileData?.value?.phone,
+        province: profileData?.value?.province,
+        district: profileData?.value?.district,
+        ward: profileData?.value?.ward,
+        address: profileData?.value?.address,
         total,
         products
       },
@@ -126,9 +137,9 @@ const order = async () => {
       server: false,
       cache: false,
     });
-  }catch (e){
+  }catch (e: any){
     showToastFunction('Đặt hàng thất bại', 'error')
-    console.log(e)
+    console.log(e.data)
   }
 }
 
