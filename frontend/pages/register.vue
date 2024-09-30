@@ -127,9 +127,6 @@ const clearError = () => {
           <span class="text-gray-500 block text-center">Đã có tài khoản? <nuxt-link to="/login" class="text-blue-500">Đăng nhập</nuxt-link></span>
         </div>
       </div>
-  <div class="bg-white container my-8 lg:block hidden">
-    <HomeFooter/>
-  </div>
   <Toast :show="showToast"
          :message="message"
          :type="type"/>
