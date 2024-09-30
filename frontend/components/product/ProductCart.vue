@@ -13,9 +13,13 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  checked: {
+    type: Boolean,
+    required: true,
+  },
 });
 
-const emits = defineEmits(["increment", "decrement", "delete"]);
+const emits = defineEmits(["increment", "decrement", "delete", "ticked"]);
 
 const discount = Math.round((props.product.price - props.product.sale_price) / props.product.price * 100);
 
@@ -39,15 +43,18 @@ const deleteProduct = () => {
       <!-- Product Info -->
       <div class="col-span-3 flex items-center">
         <input
+          v-if="useRoute().path === '/cart'"
+          @change="emits('ticked', product.id)"
           type="checkbox"
-          class="h-5 w-5 border border-gray-300 rounded-md"
+          :checked="checked"
+          class="h-5 w-5 border border-gray-300 rounded-md me-2"
         />
         <img
           :src="MEDIA_ENDPOINT + product.thumbnail"
           alt="Product Image"
           class="w-24 rounded-xl"
         />
-        <div>
+        <div class="ms-2">
           <p class="font-semibold text-gray-700">
             {{ product.name }}
           </p>
@@ -62,9 +69,9 @@ const deleteProduct = () => {
       </div>
 
       <div class="col-span-1 flex items-center justify-center space-x-2">
-        <button @click.prevent="decrement" class="border rounded px-2 py-1">-</button>
+        <button v-if="useRoute().path === '/cart'"  @click.prevent="decrement" class="border rounded px-2 py-1">-</button>
         <span>{{ quantity }}</span>
-        <button @click.prevent="increment" class="border rounded px-2 py-1">+</button>
+        <button v-if="useRoute().path === '/cart'"  @click.prevent="increment" class="border rounded px-2 py-1">+</button>
       </div>
 
       <!-- Total -->
@@ -73,7 +80,7 @@ const deleteProduct = () => {
       </div>
 
       <!-- Remove Icon -->
-      <TrashIcon @click.prevent="deleteProduct" class="h-5 w-5 ms-auto" />
+      <TrashIcon v-if="useRoute().path === '/cart'" @click.prevent="deleteProduct" class="h-5 w-5 ms-auto" />
     </div>
   </div>
 </template>

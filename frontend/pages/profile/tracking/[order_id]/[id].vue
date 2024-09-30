@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import ProfileLayout from "~/layouts/ProfileLayout.vue";
+import ProfileLayout from "~/layouts/profile-layout.vue";
 import type {OrderDetail} from "~/lib/schema";
+
+definePageMeta({
+  layout: "profile-layout"
+})
 
 const [provinceResponse, ordersResponse] = await Promise.all([
   useFetchData({url: 'provinces', server: false}),

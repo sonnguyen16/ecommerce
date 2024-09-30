@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import AdminLayout from "~/layouts/AdminLayout.vue";
 import { DocumentIcon,  CurrencyDollarIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
-import Pagination from "~/components/admin/Pagination.vue";
+
+definePageMeta({
+  layout: 'admin-layout',
+  middleware: 'is-shop-owner',
+})
 
 let { data } : any = await useFetchData({
   url: `shop/orders`,
@@ -41,7 +44,6 @@ const statuses = [
 </script>
 
 <template>
-  <AdminLayout>
     <h1 class="text-2xl">Quản lý đơn hàng</h1>
     <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
       <div class="flex flex-wrap items-center gap-4">
@@ -111,13 +113,12 @@ const statuses = [
           </div>
         </div>
       </div>
-      <Pagination
+      <AdminPagination
           v-if="data?.orders"
           :pagination_data="data?.orders"
           @page-change="goToPage"
       />
     </div>
-  </AdminLayout>
 </template>
 
 <style scoped>

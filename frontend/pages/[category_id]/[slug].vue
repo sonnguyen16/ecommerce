@@ -23,7 +23,7 @@
   </MainLayout>
 </template>
 <script setup lang="ts">
-import MainLayout from "~/layouts/MainLayout.vue";
+import MainLayout from "~/layouts/main-layout.vue";
 import type {Product} from "~/lib/schema";
 import useFetchData from "~/composables/useFetchData";
 import {MEDIA_ENDPOINT} from "~/lib/constants";

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import MainLayout from "~/layouts/MainLayout.vue";
 import {CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon} from "@heroicons/vue/24/solid";
 import {ref} from "vue";
 import useFetchData from "~/composables/useFetchData";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
+
+definePageMeta({
+  layout: 'main-layout'
+})
 
 const { app_url } = useAppConfig()
 
@@ -103,9 +106,7 @@ const addToCart = async () => {
 
 const buyNow = async () => {
   await addToCart()
-  setTimeout(() => {
-    navigateTo('/cart')
-  }, 2000)
+  navigateTo('/cart')
 }
 
 const showToastFunction = (msg: string, s: string) => {
@@ -120,7 +121,6 @@ const showToastFunction = (msg: string, s: string) => {
 </script>
 
 <template>
-  <MainLayout>
     <div class="">
       <!-- Breadcrumb -->
       <div class="text-gray-600 mb-4 font-normal">
@@ -290,10 +290,6 @@ const showToastFunction = (msg: string, s: string) => {
           </div>
         </div>
     </div>
-  </MainLayout>
-  <div class="bg-white container my-8 lg:block hidden">
-    <HomeFooter/>
-  </div>
   <Toast :message="message" :type="status" :show="showToast"/>
 </template>
 

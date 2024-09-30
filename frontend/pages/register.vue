@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import MainLayout from "~/layouts/MainLayout.vue"
-import Toast from "~/components/Toast.vue";
+
+definePageMeta({
+  layout: 'main-layout'
+})
 
 const { data } : any = await useFetchData({url: 'provinces'})
 
@@ -84,7 +86,6 @@ const clearError = () => {
 </script>
 
 <template>
-  <MainLayout>
       <div class="flex justify-center py-5">
         <div class="bg-white rounded-lg p-5" style="width: 500px !important;">
           <h2 class="text-2xl font-bold text-center text-blue-500 mb-4">Đăng ký</h2>
@@ -126,7 +127,6 @@ const clearError = () => {
           <span class="text-gray-500 block text-center">Đã có tài khoản? <nuxt-link to="/login" class="text-blue-500">Đăng nhập</nuxt-link></span>
         </div>
       </div>
-  </MainLayout>
   <div class="bg-white container my-8 lg:block hidden">
     <HomeFooter/>
   </div>

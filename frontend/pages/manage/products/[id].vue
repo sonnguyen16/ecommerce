@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import AdminLayout from "~/layouts/AdminLayout.vue"
 import {MEDIA_ENDPOINT} from "~/lib/constants";
+
+definePageMeta({
+  middleware: 'is-shop-owner',
+  layout: 'admin-layout',
+})
 
 const { data } = await useFetchData({
   url: `categories`,
@@ -167,7 +171,6 @@ const onFileChange = (e: any) => {
 </script>
 
 <template>
-  <AdminLayout>
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
     <div class="rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)]  bg-white">
       <form enctype="multipart/form-data" id="form" @submit.prevent="onSubmit" class="max-w-7xl">
@@ -258,7 +261,6 @@ const onFileChange = (e: any) => {
       </form>
     </div>
     <Toast :message="message" :type="type" :show="showToast"/>
-  </AdminLayout>
 </template>
 
 <style scoped>

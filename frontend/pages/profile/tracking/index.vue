@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import ProfileLayout from "~/layouts/ProfileLayout.vue";
 import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline";
 import type {Order} from "~/lib/schema";
+
+definePageMeta({
+   layout: "profile-layout"
+})
 
 const { data } : { data: Ref<any[]> } = await useFetchData({
     url: 'orders',
@@ -11,7 +14,6 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
 
 </script>
 <template>
- <ProfileLayout>
    <div class="bg-white rounded-md p-4">
      <!-- Header -->
      <h1 class="text-2xl font-bold text-gray-800 mb-4">Đơn hàng của tôi</h1>
@@ -48,7 +50,6 @@ const { data } : { data: Ref<any[]> } = await useFetchData({
        </template>
      </div>
    </div>
- </ProfileLayout>
 </template>
 <style scoped>
 * {

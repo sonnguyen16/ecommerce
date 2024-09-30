@@ -1,5 +1,4 @@
 <template>
-  <MainLayout>
     <div class="grid grid-cols-6 gap-8">
       <div class="col-span-1 xl:block hidden">
           <HomeSidebar/>
@@ -45,17 +44,16 @@
             </template>
           </div>
         </div>
-        <div class="rounded-xl bg-white p-5 lg:block hidden">
-          <HomeFooter/>
-        </div>
       </div>
     </div>
-  </MainLayout>
 </template>
 <script setup lang="ts">
-import MainLayout from "~/layouts/MainLayout.vue";
 import type {Product} from "~/lib/schema";
 import useFetchData from "~/composables/useFetchData";
+
+definePageMeta({
+  layout: 'main-layout'
+})
 
 const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
 

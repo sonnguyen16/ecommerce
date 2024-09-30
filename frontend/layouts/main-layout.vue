@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import '~/assets/css/input.css'
-import Navbar from "~/components/home/Navbar.vue";
+
+const name = 'main-layout'
 </script>
 
 <template>
-    <Navbar />
+  <NuxtLayout :name="name">
+    <HomeNavbar />
     <div id="body" class="bg-[#f5f5fa] py-4">
       <div class="container">
-        <slot />
+        <NuxtPage />
       </div>
     </div>
+    <div class="bg-white container my-8">
+      <HomeFooter />
+    </div>
+  </NuxtLayout>
 </template>
 
 <style scoped>

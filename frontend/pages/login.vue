@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import MainLayout from "~/layouts/MainLayout.vue"
+
+definePageMeta({
+  middleware: 'is-logged-in',
+  layout: 'main-layout'
+})
 
 const form = ref({
   phone: '',
@@ -54,7 +58,6 @@ const clearError = () => {
 </script>
 
 <template>
-  <MainLayout>
     <div class="flex justify-center py-5">
       <div class="bg-white rounded-lg p-5" style="width: 500px !important;">
         <h2 class="text-2xl font-bold text-center text-blue-500 mb-4">Đăng nhập</h2>
@@ -76,7 +79,6 @@ const clearError = () => {
         <span class="text-gray-500 block text-center">Chưa có tài khoản? <nuxt-link to="/register" class="text-blue-500">Đăng ký</nuxt-link></span>
       </div>
     </div>
-  </MainLayout>
   <div class="bg-white container my-8 lg:block hidden">
     <HomeFooter/>
   </div>

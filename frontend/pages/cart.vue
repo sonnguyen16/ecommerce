@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { TrashIcon, TicketIcon } from "@heroicons/vue/24/outline";
-import MainLayout from "~/layouts/MainLayout.vue";
 import type {Cart} from "~/lib/schema";
 import {formatCash} from "~/lib/utils";
+
+definePageMeta({
+  layout: "main-layout"
+})
 
 let cart: Ref<Cart[]> = ref([]);
 const { data: profileData } = await useFetchData({
@@ -11,6 +14,8 @@ const { data: profileData } = await useFetchData({
   server: false,
 })
 
+const ticked: Ref<number[]> = ref([])
+
 const message = ref('Thêm vào giỏ hàng thành công')
 
 const status = ref('success')
@@ -18,7 +23,7 @@ const status = ref('success')
 const showToast = ref(false)
 
 const total = computed(() => {
-  return cart?.value?.reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
+  return cart?.value?.filter((c) => ticked.value.includes(c.id)).reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
 })
 
 if(!useCookie('refresh_token').value) {
@@ -71,6 +76,7 @@ const deleteProduct = (id: number) => {
   if (index !== -1) {
     cart.value.splice(index, 1);
   }
+  ticked.value = ticked.value.filter((t) => t !== id)
 };
 
 const updateCart = async () => {
@@ -97,14 +103,26 @@ onBeforeRouteLeave(async () => {
   await updateCart()
 })
 
+const submitting = ref(false)
+
 const order = async () => {
-  if (cart.value.length === 0) {
+  if (ticked.value.length === 0) {
     showToastFunction('Vui lòng chọn sản phẩm', 'error')
     return
   }
 
+  if(!useCookie('access_token').value){
+    showToastFunction('Vui lòng đăng nhập', 'error')
+    return
+  }
+
+  if(!profileData?.value?.phone || !profileData?.value?.province || !profileData?.value?.district || !profileData?.value?.ward || !profileData?.value?.address){
+    showToastFunction('Vui lòng cập nhật thông tin cá nhân', 'error')
+    return
+  }
+
   const total = cart.value.reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
-  const products = cart.value.map((c) => (
+  const products = cart.value.filter((c) => ticked.value.includes(c.id)).map((c) => (
       {
         product_id: c.product.id,
         quantity: c.quantity,
@@ -114,6 +132,7 @@ const order = async () => {
   ))
 
   try{
+    submitting.value = true
     await usePostData({
       url: 'order',
       body: {
@@ -128,7 +147,8 @@ const order = async () => {
       },
       requiresToken: true,
     })
-    cart.value = []
+    cart.value = cart.value.filter((c) => !ticked.value.includes(c.id))
+    ticked.value = []
     showToastFunction('Đặt hàng thành công', 'success')
 
     await useFetchData({
@@ -140,6 +160,8 @@ const order = async () => {
   }catch (e: any){
     showToastFunction('Đặt hàng thất bại', 'error')
     console.log(e.data)
+  }finally {
+    submitting.value = false
   }
 }
 
@@ -152,12 +174,28 @@ const showToastFunction = (msg: string, s: string) => {
   }, 3000)
 }
 
+const addAllProduct = (e: any) => {
+  if(e.target.checked){
+    ticked.value = cart.value.map((c) => c.id)
+  }else{
+    ticked.value = []
+  }
+}
+
+const addProduct = (id: number) => {
+  const cartFound = cart.value.find((c) => c.product.id === id) as Cart
+
+  if(ticked.value.includes(cartFound.id)){
+    ticked.value = ticked.value.filter((t) => t !== cartFound.id)
+  }else{
+    ticked.value.push(cartFound.id)
+  }
+}
+
 </script>
 
 <template>
-  <div>
-    <MainLayout>
-      <div class="">
+    <div class="">
         <h1 class="text-2xl mb-3 font-semibold">Giỏ hàng</h1>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Left Column -->
@@ -169,7 +207,7 @@ const showToastFunction = (msg: string, s: string) => {
               <div class="grid grid-cols-8 items-center">
                 <!-- First Column: Checkbox and Text -->
                 <div class="flex items-center col-span-3">
-                  <input type="checkbox" class="h-5 w-5 border border-gray-300 rounded-md"/>
+                  <input @change="addAllProduct" type="checkbox" class="h-5 w-5 border border-gray-300 rounded-md"/>
                   <span class="ml-2 text-gray-700 font-semibold">Tất cả ({{ cart?.length }} sản phẩm)</span>
                 </div>
                 <!-- Second to Seventh Column: Labels -->
@@ -195,6 +233,8 @@ const showToastFunction = (msg: string, s: string) => {
                     :key="c.id"
                     :product="c.product"
                     :quantity="c.quantity"
+                    :checked="ticked.includes(c.id)"
+                    @ticked="addProduct"
                     @increment="increment"
                     @decrement="decrement"
                     @delete="deleteProduct"
@@ -211,7 +251,7 @@ const showToastFunction = (msg: string, s: string) => {
               <div class="bg-gray-100 p-4 rounded-lg mb-4">
                 <div class="flex justify-between items-center">
                   <span class="text-gray-700 font-semibold">Voucher Khuyến Mãi</span>
-                  <span class="text-gray-400 text-sm">Có thể chọn 2</span>
+                  <span class="text-gray-400 text-sm">Có thể chọn 0</span>
                 </div>
                 <div class="mt-2">
                   <button class="text-blue-500 font-semibold flex items-center">
@@ -244,7 +284,8 @@ const showToastFunction = (msg: string, s: string) => {
 
               <!-- Checkout Button -->
               <button @click.prevent="order" class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition">
-                Mua Hàng ({{ cart?.length }})
+                <Loading v-if="submitting" />
+                <span v-else>Mua Hàng ({{ ticked?.length }})</span>
               </button>
             </div>
 
@@ -257,11 +298,6 @@ const showToastFunction = (msg: string, s: string) => {
           </div>
         </div>
       </div>
-    </MainLayout>
-    <div class="bg-white container my-8">
-      <HomeFooter />
-    </div>
-  </div>
   <Toast :message="message" :type="status" :show="showToast"/>
 </template>
 

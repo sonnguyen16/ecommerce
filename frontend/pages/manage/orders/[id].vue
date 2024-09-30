@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import AdminLayout from "~/layouts/AdminLayout.vue";
 import type {OrderDetail} from "~/lib/schema";
 import Toast from "~/components/Toast.vue";
+
+definePageMeta({
+  middleware: 'is-shop-owner',
+  layout: 'admin-layout',
+})
 
 const [provinceResponse, ordersResponse] = await Promise.all([
   useFetchData({url: 'provinces', server: false}),
@@ -130,7 +134,6 @@ const showToastFunc = (msg: string, toastType: string) => {
 </script>
 
 <template>
-  <AdminLayout>
     <h1 class="text-2xl">Quản lý đơn hàng</h1>
     <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5 grid md:grid-cols-3 gap-10">
       <div class="col-span-2">
@@ -201,7 +204,6 @@ const showToastFunc = (msg: string, toastType: string) => {
     <Toast :show="showToast"
            :message="message"
            :type="type"/>
-  </AdminLayout>
 </template>
 
 <style scoped>

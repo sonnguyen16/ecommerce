@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import AdminLayout from "~/layouts/AdminLayout.vue";
 import { DocumentIcon, PencilSquareIcon} from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
-import Pagination from "~/components/admin/Pagination.vue";
 import type {PaginationData, Product} from "~/lib/schema";
+
+definePageMeta({
+  middleware: 'is-shop-owner',
+  layout: 'admin-layout',
+})
 
 const [productResponse, categoriesResponse] = await Promise.all([
   useFetchData({
@@ -43,7 +46,6 @@ const goToPage = async (p: number) => {
 </script>
 
 <template>
-  <AdminLayout>
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
     <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
       <div class="flex flex-wrap items-center gap-4">
@@ -100,13 +102,12 @@ const goToPage = async (p: number) => {
         </div>
       </div>
 
-        <Pagination
+        <AdminPagination
           v-if="data"
           :pagination_data="data"
           @page-change="goToPage"
         />
     </div>
-  </AdminLayout>
 </template>
 
 <style scoped>
