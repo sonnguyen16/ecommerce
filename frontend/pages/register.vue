@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 definePageMeta({
-  layout: 'main-layout'
+  layout: 'main'
 })
 
 const { data } : any = await useFetchData({url: 'provinces'})

@@ -6,23 +6,18 @@ import type {PaginationData, Product} from "~/lib/schema";
 
 definePageMeta({
   middleware: 'is-shop-owner',
-  layout: 'admin-layout',
+  layout: 'admin',
 })
 
-const [productResponse, categoriesResponse] = await Promise.all([
-  useFetchData({
-    url: `shop/products`,
-    requiresToken: true,
-    server: false,
-  }),
-  useFetchData({
-    url: `categories`,
-  })
-])
+let {data} : any = await useFetchData({
+      url: `shop/products`,
+      requiresToken: true,
+      server: false,
+})
 
-let data = productResponse?.data
-
-let categoriesData = categoriesResponse?.data
+let {data: categoriesData} : any = await useFetchData({
+  url: `categories`,
+})
 
 const fetchData = async (page: number) => {
   const { data: newData, error } : { data: Ref<PaginationData<Product>>, error: any } = await useFetchData({

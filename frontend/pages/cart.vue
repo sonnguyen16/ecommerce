@@ -4,7 +4,7 @@ import type {Cart} from "~/lib/schema";
 import {formatCash} from "~/lib/utils";
 
 definePageMeta({
-  layout: "main-layout"
+  layout: "main"
 })
 
 let cart: Ref<Cart[]> = ref([]);

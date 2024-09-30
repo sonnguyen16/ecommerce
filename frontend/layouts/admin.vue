@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const name = 'admin-layout'
 </script>
 
 <template>
-  <NuxtLayout :name="name">
     <div class="h-screen w-screen">
       <div class="flex">
         <div class="">
@@ -17,7 +15,6 @@ const name = 'admin-layout'
         </div>
       </div>
     </div>
-  </NuxtLayout>
 </template>
 
 <style scoped>

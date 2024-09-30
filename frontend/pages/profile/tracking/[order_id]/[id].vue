@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import ProfileLayout from "~/layouts/profile-layout.vue";
+import ProfileLayout from "~/layouts/profile.vue";
 import type {OrderDetail} from "~/lib/schema";
 
 definePageMeta({
-  layout: "profile-layout"
+  layout: "profile"
 })
 
 const [provinceResponse, ordersResponse] = await Promise.all([
@@ -48,7 +48,6 @@ const wards = computed(() => {
 
 </script>
 <template>
-  <ProfileLayout>
     <div class="bg-white rounded-md p-4 grid md:grid-cols-3">
       <div class="col-span-2">
         <div class="ps-3 space-y-3">
@@ -103,7 +102,6 @@ const wards = computed(() => {
         </div>
       </div>
     </div>
-  </ProfileLayout>
 </template>
 <style scoped>
 

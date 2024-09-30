@@ -3,8 +3,7 @@ import type {OrderDetail} from "~/lib/schema";
 import Toast from "~/components/Toast.vue";
 
 definePageMeta({
-  middleware: 'is-shop-owner',
-  layout: 'admin-layout',
+  layout: 'admin',
 })
 
 const [provinceResponse, ordersResponse] = await Promise.all([

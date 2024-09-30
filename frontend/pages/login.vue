@@ -1,8 +1,7 @@
 <script setup lang="ts">
 
 definePageMeta({
-  middleware: 'is-logged-in',
-  layout: 'main-layout'
+  layout: 'main'
 })
 
 const form = ref({
@@ -16,23 +15,27 @@ const errorList = ref({
   password: [],
 })
 const onSubmit = async () => {
-   try{
      clearError()
      submitting.value = true
-     await usePostData({url: 'auth/login', method: 'POST', body: form.value})
-     navigateTo('/')
-   }catch (e: any){
-     if(e.status === 422){
-       errorList.value = e.data.errors
-     }else if(e.status === 401){
-       showToastFunc('Tài khoản hoặc mật khẩu không chính xác', 'error')
-     }else{
-       showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
-       console.log(e.data)
-     }
-   }finally {
+
+     const { error } : any = await useClientFetch('login', {
+       method: 'POST',
+       body: form.value
+     })
+
      submitting.value = false
-   }
+
+     if(error.value){
+       if(error.value.status === 422){
+         errorList.value = error.value.data.data.errors
+       }else if(error.value.status === 401){
+         showToastFunc('Tài khoản hoặc mật khẩu không chính xác', 'error')
+       }else{
+         showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
+       }
+     }else{
+       navigateTo('/')
+     }
 }
 
 const showToast = ref(false)
@@ -68,7 +71,7 @@ const clearError = () => {
           </div>
 
           <div class="">
-            <Input v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
+            <Input  v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
           </div>
 
           <button :disabled="submitting" type="submit" class="w-full bg-red-500 text-white py-2 mb-3 rounded-lg">

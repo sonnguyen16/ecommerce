@@ -3,8 +3,7 @@ import { DocumentIcon,  CurrencyDollarIcon, EyeIcon } from "@heroicons/vue/24/ou
 import {formatCash} from "~/lib/utils";
 
 definePageMeta({
-  layout: 'admin-layout',
-  middleware: 'is-shop-owner',
+  layout: 'admin',
 })
 
 let { data } : any = await useFetchData({

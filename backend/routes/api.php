@@ -14,15 +14,13 @@ use App\Http\Controllers\Shop\ShipmentLocationController;
 Route::get('products', [ProductController::class, 'getProducts']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
 
-Route::prefix('auth')->group(function (){
-    Route::post('register', [AuthController::class, 'register'])->name('register');
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::middleware('auth:sanctum')->group(function (){
-        Route::get('profile', [AuthController::class, 'profile'])->name('profile');
-        Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('refresh-token', [AuthController::class, 'refresh'])->name('refresh');
-        Route::post('profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
-    });
+Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::middleware('auth:sanctum')->group(function (){
+    Route::get('profile', [AuthController::class, 'profile'])->name('profile');
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('refresh-token', [AuthController::class, 'refresh'])->name('refresh');
+    Route::post('profile/update', [AuthController::class, 'updateProfile'])->name('updateProfile');
 });
 
 Route::middleware('auth:sanctum')->group(function (){

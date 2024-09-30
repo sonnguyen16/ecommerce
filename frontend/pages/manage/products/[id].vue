@@ -2,8 +2,7 @@
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
-  middleware: 'is-shop-owner',
-  layout: 'admin-layout',
+  layout: 'admin',
 })
 
 const { data } = await useFetchData({

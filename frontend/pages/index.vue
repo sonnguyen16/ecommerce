@@ -52,7 +52,7 @@ import type {Product} from "~/lib/schema";
 import useFetchData from "~/composables/useFetchData";
 
 definePageMeta({
-  layout: 'main-layout'
+  layout: 'main'
 })
 
 const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})

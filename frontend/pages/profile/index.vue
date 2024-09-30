@@ -9,10 +9,9 @@ import {
 } from "@heroicons/vue/24/outline";
 import type {User} from "~/lib/schema";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
-import Toast from "~/components/Toast.vue";
 
 definePageMeta({
-   layout: "profile-layout"
+   layout: 'profile'
 })
 
 const genderOptions = [
@@ -51,13 +50,11 @@ const errorList = ref({
 
 const divAvatar = ref<HTMLElement | null>(null);
 
-const [profileResponse, provincesResponse]: any = await Promise.all([
-  useFetchData({url: 'auth/profile', requiresToken: true, cache: false}),
-  useFetchData({url: 'provinces'}),
-])
 
-let provincesData: Ref<any> = provincesResponse.data
-let profileData: Ref<User> = profileResponse.data
+let { data: profileData, error } : { data: Ref<User | null>, error: any } = await useServerFetch("profile")
+let { data: provincesData } : { data: Ref<any[] | null  > } = await useClientFetch("provinces")
+
+console.log(error)
 
 watchEffect(() => {
   if (profileData?.value) {
@@ -80,7 +77,7 @@ watchEffect(() => {
 
 const districts = computed(() => {
   if(form.value.province){
-    return provincesData.value.find((item: any) => item.code == form.value.province)?.districts
+    return provincesData?.value?.find((item: any) => item.code == form.value.province)?.districts
   }
   return []
 })

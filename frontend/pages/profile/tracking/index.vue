@@ -3,7 +3,7 @@ import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline";
 import type {Order} from "~/lib/schema";
 
 definePageMeta({
-   layout: "profile-layout"
+   layout: "profile"
 })
 
 const { data } : { data: Ref<any[]> } = await useFetchData({

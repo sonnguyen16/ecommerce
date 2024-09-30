@@ -1,5 +1,4 @@
 <template>
-  <MainLayout>
     <div class="grid grid-cols-6 gap-8">
       <div class="col-span-1 xl:block hidden">
         <HomeSidebar/>
@@ -20,13 +19,15 @@
         </div>
       </div>
     </div>
-  </MainLayout>
 </template>
 <script setup lang="ts">
-import MainLayout from "~/layouts/main-layout.vue";
 import type {Product} from "~/lib/schema";
 import useFetchData from "~/composables/useFetchData";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
+
+definePageMeta({
+  layout: 'main'
+})
 
 const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
 

@@ -7,7 +7,7 @@ import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
 
 definePageMeta({
-  layout: 'main-layout'
+  layout: 'main'
 })
 
 const { app_url } = useAppConfig()
