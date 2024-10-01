@@ -3,14 +3,11 @@ import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline";
 import type {Order} from "~/lib/schema";
 
 definePageMeta({
-   layout: "profile"
+  layout: 'profile',
+  middleware: 'auth'
 })
 
-const { data } : { data: Ref<any[]> } = await useFetchData({
-    url: 'orders',
-    requiresToken: true,
-    server: false,
-});
+const { data } = await useClientFetch('orders')
 
 </script>
 <template>

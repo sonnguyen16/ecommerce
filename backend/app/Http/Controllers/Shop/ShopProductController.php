@@ -24,14 +24,36 @@ class ShopProductController extends Controller
         return response()->json($products->paginate(6));
     }
 
+    public function getProduct($product_id)
+    {
+        $shop_id = Auth::user()->shop->id;
+
+        $product = Product::query()
+            ->where('id', $product_id)
+            ->where('shop_id', $shop_id)
+            ->with('category')
+            ->first();
+
+        return response()->json($product);
+    }
+
     public function storeProduct(StoreProductRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $validated['shop_id'] = Auth::user()->shop->id;
         $validated['slug'] = Str::slug($validated['name']);
-        $validated['seo_url'] = Str::slug($validated['name']);
-        $validated['seo_title'] = $validated['name'];
-        $validated['seo_description'] = $validated['description'];
+
+        if($validated['seo_url'] === '') {
+            $validated['seo_url'] = Str::slug($validated['name']);
+        }
+
+        if($validated['seo_title'] === '') {
+            $validated['seo_title'] = $validated['name'];
+        }
+
+        if($validated['seo_description'] === '') {
+            $validated['seo_description'] = $validated['description'];
+        }
 
         if(!is_null($validated['attributes'])) {
             $lines = explode("\n", trim($validated['attributes']));

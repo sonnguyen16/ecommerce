@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon} from "@heroicons/vue/24/solid";
 import {ref} from "vue";
-import useFetchData from "~/composables/useFetchData";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
@@ -12,7 +11,7 @@ definePageMeta({
 
 const { app_url } = useAppConfig()
 
-const { data } : { data : Ref<Product[]> } = await useFetchData({url: 'products'})
+const { data } = await useServerFetch<Product[]>('products')
 
 const showFullDescription = ref<Boolean>(false);
 
@@ -20,7 +19,7 @@ const route = useRoute()
 
 const id = route.params.id
 
-const product: Product = data.value.find((item: Product) => String(item.id ) === id) as Product
+const product: Product = data?.value?.find((item: Product) => String(item.id ) === id) as Product
 
 const discount = Math.round((product.price - product.sale_price) / product.price * 100);
 
@@ -68,9 +67,9 @@ const decreaseQuantity = () => {
 }
 
 const addToCart = async () => {
-  const refreshToken = useCookie('refresh_token').value
+  const { isLoggedIn } = useAuth()
 
-  if(!refreshToken){
+  if(!await isLoggedIn()){
     let cart = []
     if(localStorage.getItem('cart')){
       cart = JSON.parse(localStorage.getItem('cart') as string)
@@ -90,17 +89,12 @@ const addToCart = async () => {
     return
   }
 
-  try {
-    await usePostData({url: 'add-to-cart', body: form.value, requiresToken: true})
+  const { error } = await useClientFetch('add-to-cart' ,{body: form.value, method: 'POST'})
+
+  if(error.value){
+    showToastFunction('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
+  }else{
     showToastFunction('Thêm vào giỏ hàng thành công', 'success')
-    await useFetchData({
-      url: 'cart',
-      requiresToken: true,
-      server: false,
-      cache: false,
-    });
-  }catch (e: any) {
-    showToastFunction('Thêm vào giỏ hàng thất bại', 'error')
   }
 }
 

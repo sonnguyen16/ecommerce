@@ -45,8 +45,21 @@ class OrderController extends Controller
 
     public function getOrders()
     {
-        $orders = Order::where('user_id', Auth::id())->with('orderDetails.product', 'orderDetails.order', 'orderDetails.locations')->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with('orderDetails.product', 'orderDetails.order', 'orderDetails.locations')
+            ->orderBy('id', 'desc')->get();
 
         return response()->json($orders);
+    }
+
+    public function getOrder($order_detail_id)
+    {
+        $order = OrderDetail::query()
+            ->where('id', $order_detail_id)
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', Auth::id());
+            })->with(['product', 'order', 'locations'])->first();
+
+        return response()->json($order);
     }
 }

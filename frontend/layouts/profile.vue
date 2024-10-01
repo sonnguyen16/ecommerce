@@ -8,15 +8,8 @@ import {
 
 const route = useRoute()
 const logout = async () => {
-  try {
-    await useFetchData({url: 'auth/logout', requiresToken: true})
-  }catch (e: any){
-    console.log(e)
-  }finally {
-    useCookie('access_token').value = ''
-    useCookie('refresh_token').value = ''
-    navigateTo('/login')
-  }
+  await useClientFetch('logout')
+  navigateTo('/signin')
 }
 
 const links = [
@@ -67,8 +60,4 @@ const links = [
     <HomeFooter />
   </div>
 </template>
-<style scoped>
-* {
-  font-weight: 400;
-}
-</style>
+

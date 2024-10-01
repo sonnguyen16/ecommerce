@@ -2,29 +2,19 @@
 import { DocumentIcon, PencilSquareIcon} from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
-import type {PaginationData, Product} from "~/lib/schema";
+import type {Category, PaginationData, Product} from "~/lib/schema";
 
 definePageMeta({
-  middleware: 'is-shop-owner',
   layout: 'admin',
+  middleware: 'auth'
 })
 
-let {data} : any = await useFetchData({
-      url: `shop/products`,
-      requiresToken: true,
-      server: false,
-})
+let data : Ref<PaginationData<Product> | null> = ref(null)
 
-let {data: categoriesData} : any = await useFetchData({
-  url: `categories`,
-})
+let { data: categoriesData } = await useClientFetch<Category[]>(`categories`)
 
 const fetchData = async (page: number) => {
-  const { data: newData, error } : { data: Ref<PaginationData<Product>>, error: any } = await useFetchData({
-    url: `shop/products?page=${page}`,
-    requiresToken: true,
-    server: false,
-  })
+  const { data: newData, error } = await useClientFetch<PaginationData<Product>>(`shop/products?page=${page}`)
 
   if(!error.value) {
     data.value = newData.value
@@ -33,8 +23,10 @@ const fetchData = async (page: number) => {
   }
 }
 
+await fetchData(1)
+
 const goToPage = async (p: number) => {
-  if (p > 0 && p <= data.value.last_page) {
+  if (data.value && p > 0 && p <= data.value.last_page) {
     await fetchData(p)
   }
 }

@@ -1,8 +1,8 @@
 import type { UnwrapRef } from "vue";
 import type {NitroFetchOptions} from "nitropack";
-import type {FetchContext, FetchResponse} from "ofetch";
+import  {type FetchContext} from "ofetch";
 
-export const useClientFetch = async <T>(
+export const useClientFetch = async <T = any>(
     target: string,
     options?: NitroFetchOptions<"json">
 ) => {
@@ -15,12 +15,10 @@ export const useClientFetch = async <T>(
             baseURL: "/api",
             headers: {
                 "Accept": "application/json",
-                ...options?.headers,
+                ...useRequestHeaders(),
             },
-            onResponseError(context: FetchContext & { response: FetchResponse<ResponseType> }) {
-                if(context.response.status === 401) {
-                    navigateTo("/login")
-                }
+            onResponseError(context: FetchContext){
+                console.error("Error response", context.response?._data);
             }
         });
         data.value = (response ?? null) as UnwrapRef<T>;

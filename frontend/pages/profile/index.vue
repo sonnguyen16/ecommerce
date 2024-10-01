@@ -11,7 +11,8 @@ import type {User} from "~/lib/schema";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
-   layout: 'profile'
+   layout: 'profile',
+   middleware: 'auth'
 })
 
 const genderOptions = [
@@ -50,30 +51,27 @@ const errorList = ref({
 
 const divAvatar = ref<HTMLElement | null>(null);
 
+let { data: profileData }  = await useClientFetch<User>("profile")
+let { data: provincesData }  = await useClientFetch("provinces")
 
-let { data: profileData, error } : { data: Ref<User | null>, error: any } = await useServerFetch("profile")
-let { data: provincesData } : { data: Ref<any[] | null  > } = await useClientFetch("provinces")
+if (profileData?.value) {
+  form.value = {
+    ...profileData.value,
+    province: profileData.value.province || '',
+    district: profileData.value.district || '',
+    ward: profileData.value.ward || '',
+    gender: profileData.value.gender || 1,
+    birthday: profileData.value.birthday || '2000-01-01'
+  }
 
-console.log(error)
-
-watchEffect(() => {
-  if (profileData?.value) {
-    form.value = {
-      ...profileData.value,
-      province: profileData.value.province || '',
-      district: profileData.value.district || '',
-      ward: profileData.value.ward || '',
-      gender: profileData.value.gender || 1,
-      birthday: profileData.value.birthday || '2000-01-01'
-    }
-
+  watchEffect(() => {
     if(divAvatar.value){
-      divAvatar.value.style.backgroundImage = `url(${MEDIA_ENDPOINT}${profileData.value.avatar})`
+      divAvatar.value.style.backgroundImage = `url(${MEDIA_ENDPOINT + profileData?.value?.avatar})`
       divAvatar.value.style.backgroundSize = 'cover'
       divAvatar.value.style.backgroundPosition = 'center'
     }
-  }
-});
+  })
+}
 
 const districts = computed(() => {
   if(form.value.province){
@@ -94,7 +92,13 @@ watch(() => form.value.province, () => {
     form.value.district = ''
     form.value.ward = ''
   }
-});
+})
+
+watch(() => form.value.district, () => {
+  if(!wards.value.find((item: any) => item.code == form.value.ward)){
+    form.value.ward = ''
+  }
+})
 
 
 const onFileChange = (e: any) => {
@@ -112,28 +116,27 @@ const onFileChange = (e: any) => {
 }
 
 const onSubmit = async () => {
-  try{
     clearError()
-    submitting.value = true
-    let formData = new FormData()
 
+    let formData = new FormData()
     for (const key in form.value) {
        //@ts-ignore
        formData.append(key, form.value[key])
     }
 
-    await usePostData({url: 'auth/profile/update', method: 'POST', body: formData, requiresToken: true})
-    showToastFunc('Cập nhật thông tin thành công', 'success')
-    await useFetchData({url: 'auth/profile', requiresToken: true, server: false, cache: false})
-  }catch (e: any){
-    if(e.status === 422){
-      errorList.value = e.data.errors
-    }else{
-      showToastFunc('Có lỗi xảy ra', 'error')
-    }
-  }finally {
+    submitting.value = true
+    const { error } : any = await useClientFetch('profile/update', {method: 'POST', body: formData})
     submitting.value = false
-  }
+
+    if(error.value) {
+      if(error.value.status === 422){
+        errorList.value = error.value.data.errors
+      }else {
+        showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
+      }
+    }else{
+      showToastFunc('Cập nhật thông tin thành công', 'success')
+    }
 }
 
 const submitting = ref(false)
@@ -287,4 +290,5 @@ const clearError = () => {
            :message="message"
            :type="type"/>
 </template>
+
 

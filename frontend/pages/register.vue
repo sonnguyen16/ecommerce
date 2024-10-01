@@ -4,7 +4,7 @@ definePageMeta({
   layout: 'main'
 })
 
-const { data } : any = await useFetchData({url: 'provinces'})
+const { data } : any = await useClientFetch('provinces')
 
 const form = ref({
   name: '',
@@ -46,19 +46,24 @@ const wards = computed(() => {
 })
 
 const onSubmit = async () => {
-  try{
-    clearError()
-    submitting.value = true
-    await usePostData({url: 'auth/register', method: 'POST', body: form.value})
-    navigateTo('/')
-  }catch (e: any){
-    if(e.status === 422){
-      errorList.value = e.data.errors
+  clearError()
+  submitting.value = true
+
+  const { error } : any = await useClientFetch('register', {
+    method: 'POST',
+    body: form.value
+  })
+
+  submitting.value = false
+
+  if(error.value){
+    if(error.value.status === 422){
+      errorList.value = error.value.data.data.errors
     }else{
-      showToastFunc('Có lỗi xảy ra', 'error')
+      showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
     }
-  }finally {
-    submitting.value = false
+  }else{
+    navigateTo('/')
   }
 }
 
@@ -119,17 +124,17 @@ const clearError = () => {
               <Input v-model="form.address" type="text" placeholder="Nhập địa chỉ nhận hàng" :errors="errorList.address?.[0]"/>
             </div>
 
-            <button :disabled="submitting" type="submit" class="w-full bg-red-500 text-white py-2 mb-3 rounded-lg">
+            <button :disabled="submitting" type="submit" class="w-full bg-red-700 text-white py-2 mb-3 rounded-lg">
               <Loading v-if="submitting" />
               <span v-else>Đăng ký</span>
             </button>
           </form>
-          <span class="text-gray-500 block text-center">Đã có tài khoản? <nuxt-link to="/login" class="text-blue-500">Đăng nhập</nuxt-link></span>
+          <span class="text-gray-500 block text-center">Đã có tài khoản? <nuxt-link to="/signin" class="text-blue-500">Đăng nhập</nuxt-link></span>
         </div>
       </div>
-  <Toast :show="showToast"
-         :message="message"
-         :type="type"/>
+      <Toast :show="showToast"
+             :message="message"
+             :type="type"/>
 </template>
 
 <style scoped>

@@ -23,11 +23,11 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'id' => '',
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:1000',
             'category_id' => 'required|exists:categories,id',
-            'unit' => 'required|string',
+            'unit' => 'required|string|max:255',
             'sale_price' => 'required|numeric|lte:price|min:1000',
             'quantity' => 'required|numeric',
             'thumbnail' => 'required_without:id',
@@ -48,6 +48,7 @@ class StoreProductRequest extends FormRequest
         return [
             'name.required' => 'Tên sản phẩm không được để trống',
             'name.string' => 'Tên sản phẩm phải là chuỗi',
+            'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự',
             'description.required' => 'Mô tả sản phẩm không được để trống',
             'description.string' => 'Mô tả sản phẩm phải là chuỗi',
             'price.required' => 'Giá sản phẩm không được để trống',
@@ -57,6 +58,7 @@ class StoreProductRequest extends FormRequest
             'category_id.exists' => 'Danh mục sản phẩm không tồn tại',
             'unit.required' => 'Đơn vị sản phẩm không được để trống',
             'unit.string' => 'Đơn vị sản phẩm phải là chuỗi',
+            'unit.max' => 'Đơn vị sản phẩm không được vượt quá 255 ký tự',
             'sale_price.required' => 'Giá khuyến mãi không được để trống',
             'sale_price.numeric' => 'Giá khuyến mãi phải là số',
             'sale_price.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá sản phẩm',

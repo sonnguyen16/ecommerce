@@ -34,12 +34,7 @@ const visiblePages = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
-    <div class="text-md text-gray-500">
-      Hiển thị {{ (pagination_data.current_page - 1) * pagination_data.per_page + 1 }} đến
-      {{ pagination_data.current_page * pagination_data.per_page }} của {{ pagination_data.total }} kết quả
-    </div>
-
+  <div class="flex items-center justify-end">
     <div class="flex items-center gap-2">
       <button
           :disabled="pagination_data.current_page === 1"

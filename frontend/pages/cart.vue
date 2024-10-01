@@ -8,11 +8,8 @@ definePageMeta({
 })
 
 let cart: Ref<Cart[]> = ref([]);
-const { data: profileData } = await useFetchData({
-  url: 'auth/profile',
-  requiresToken: true,
-  server: false,
-})
+
+const { data: profileData } = await useServerFetch('profile')
 
 const ticked: Ref<number[]> = ref([])
 
@@ -23,39 +20,34 @@ const status = ref('success')
 const showToast = ref(false)
 
 const total = computed(() => {
-  return cart?.value?.filter((c) => ticked.value.includes(c.id)).reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
+  return cart?.value?.filter((c) => ticked.value.includes(c.id))
+      .reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
 })
 
-if(!useCookie('refresh_token').value) {
-  if(process.client){
-    cart = ref(JSON.parse(localStorage.getItem('cart') || '[]'));
-  }
-}else{
-  const { data } : any = await useFetchData({
-    url: 'cart',
-    requiresToken: true,
-    server: false,
-  });
+const { isLoggedIn } = useAuth()
 
+if(await isLoggedIn()) {
+  const { data } : any = await useClientFetch('cart');
   cart = data || []
+}
 
-  if(process.client){
-    const cartLocal = JSON.parse(localStorage.getItem('cart') || '[]');
+if(process.client){
+  const cartLocal = JSON.parse(localStorage.getItem('cart') || '[]');
 
-    if(cartLocal.length > 0){
-      cartLocal.forEach((c: Cart) => {
-        const index = cart.value.findIndex((cc: Cart) => cc.product.id === c.product.id);
-        if(index === -1){
-          cart.value.push(c)
-        }else{
-          cart.value[index].quantity += c.quantity
-        }
-      })
+  if(cartLocal.length > 0){
+    cartLocal.forEach((c: Cart) => {
+      const index = cart.value.findIndex((cc: Cart) => cc.product.id === c.product.id);
+      if(index === -1){
+        cart.value.push(c)
+      }else{
+        cart.value[index].quantity += c.quantity
+      }
+    })
 
-      localStorage.removeItem('cart')
-    }
+    localStorage.removeItem('cart')
   }
 }
+
 
 const increment = (id: number) => {
   const index = cart.value.findIndex((c) => c.product.id === id);
@@ -80,26 +72,18 @@ const deleteProduct = (id: number) => {
 };
 
 const updateCart = async () => {
-  if(useCookie('refresh_token').value){
-    try{
-      await usePostData({
-        url: 'add-many-to-cart',
-        body: {
-          carts: cart.value || []
-        },
-        requiresToken: true,
-      })
-    }catch (e){
-      console.log(e)
-    }
+  if(await isLoggedIn()){
+    await useClientFetch(
+      'add-many-to-cart', {
+        body: { carts: cart.value || [] },
+        method: 'POST',
+    })
   }else{
-    if(process.client){
-      localStorage.setItem('cart', JSON.stringify(cart.value))
-    }
+    localStorage.setItem('cart', JSON.stringify(cart.value))
   }
 }
 
-onBeforeRouteLeave(async () => {
+onBeforeUnmount(async () => {
   await updateCart()
 })
 
@@ -111,12 +95,14 @@ const order = async () => {
     return
   }
 
-  if(!useCookie('access_token').value){
+  if(!await isLoggedIn()){
     showToastFunction('Vui lòng đăng nhập', 'error')
     return
   }
 
-  if(!profileData?.value?.phone || !profileData?.value?.province || !profileData?.value?.district || !profileData?.value?.ward || !profileData?.value?.address){
+  if(!profileData?.value?.phone || !profileData?.value?.province
+      || !profileData?.value?.district || !profileData?.value?.ward
+      || !profileData?.value?.address){
     showToastFunction('Vui lòng cập nhật thông tin cá nhân', 'error')
     return
   }
@@ -131,38 +117,29 @@ const order = async () => {
       }
   ))
 
-  try{
-    submitting.value = true
-    await usePostData({
-      url: 'order',
-      body: {
-        name: profileData?.value?.name,
-        phone: profileData?.value?.phone,
-        province: profileData?.value?.province,
-        district: profileData?.value?.district,
-        ward: profileData?.value?.ward,
-        address: profileData?.value?.address,
-        total,
-        products
-      },
-      requiresToken: true,
-    })
-    cart.value = cart.value.filter((c) => !ticked.value.includes(c.id))
-    ticked.value = []
+  submitting.value = true
+  const { error } = await useClientFetch('order', {
+    body: {
+      name: profileData?.value?.name,
+      phone: profileData?.value?.phone,
+      province: profileData?.value?.province,
+      district: profileData?.value?.district,
+      ward: profileData?.value?.ward,
+      address: profileData?.value?.address,
+      total,
+      products
+    },
+    method: 'POST'
+  })
+  submitting.value = false
+  if(error.value){
+    showToastFunction('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
+    console.log(error.value)
+  }else{
     showToastFunction('Đặt hàng thành công', 'success')
-
-    await useFetchData({
-      url: 'orders',
-      requiresToken: true,
-      server: false,
-      cache: false,
-    });
-  }catch (e: any){
-    showToastFunction('Đặt hàng thất bại', 'error')
-    console.log(e.data)
-  }finally {
-    submitting.value = false
   }
+  cart.value = cart.value.filter((c) => !ticked.value.includes(c.id))
+  ticked.value = []
 }
 
 const showToastFunction = (msg: string, s: string) => {
@@ -283,7 +260,7 @@ const addProduct = (id: number) => {
               </div>
 
               <!-- Checkout Button -->
-              <button @click.prevent="order" class="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition">
+              <button @click.prevent="order" class="w-full bg-red-700 text-white font-semibold py-3 rounded-lg transition">
                 <Loading v-if="submitting" />
                 <span v-else>Mua Hàng ({{ ticked?.length }})</span>
               </button>

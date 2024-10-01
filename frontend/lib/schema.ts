@@ -68,6 +68,7 @@ export interface OrderDetail {
     quantity: number;
     total: number;
     status: number;
+    locations: any[];
     created_at: string;
     updated_at: string;
 }
@@ -78,6 +79,12 @@ export interface Order {
     user_id: number;
     user: User;
     total: number;
+    province: string;
+    district: string;
+    ward: string;
+    address: string;
+    phone: string;
+    name: string;
     created_at: string;
     updated_at: string;
     order_details: OrderDetail[];

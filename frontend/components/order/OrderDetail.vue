@@ -18,7 +18,9 @@ const statuses = [
 ]
 
 const viewDetail = () => {
-  useRouter().push(`/profile/tracking/${props.orderdetail.order.id}/${props.orderdetail.id}`)
+  if(useRoute().path.includes('tracking')){
+    useRouter().push(`/profile/tracking/${props.orderdetail.id}`)
+  }
 }
 
 </script>

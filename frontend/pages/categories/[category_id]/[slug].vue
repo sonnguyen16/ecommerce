@@ -14,51 +14,43 @@
             </template>
           </div>
         </div>
-        <div class="rounded-xl bg-white p-5 lg:block hidden">
-          <HomeFooter/>
-        </div>
       </div>
     </div>
 </template>
 <script setup lang="ts">
-import type {Product} from "~/lib/schema";
-import useFetchData from "~/composables/useFetchData";
+import type {Category, Product} from "~/lib/schema";
 import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
   layout: 'main'
 })
 
-const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
+const { data } = await useServerFetch<Product[]>('products')
 
-const { data: Categories } = await useFetchData({url: 'categories'})
+const { data: categories } = await useServerFetch<Category[]>('categories')
 
 const category_id = useRoute().params.category_id
 
-const category = computed(() => {
-  return Categories?.value?.find((c: any) => c.id == category_id)
-})
+const category = categories?.value?.find((c: any) => c.id == category_id)
 
-const filterProducts = computed(() => {
-  return data?.value?.filter((product: any) => product.category_id == category_id)
-})
+const filterProducts = data?.value?.filter((product: any) => product.category_id == category_id)
 
 const { title, app_url, icon, description } = useAppConfig()
 
-const seo_title = title + ' - ' + category?.value?.name
+const seo_title = title + ' - ' + category?.name
 
 useSeoMeta({
   title: seo_title,
   description: seo_title,
   ogTitle: seo_title,
   ogDescription: seo_title,
-  ogImage: MEDIA_ENDPOINT + category?.value?.image,
-  ogUrl: app_url + `/${category_id}/${category?.value?.slug}`,
+  ogImage: MEDIA_ENDPOINT + category?.image,
+  ogUrl: app_url + `/${category_id}/${category?.slug}`,
   ogSiteName: seo_title,
   ogType: 'article',
   twitterTitle: seo_title,
   twitterDescription: seo_title,
-  twitterImage: MEDIA_ENDPOINT + category?.value?.image,
+  twitterImage: MEDIA_ENDPOINT + category?.image,
   twitterCard: 'summary_large_image'
 })
 

@@ -67,6 +67,7 @@ class AuthController extends Controller
                 'token' => $refreshToken->plainTextToken,
                 'expires_at' => $rtExpireTime
             ],
+            'expire_time' => $atExpireTime->timestamp
         ];
     }
 

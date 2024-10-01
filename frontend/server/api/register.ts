@@ -5,7 +5,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const body = await readBody(event);
 
     try {
-        const { tokens } : any = await $fetch("login", {
+        const { tokens } : any = await $fetch("register", {
             baseURL: apiUrl,
             method: "POST",
             body
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event: H3Event) => {
                 secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
-            })
+            });
         }
     } catch (error: any) {
         throw createError(error)

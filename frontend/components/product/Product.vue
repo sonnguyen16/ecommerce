@@ -15,7 +15,7 @@ const discount = Math.round((props.product.price - props.product?.sale_price) / 
 <template>
   <NuxtLink :to="`/products/${product.id}/${product.slug}`">
     <div class="rounded-xl border border-gray-200 hover:shadow-lg">
-      <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="product" class="w-full rounded-tl-xl rounded-tr-xl">
+      <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="product" class="w-full rounded-tl-xl rounded-tr-xl max-h-[186px] object-cover">
       <img src="/topdeal2.png" alt="topdeal" class="lg:w-[80px] w-[40px] lg:block inline-block ms-2 mt-2">
       <img src="/chinhhang.png" alt="chinhhang" class="lg:w-[90px] w-[50px] lg:block inline-block ms-2 mt-2">
       <div class="px-3 py-2">

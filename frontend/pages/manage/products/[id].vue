@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {MEDIA_ENDPOINT} from "~/lib/constants";
+import type {Category} from "~/lib/schema";
 
 definePageMeta({
   layout: 'admin',
+  middleware: 'auth'
 })
 
-const { data } = await useFetchData({
-  url: `categories`,
-})
+const { data } = await useClientFetch<Category[]>(`categories`)
 
 const id = useRoute().params.id
 
@@ -48,34 +48,25 @@ const message = ref('')
 const type = ref('')
 
 if(id.toString() !== 'null') {
-  const { data: productsData } = await useFetchData({
-    url: `shop/products`,
-    requiresToken: true,
-    server: false,
-  })
+  const { data: productData } = await useClientFetch(`shop/products/${id}`)
 
-  watchEffect(() => {
-    const product = productsData?.value?.data?.find((p: any) => p.id == id)
-
-    if(product) {
-      form.value = {
-        ...product
-      }
-
-      if(product.attributes){
-        let result = '';
-        for (const [key, value] of Object.entries(JSON.parse(product?.attributes))) {
-          result += `${key}: ${value}\n`;
-        }
-        form.value.attributes = result
-      }
+  if(productData) {
+    form.value = {
+      ...productData.value
     }
-  })
+
+    if(productData.value.attributes){
+      let result = '';
+      for (const [key, value] of Object.entries(JSON.parse(productData.value.attributes))) {
+        result += `${key}: ${value}\n`;
+      }
+      form.value.attributes = result
+    }
+  }
 }
 
 
 const onSubmit = async () => {
-  try{
     clearError()
     submitting.value = true
     let formData = new FormData()
@@ -84,33 +75,25 @@ const onSubmit = async () => {
       formData.append(key, form.value[key])
     }
 
-    await usePostData({
-      url: 'shop/products/store',
+    const {error} : any = await useClientFetch('shop/products/store',{
       method: 'POST',
       body: formData,
-      requiresToken: true
     })
+    submitting.value = false
 
+    if (error.value) {
+      console.log(error)
+      if(error.value.status === 422){
+        error_list.value = error.value.data.errors
+      }else{
+        showToastFunc('Lưu sản phẩm thất bại', 'error')
+      }
+      return
+    }
     showToastFunc('Lưu sản phẩm thành công', 'success')
-    if(!form.value.id){
+    if(id.toString() === 'null'){
       clearForm()
     }
-    await useFetchData({
-      url: `shop/products`,
-      requiresToken: true,
-      server: false,
-      cache: false,
-    })
-  }catch (e: any){
-    if(e.status === 422){
-      error_list.value = e.data.errors
-    }else{
-      showToastFunc('Có lỗi xảy ra', 'error')
-      console.log(e.data.message)
-    }
-  }finally {
-    submitting.value = false
-  }
 }
 
 const showToastFunc = (msg: string, toastType: string) => {

@@ -1,4 +1,12 @@
 import { H3Event, setCookie, getCookie } from "h3";
+
+export const isTokenValid = (expTime: string | null) => {
+    if (!expTime) return false;
+    const currentTime = Math.floor(Date.now() / 1000);
+    const bufferTime = 10; // Thời gian buffer 10 giây
+    return Number(expTime) >= (currentTime + bufferTime);
+}
+
 export const refreshTokenFunc = async (event: H3Event, apiUrl: string) => {
     const refreshToken = getCookie(event,'refresh_token');
 
@@ -30,6 +38,13 @@ export const refreshTokenFunc = async (event: H3Event, apiUrl: string) => {
                 secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
+            });
+            setCookie(event, 'expire_time', tokens.expire_time, {
+                domain: 'localhost',
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                expires: new Date(tokens.access_token.expires_at),
             });
             return tokens.access_token.token;
         }

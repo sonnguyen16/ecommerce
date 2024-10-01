@@ -24,7 +24,7 @@ const showFullOrderDetail : Ref<Boolean> = ref(false)
   <div class="border-b">
     <div class="grid-cols-7 grid items-center px-3">
       <div class="col-span-2 text-gray-500">
-        <p class="text-gray-700">
+        <p class="text-gray-700 mt-2">
         Mã đơn hàng: <span class="text-blue-700">{{ order.code }}</span>
         </p>
       </div>

@@ -21,7 +21,7 @@
             <span class="text-indigo-700 font-semibold">Xem thêm</span>
           </div>
           <div class="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-6">
-            <template v-for="product in data.slice(0, 6)">
+            <template v-for="product in data?.slice(0, 6)">
                 <Product class="basis-1/6" :product="product"/>
             </template>
           </div>
@@ -32,7 +32,7 @@
             <span class="text-indigo-700 font-semibold">Xem thêm</span>
           </div>
           <div class="flex gap-3 overflow-x-auto lg:grid lg:grid-cols-6">
-            <template v-for="product in data.slice(6, 12)">
+            <template v-for="product in data?.slice(6, 12)">
               <Product class="basis-1/6" :product="product"/>
             </template>
           </div>
@@ -49,12 +49,10 @@
 </template>
 <script setup lang="ts">
 import type {Product} from "~/lib/schema";
-import useFetchData from "~/composables/useFetchData";
 
 definePageMeta({
   layout: 'main'
 })
 
-const { data } : { data:  Ref<Product[]> } = await useFetchData<Product[]>({url: 'products'})
-
+const { data }  = await useServerFetch<Product[]>('products')
 </script>

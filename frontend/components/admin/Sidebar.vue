@@ -42,6 +42,7 @@ import {
     Bars3Icon,
     ShoppingCartIcon,
     DocumentIcon,
+
 } from "@heroicons/vue/24/outline";
 
 const isCollapsed = ref(false);
@@ -54,14 +55,19 @@ const route = useRoute()
 
 const links = [
   {
+    icon: DocumentIcon,
+    text: "Đơn Hàng",
+    to: "/manage/orders",
+  },
+  {
     icon: ShoppingCartIcon,
     text: "Sản Phẩm",
     to: "/manage/products",
   },
   {
     icon: DocumentIcon,
-    text: "Đơn Hàng",
-    to: "/manage/orders",
+    text: "Danh mục",
+    to: "/manage/categories",
   },
 ];
 </script>

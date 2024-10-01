@@ -1,50 +1,24 @@
 <script lang="ts" setup>
-import ProfileLayout from "~/layouts/profile.vue";
 import type {OrderDetail} from "~/lib/schema";
 
 definePageMeta({
-  layout: "profile"
+  layout: 'profile',
+  middleware: 'auth'
 })
-
-const [provinceResponse, ordersResponse] = await Promise.all([
-  useFetchData({url: 'provinces', server: false}),
-  useFetchData({
-    url: `orders`,
-    requiresToken: true,
-    server: false,
-  })
-])
-
-let data = ordersResponse?.data
-let provincesData = provinceResponse?.data
 
 const id = useRoute().params.id
-const order_id = useRoute().params.order_id
 
-let order_detail = computed(() => {
-  return order?.value?.order_details?.find((order: any) => order.id == id)
-})
+let { data: provincesData }  = await useClientFetch(`provinces`)
 
-const order = computed(() => {
-  return data?.value?.find((order: any) => order.id == order_id)
-})
+let { data: order_detail } = await useClientFetch<OrderDetail>(`orders/${id}`)
 
-const province = computed(() => {
-  return provincesData?.value?.find((p: any) => p?.code == order?.value?.province)
-})
+const order = order_detail?.value?.order
 
-const district = computed(() => {
-  if(province){
-    return province?.value?.districts?.find((d: any) => d?.code === order?.value?.district)
-  }
-})
+const province = provincesData?.value?.find((p: any) => p?.code == order?.province)
 
-const wards = computed(() => {
-  if(district){
-    return district?.value?.wards?.find((w: any) => w?.code === order?.value?.ward)
-  }
-})
+const district = province?.value?.districts?.find((d: any) => d?.code === order?.district)
 
+const wards = district?.value?.wards?.find((w: any) => w?.code === order?.ward)
 
 </script>
 <template>
@@ -56,7 +30,7 @@ const wards = computed(() => {
             <div class="space-y-3">
               <p><strong>Tên: </strong>{{ order?.name }}</p>
               <p><strong>Số điện thoại: </strong>{{ order?.phone }}</p>
-              <p><strong>Ngày tạo: </strong>{{ new Date(order_detail?.created_at).toLocaleString() }}</p>
+              <p><strong>Ngày tạo: </strong>{{ new Date(order?.created_at).toLocaleString() }}</p>
               <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
             </div>
             <div class="space-y-3">
@@ -89,10 +63,10 @@ const wards = computed(() => {
             <div class="mb-10 ml-6">
               <span :class="[index === 0 ? 'bg-yellow-500' : 'bg-gray-200']" class="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full"></span>
               <time class="mb-1 text-sm font-normal text-gray-400">
-                {{ new Date(location.created_at).toLocaleDateString() }}
-                <br>{{ new Date(location.created_at).toLocaleTimeString() }}
+                {{ new Date(location?.created_at).toLocaleDateString() }}
+                <br>{{ new Date(location?.created_at).toLocaleTimeString() }}
               </time>
-              <p class="text-lg font-semibold text-gray-900">{{ location.note }}</p>
+              <p class="text-lg font-semibold text-gray-900">{{ location?.note }}</p>
               <p class="text-sm text-gray-500">{{ location.address }}</p>
             </div>
           </template>

@@ -25,4 +25,17 @@ class ShopOrderController extends Controller
             'total_money' => $total_money
         ]);
     }
+
+    public function getOrder($order_detail_id)
+    {
+        $shop_id = Auth::user()->shop->id;
+
+        $order = OrderDetail::query()
+            ->where('id', $order_detail_id)
+            ->whereHas('product', function ($query) use ($shop_id) {
+                $query->where('shop_id', $shop_id);
+            })->with(['product', 'order', 'locations'])->first();
+
+        return response()->json($order);
+    }
 }

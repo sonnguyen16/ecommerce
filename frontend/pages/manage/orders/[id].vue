@@ -1,24 +1,15 @@
 <script setup lang="ts">
 import type {OrderDetail} from "~/lib/schema";
-import Toast from "~/components/Toast.vue";
 
 definePageMeta({
   layout: 'admin',
+  middleware: 'auth'
 })
 
-const [provinceResponse, ordersResponse] = await Promise.all([
-  useFetchData({url: 'provinces', server: false}),
-  useFetchData({
-    url: `shop/orders`,
-    requiresToken: true,
-    server: false,
-  })
-])
-
-let data = ordersResponse?.data
-let provincesData = provinceResponse?.data
-
 const id = useRoute().params.id
+
+let { data: order_detail } = await useClientFetch<OrderDetail>(`shop/orders/${id}`)
+let { data: provincesData } = await useClientFetch<any>('provinces')
 
 const statuses = [
   { id: 1, name: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-600' },
@@ -27,39 +18,19 @@ const statuses = [
   { id: 4, name: 'Đã hủy', color: 'bg-red-100 text-red-600' },
 ]
 
-let order_detail = computed(() => {
-  return data?.value?.orders?.data?.find((order: any) => order.id == id)
-})
+const order = order_detail?.value?.order
 
-const order = computed(() => {
-  return order_detail?.value?.order
-})
+const province = provincesData?.value?.find((p: any) => p?.code == order?.province)
 
-const province = computed(() => {
-  return provincesData?.value?.find((p: any) => p?.code == order?.value?.province)
-})
+const district = province?.value?.districts?.find((d: any) => d?.code === order?.district)
 
-const district = computed(() => {
-  if(province){
-    return province?.value?.districts?.find((d: any) => d?.code === order?.value?.district)
-  }
-})
-
-const wards = computed(() => {
-  if(district){
-    return district?.value?.wards?.find((w: any) => w?.code === order?.value?.ward)
-  }
-})
+const wards = district?.value?.wards?.find((w: any) => w?.code === order?.ward)
 
 const form = ref({
   order_detail_id: id,
   status: order_detail?.value?.status,
   address: '',
   note: ''
-})
-
-watchEffect(() => {
-  form.value.status = order_detail?.value?.status
 })
 
 const errorList = ref({
@@ -73,36 +44,26 @@ const showToast = ref(false)
 const message = ref('')
 const type = ref('')
 const onSubmit = async () => {
-  try{
     clearError()
     submitting.value = true
-    await usePostData({
-      url: 'shop/orders/update',
+    const { data, error } : any = await useClientFetch(
+    'shop/orders/update', {
       method: 'POST',
       body: form.value,
-      requiresToken: true
     })
-
-    clearForm()
-    showToastFunc('Cập nhật trạng thái thành công', 'success')
-    const { data: refetchData } = await useFetchData({
-      url: `shop/orders`,
-      requiresToken: true,
-      server: false,
-      cache: false
-    })
-
-    data = refetchData
-  }catch (e: any){
-    if(e.status === 422){
-      errorList.value = e.data.errors
-    }else{
-      showToastFunc('Có lỗi xảy ra', 'error')
-      console.log(e.data)
-    }
-  }finally {
     submitting.value = false
-  }
+
+    if (error.value) {
+      if(error.value.status === 422){
+        errorList.value = error.value.data.errors
+      }else{
+        showToastFunc('Cập nhật trạng thái thất bại', 'error')
+      }
+    }else{
+      clearForm()
+      order_detail.value = data.value
+      showToastFunc('Cập nhật trạng thái thành công', 'success')
+    }
 }
 
 const clearError = () => {
@@ -112,7 +73,6 @@ const clearError = () => {
     note: []
   }
 }
-
 const clearForm = () => {
   form.value = {
     ...form.value,
@@ -120,7 +80,6 @@ const clearForm = () => {
     note: ''
   }
 }
-
 const showToastFunc = (msg: string, toastType: string) => {
   showToast.value = true
   message.value = msg
@@ -142,7 +101,7 @@ const showToastFunc = (msg: string, toastType: string) => {
            <div class="space-y-3">
              <p><strong>Tên: </strong>{{ order?.name }}</p>
              <p><strong>Số điện thoại: </strong>{{ order?.phone }}</p>
-             <p><strong>Ngày tạo: </strong>{{ new Date(order_detail?.created_at).toLocaleString() }}</p>
+             <p><strong>Ngày tạo: </strong>{{ new Date(order?.created_at).toLocaleString() }}</p>
              <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
            </div>
            <div class="space-y-3">
@@ -187,11 +146,11 @@ const showToastFunc = (msg: string, toastType: string) => {
               <div class="mb-10 ml-6">
                 <span :class="[index === 0 ? 'bg-yellow-500' : 'bg-gray-200']" class="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full"></span>
                 <time class="mb-1 text-sm font-normal text-gray-400">
-                  {{ new Date(location.created_at).toLocaleDateString() }}
-                  <br>{{ new Date(location.created_at).toLocaleTimeString() }}
+                  {{ new Date(location?.created_at).toLocaleDateString() }}
+                  <br>{{ new Date(location?.created_at).toLocaleTimeString() }}
                 </time>
-                <p class="text-lg font-semibold text-gray-900">{{ location.note }}</p>
-                <p class="text-sm text-gray-500">{{ location.address }}</p>
+                <p class="text-lg font-semibold text-gray-900">{{ location?.note }}</p>
+                <p class="text-sm text-gray-500">{{ location?.address }}</p>
               </div>
             </template>
             <template v-else>

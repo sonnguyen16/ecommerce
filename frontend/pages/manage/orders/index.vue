@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { DocumentIcon,  CurrencyDollarIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import {formatCash} from "~/lib/utils";
+import type {OrderDetail, PaginationData} from "~/lib/schema";
 
 definePageMeta({
   layout: 'admin',
+  middleware: 'auth'
 })
 
-let { data } : any = await useFetchData({
-  url: `shop/orders`,
-  requiresToken: true,
-  server: false,
-})
+let data : any = ref({})
 
 const fetchData = async (page: number) => {
-  const { data: newData, error }: any = await useFetchData({
-    url: `shop/orders?page=${page}`,
-    requiresToken: true,
-    server: false,
-    cache: false,
-  })
+  const { data: newData, error } = await useClientFetch<PaginationData<OrderDetail>>(`shop/orders?page=${page}`)
 
   if(!error.value) {
     data.value = newData.value
@@ -27,6 +20,7 @@ const fetchData = async (page: number) => {
   }
 }
 
+await fetchData(1)
 const goToPage = async (p: number) => {
   if (p > 0 && p <= data?.value?.orders?.last_page) {
     await fetchData(p)
