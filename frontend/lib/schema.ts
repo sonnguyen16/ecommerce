@@ -26,6 +26,7 @@ export interface Product {
     quantity: number;
     sold: number;
     thumbnail: string;
+    images: any[];
     attributes?: Record<string, any>;
     category_id: number;
     category: Category;

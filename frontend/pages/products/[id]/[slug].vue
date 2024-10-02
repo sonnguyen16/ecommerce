@@ -129,9 +129,9 @@ const showToastFunction = (msg: string, s: string) => {
                 <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="Book Cover" class="w-full rounded-lg border">
             </div>
             <div class="flex space-x-2">
-              <img src="/thumbnail1.png" alt="Thumbnail 1" class="w-20 h-20 object-cover rounded-md border-indigo-700 border-2">
-              <img src="/thumbnail2.png" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
-              <img src="/thumbnail3.png" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
+              <template v-for="image in product.images">
+                <img :src="MEDIA_ENDPOINT + image.path" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
+              </template>
             </div>
             <div class="text-gray-700 mt-4">
               <ul class="space-y-2">

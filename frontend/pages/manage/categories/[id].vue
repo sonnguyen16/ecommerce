@@ -113,7 +113,7 @@ const onFileChange = (e: any) => {
               <Loading v-if="submitting" />
               <span v-else>Lưu danh mục</span>
             </button>
-            <button @click.prevent="useRouter().back()" class="px-6 py-[10px] bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+            <button @click.prevent="navigateTo('/manage/categories')" class="px-6 py-[10px] bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
               <span>Thoát</span>
             </button>
           </div>

@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function getProducts()
     {
-        $products = Product::all();
+        $products = Product::with('images')->get();
         return response()->json($products);
     }
 }

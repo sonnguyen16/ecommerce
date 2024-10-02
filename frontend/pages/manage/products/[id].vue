@@ -25,6 +25,7 @@ const form = ref({
   seo_title: '',
   seo_url: '',
   attributes: '',
+  images: [],
 })
 
 const error_list = ref({
@@ -40,6 +41,7 @@ const error_list = ref({
   seo_title: [],
   seo_url: [],
   attributes: [],
+  images: [],
 })
 
 const submitting = ref(false)
@@ -71,9 +73,20 @@ const onSubmit = async () => {
     submitting.value = true
     let formData = new FormData()
     for (let key in form.value) {
-      // @ts-ignore
-      formData.append(key, form.value[key])
+        if(key !== 'images'){
+          // @ts-ignore
+          formData.append(key, form.value[key])
+        }
+        else{
+          for (let i = 0; i < form.value.images.length; i++) {
+            formData.append('images[]', form.value.images[i])
+          }
+        }
     }
+
+    formData.forEach((value, key) => {
+      console.log(key + ': ' + value);
+    })
 
     const {error} : any = await useClientFetch('shop/products/store',{
       method: 'POST',
@@ -119,6 +132,7 @@ const clearError = () => {
     seo_title: [],
     seo_url: [],
     attributes: [],
+    images: [],
   }
 }
 
@@ -137,6 +151,7 @@ const clearForm = () => {
     seo_title: '',
     seo_url: '',
     attributes: '',
+    images: [],
   }
 }
 
@@ -150,13 +165,25 @@ const onFileChange = (e: any) => {
   reader.readAsDataURL(file)
 }
 
+const onImagesChange =  (e: any) => {
+  form.value.images = e.target.files
+
+  for (let i = 0; i < e.target.files.length; i++) {
+    const reader = new FileReader()
+    reader.onload = (e: any) => {
+      document.getElementById(`image${i}`)?.setAttribute('src', e.target.result)
+    }
+    reader.readAsDataURL(e.target.files[i])
+  }
+}
+
 </script>
 
 <template>
     <h1 class="text-2xl">Quản lý sản phẩm</h1>
-    <div class="rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)]  bg-white">
-      <form enctype="multipart/form-data" id="form" @submit.prevent="onSubmit" class="max-w-7xl">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] bg-white flex flex-col">
+      <form enctype="multipart/form-data" id="form" @submit.prevent="onSubmit" >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Left Column -->
           <div>
             <div class="">
@@ -187,16 +214,6 @@ const onFileChange = (e: any) => {
             <div class="">
               <label for="quantity" class="block text-gray-600">Số lượng</label>
               <Input type="number" v-model="form.quantity" :errors="error_list?.quantity?.[0]" />
-            </div>
-
-            <div class="">
-              <label for="thumbnail" class="block text-gray-600">Thumbnail</label>
-              <input @change="onFileChange" type="file" id="thumbnail"
-                     :class="[error_list?.thumbnail?.[0] ? 'border border-red-500' : 'border border-gray-300']"
-                     class="rounded-lg border border-gray-300 w-full">
-              <InputError :message="error_list?.thumbnail?.[0]" />
-              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"
-                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg" />
             </div>
           </div>
 
@@ -229,16 +246,43 @@ const onFileChange = (e: any) => {
               <TextArea v-model="form.attributes" :errors="error_list?.attributes?.[0]" />
             </div>
 
-            <div class="mt-[10px] flex gap-2">
-              <button type="submit" class="px-6 py-[10px] bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
-                <Loading v-if="submitting" />
-                <span v-else>Lưu sản phẩm</span>
-              </button>
-              <button @click.prevent="useRouter().back()" class="px-6 py-[10px] bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
-                <span>Thoát</span>
-              </button>
+          </div>
+
+          <div>
+
+
+            <div class="">
+              <label for="thumbnail" class="block text-gray-600">Thumbnail</label>
+              <input @change="onFileChange" type="file" id="thumbnail"
+                     :class="[error_list?.thumbnail?.[0] ? 'border border-red-500' : 'border border-gray-300']"
+                     class="rounded-lg border border-gray-300 w-full">
+              <InputError :message="error_list?.thumbnail?.[0]" />
+              <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"
+                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg mb-5" />
+            </div>
+
+            <div class="">
+              <label for="images" class="block text-gray-600">Hình ảnh</label>
+              <input @change="onImagesChange" type="file" id="images" multiple
+                     :class="[error_list?.images?.[0] ? 'border border-red-500' : 'border border-gray-300']"
+                     class="rounded-lg border border-gray-300 w-full">
+              <InputError :message="error_list?.images?.[0]" />
+              <div class="flex-wrap flex gap-4">
+                <template v-for="(image, index) in form.images">
+                  <img alt="image" :id="`image${index}`" :src="MEDIA_ENDPOINT + image.path" class="w-28 h-28 object-cover rounded-lg" />
+                </template>
+              </div>
             </div>
           </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="px-6 py-[10px] bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+            <Loading v-if="submitting" />
+            <span v-else>Lưu sản phẩm</span>
+          </button>
+          <button @click.prevent="navigateTo('/manage/products')" class="px-6 py-[10px] bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+            <span>Thoát</span>
+          </button>
         </div>
       </form>
     </div>

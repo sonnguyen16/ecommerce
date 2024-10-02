@@ -16,7 +16,7 @@ export const useAuth = () => {
     }
 
     const fetchUser = async () => {
-        const { data } : any = await useClientFetch<{ data: User }>("profile");
+        const { data } = await useServerFetch("profile");
         user.value = data.value ?? null;
     }
 

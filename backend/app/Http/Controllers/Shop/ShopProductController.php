@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Models\ProductImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ class ShopProductController extends Controller
 
         $products = Product::query()
             ->where('shop_id', $shop_id)
-            ->with('category')
+            ->with(['category','images'])
             ->orderBy('created_at', 'desc');
 
         return response()->json($products->paginate(6));
@@ -31,7 +32,7 @@ class ShopProductController extends Controller
         $product = Product::query()
             ->where('id', $product_id)
             ->where('shop_id', $shop_id)
-            ->with('category')
+            ->with(['category','images'])
             ->first();
 
         return response()->json($product);
@@ -72,8 +73,25 @@ class ShopProductController extends Controller
             $validated['thumbnail'] = $validated['thumbnail']->store('products', 'public');
         }
 
-        Product::updateOrCreate(['id' => $validated['id']], $validated);
+        $product = Product::updateOrCreate(['id' => $validated['id']], $validated);
 
-        return response()->json(['message' => 'Thêm sản phẩm thành công']);
+        if($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
+                $images[] = $image->store('products', 'public');
+            }
+            $product->images()->createMany(array_map(function ($image) {
+                return ['path' => $image];
+            }, $images));
+        }
+
+        return response()->json(['message' => 'Thêm sản phẩm thành công', $request->all()]);
+    }
+
+    public function deleteImage(Request $request): JsonResponse
+    {
+        $image = ProductImage::find($request->image_id);
+        $image->delete();
+        return response()->json(['message' => 'Xóa ảnh thành công']);
     }
 }

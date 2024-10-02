@@ -1,6 +1,6 @@
 import type { UnwrapRef } from "vue";
 import type {NitroFetchOptions} from "nitropack";
-import  {type FetchContext} from "ofetch";
+import {type FetchContext} from "ofetch";
 
 export const useClientFetch = async <T = any>(
     target: string,
@@ -10,7 +10,7 @@ export const useClientFetch = async <T = any>(
     const error = ref<Error | null>(null);
 
     try {
-        const response = await $fetch<T>(target, {
+        const response = await $fetch(target, {
             ...options,
             baseURL: "/api",
             headers: {
@@ -19,6 +19,9 @@ export const useClientFetch = async <T = any>(
             },
             onResponseError(context: FetchContext){
                 console.error("Error response", context.response?._data);
+            },
+            onResponse(context: FetchContext){
+                console.log(context.response)
             }
         });
         data.value = (response ?? null) as UnwrapRef<T>;

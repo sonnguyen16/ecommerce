@@ -71,7 +71,7 @@ const clearError = () => {
           </div>
 
           <div class="">
-            <Input  v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
+            <Input v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
           </div>
 
           <button :disabled="submitting" type="submit" class="w-full bg-red-700 text-white py-2 mb-3 rounded-lg">

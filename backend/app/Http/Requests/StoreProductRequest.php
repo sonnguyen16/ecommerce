@@ -35,6 +35,7 @@ class StoreProductRequest extends FormRequest
             'seo_title' => 'nullable|string',
             'seo_description' => 'nullable|string',
             'seo_url' => 'nullable|string',
+            'images[]' => 'nullable',
         ];
     }
 
