@@ -60,4 +60,9 @@ const links = [
     <HomeFooter />
   </div>
 </template>
+<style scoped>
+* {
+  font-weight: 400 !important;
+}
+</style>
 

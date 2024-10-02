@@ -4,7 +4,7 @@
 
 <template>
   <footer class="">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+    <div class="grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 hidden md:grid">
       <div>
         <h2 class="font-semibold mb-2">Hỗ trợ khách hàng</h2>
         <ul class="space-y-1">

@@ -1,27 +1,52 @@
 <script lang="ts" setup>
 import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline";
-import type {Order} from "~/lib/schema";
+import type {OrderDetail, PaginationData} from "~/lib/schema";
+import Pagination from "~/components/admin/Pagination.vue";
 
 definePageMeta({
   layout: 'profile',
   middleware: 'auth'
 })
 
-const { data } = await useClientFetch('orders')
+const status = ref<string | number>('all')
+let order_details: Ref<PaginationData<OrderDetail> | null> = ref(null)
+const fetchData = async (p: number) => {
+  let { data } = await useClientFetch<PaginationData<OrderDetail>>(`orders?page=${p}&status=${status.value}`)
+  order_details.value = data?.value
+}
+
+onBeforeMount(async () => {
+  await fetchData(1)
+})
+
+watch(status, async () => {
+  await fetchData(1)
+})
+
+const isActived = (value: string | number) => {
+  return status.value == value ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-500'
+}
+
+const goToPage = async (p: number) => {
+  if (order_details?.value && p > 0 && p <= order_details?.value?.last_page) {
+    await fetchData(p)
+  }
+}
+
 
 </script>
 <template>
    <div class="bg-white rounded-md p-4">
      <!-- Header -->
-     <h1 class="text-2xl font-bold text-gray-800 mb-4">Đơn hàng của tôi</h1>
+     <h1 class="text-2xl font-semibold text-gray-800 mb-4">Đơn hàng của tôi</h1>
 
      <!-- Tabs -->
      <div class="flex space-x-4 border-b border-gray-300 mb-4">
-       <button class="text-blue-500 border-b-2 border-blue-500 py-2 px-4">Tất cả đơn</button>
-       <button class="text-gray-500 py-2 px-4">Chờ xác nhận</button>
-       <button class="text-gray-500 py-2 px-4">Đang vận chuyển</button>
-       <button class="text-gray-500 py-2 px-4">Đã giao</button>
-       <button class="text-gray-500 py-2 px-4">Đã hủy</button>
+       <button @click.prevent="status = 'all'" :class="[isActived('all'),'py-2 px-4']">Tất cả đơn</button>
+       <button @click.prevent="status = 1" :class="[isActived(1),'py-2 px-4']">Chờ xác nhận</button>
+       <button @click.prevent="status = 2" :class="[isActived(2),'py-2 px-4']">Đang vận chuyển</button>
+       <button @click.prevent="status = 3" :class="[isActived(3),'py-2 px-4']">Đã giao</button>
+       <button @click.prevent="status = 4" :class="[isActived(4),'py-2 px-4']">Đã hủy</button>
      </div>
 
      <!-- Search bar -->
@@ -36,20 +61,29 @@ const { data } = await useClientFetch('orders')
 
      <!-- Empty orders message -->
      <div class="">
-      <template v-if="data?.length == 0">
+      <template v-if="order_details?.data?.length == 0">
         <div class="flex justify-center mb-4">
           <img src="/empty-order.png" alt="Empty order illustration" class="w-60">
         </div>
         <p class="text-gray-500 text-center">Chưa có đơn hàng</p>
       </template>
-       <template v-if="data" v-for="(order, index) in data">
-         <Order :order="order" :index="index" />
+       <template v-if="order_details?.data?.length > 0" >
+         <div class="grid-cols-7 grid items-center px-3">
+           <div class="col-span-2 text-gray-500">Sản phẩm</div>
+           <div class="col-span-2 text-gray-500 text-center">Trạng thái</div>
+           <div class="col-span-1 text-gray-500 text-center">Đơn giá</div>
+           <div class="col-span-1 text-gray-500 text-center">Số lượng</div>
+           <div class="col-span-1 text-gray-500 text-end">Tổng tiền</div>
+         </div>
+         <template v-for="order in order_details.data">
+           <OrderDetail :orderdetail="order" />
+         </template>
+         <Pagination
+             :pagination_data="order_details"
+             @page-change="goToPage"
+         />
        </template>
      </div>
    </div>
 </template>
-<style scoped>
-* {
-  font-weight: 400;
-}
-</style>
+

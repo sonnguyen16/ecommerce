@@ -49,8 +49,10 @@ export const refreshTokenFunc = async (event: H3Event, apiUrl: string) => {
             return tokens.access_token.token;
         }
     } catch (error) {
+        console.error(error);
         deleteCookie(event, 'refresh_token');
         deleteCookie(event, 'access_token');
+        deleteCookie(event, 'expire_time');
         return null;
     }
 };

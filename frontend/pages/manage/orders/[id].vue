@@ -22,9 +22,9 @@ const order = order_detail?.value?.order
 
 const province = provincesData?.value?.find((p: any) => p?.code == order?.province)
 
-const district = province?.value?.districts?.find((d: any) => d?.code === order?.district)
+const district = province?.districts?.find((d: any) => d?.code === order?.district)
 
-const wards = district?.value?.wards?.find((w: any) => w?.code === order?.ward)
+const wards = district?.wards?.find((w: any) => w?.code === order?.ward)
 
 const form = ref({
   order_detail_id: id,

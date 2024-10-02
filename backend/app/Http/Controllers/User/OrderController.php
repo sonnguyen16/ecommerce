@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -43,13 +44,18 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getOrders()
+    public function getOrders(Request $request)
     {
-        $orders = Order::where('user_id', Auth::id())
-            ->with('orderDetails.product', 'orderDetails.order', 'orderDetails.locations')
-            ->orderBy('id', 'desc')->get();
+        $orders = OrderDetail::query()
+            ->whereHas('order', function ($query){
+                $query->where('user_id', Auth::id());
+            })->with(['product', 'order'])->orderBy('created_at', 'desc');
 
-        return response()->json($orders);
+        if($request->filled('status') && $request->status != 'all') {
+            $orders->where('status', $request->status);
+        }
+
+        return response()->json($orders->paginate(5));
     }
 
     public function getOrder($order_detail_id)

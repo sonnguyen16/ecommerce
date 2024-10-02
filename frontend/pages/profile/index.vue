@@ -51,7 +51,7 @@ const errorList = ref({
 
 const divAvatar = ref<HTMLElement | null>(null);
 
-let { data: profileData }  = await useClientFetch<User>("profile")
+let profileData = ref(await useAuth().getUser())
 let { data: provincesData }  = await useClientFetch("provinces")
 
 if (profileData?.value) {
@@ -136,6 +136,7 @@ const onSubmit = async () => {
       }
     }else{
       showToastFunc('Cập nhật thông tin thành công', 'success')
+      await useAuth().fetchUser()
     }
 }
 
