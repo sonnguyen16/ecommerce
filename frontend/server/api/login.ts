@@ -11,30 +11,31 @@ export default defineEventHandler(async (event: H3Event) => {
             body
         })
 
-        const { app_url } = useAppConfig()
+        const domain = 'brtgo.vn';
 
         if (tokens) {
             setCookie(event, 'access_token', tokens.access_token.token, {
-                domain: app_url,
+                domain: domain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
-            })
+            });
             setCookie(event, 'refresh_token', tokens.refresh_token.token, {
-                domain: app_url,
+                domain: domain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
-            })
+            });
             setCookie(event, 'expire_time', tokens.expire_time, {
-                domain: app_url,
+                domain: domain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
-            })
+            });
+            return tokens.access_token.token;
         }
     } catch (error: any) {
         throw createError(error)
