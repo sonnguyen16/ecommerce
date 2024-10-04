@@ -11,23 +11,25 @@ export default defineEventHandler(async (event: H3Event) => {
             body
         })
 
+        const { app_url } = useAppConfig()
+
         if (tokens) {
             setCookie(event, 'access_token', tokens.access_token.token, {
-                domain: 'localhost',
+                domain: app_url,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
             })
             setCookie(event, 'refresh_token', tokens.refresh_token.token, {
-                domain: 'localhost',
+                domain: app_url,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
             })
             setCookie(event, 'expire_time', tokens.expire_time, {
-                domain: 'localhost',
+                domain: app_url,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
