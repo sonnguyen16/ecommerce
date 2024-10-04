@@ -20,9 +20,6 @@ export const useClientFetch = async <T = any>(
             onResponseError(context: FetchContext){
                 console.error("Error response", context.response?._data);
             },
-            onResponse(context: FetchContext){
-                console.log(context.response)
-            }
         });
         data.value = (response ?? null) as UnwrapRef<T>;
     } catch (err) {
