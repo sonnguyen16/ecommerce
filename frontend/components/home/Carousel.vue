@@ -1,6 +1,6 @@
 <script setup>
 
-const isMobile = ref(window.innerWidth < 1024)
+const isMobile = window === undefined ? false : window.innerWidth < 1024;
 
 onMounted(() => {
   useFlowbite(() => {
@@ -17,7 +17,7 @@ onMounted(() => {
       }
     ];
 
-    if (isMobile.value) {
+    if (isMobile) {
       items = [
         {
           position: 0,
@@ -47,7 +47,7 @@ onMounted(() => {
       onChange: () => {}
     };
 
-   watch(isMobile, () => {
+
      const carousel = new Carousel(carouselElement, items, options);
      carousel.cycle()
      // set event listeners for prev and next buttons
@@ -61,7 +61,6 @@ onMounted(() => {
      });
    })
 
-  })
 })
 </script>
 

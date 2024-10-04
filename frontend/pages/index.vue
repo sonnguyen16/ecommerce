@@ -5,9 +5,7 @@
       </div>
       <div class="xl:col-span-5 col-span-full space-y-5">
         <div class="rounded-xl lg:bg-white lg:p-5">
-          <ClientOnly>
             <HomeCarousel/>
-          </ClientOnly>
         </div>
 <!--        <div class="rounded-xl bg-white p-4">-->
 <!--          <div class="grid lg:grid-cols-10 gap-4 grid-cols-5">-->

@@ -61,7 +61,8 @@ if (profileData?.value) {
     district: profileData.value.district || '',
     ward: profileData.value.ward || '',
     gender: profileData.value.gender || 1,
-    birthday: profileData.value.birthday || '2000-01-01'
+    birthday: profileData.value.birthday || '2000-01-01',
+    address: profileData.value.address || ''
   }
 
   watchEffect(() => {
