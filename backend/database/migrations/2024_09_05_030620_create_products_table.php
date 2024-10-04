@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->integer('sold')->default(0);
             $table->string('thumbnail');
-            $table->json('attributes')->nullable();
+            $table->text('attributes')->nullable();
             $table->foreignId('category_id')->unsigned();
             $table->foreignId('shop_id')->unsigned();
             $table->string('seo_title')->nullable();
