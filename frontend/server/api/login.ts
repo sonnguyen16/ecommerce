@@ -1,7 +1,7 @@
 import {H3Event, setCookie} from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
-    const { apiUrl } = useRuntimeConfig().public;
+    const { apiUrl } = useRuntimeConfig().private;
     const body = await readBody(event);
 
     try {
@@ -11,25 +11,25 @@ export default defineEventHandler(async (event: H3Event) => {
             body
         })
 
-        const domain = 'brtgo.vn';
+        let { cookieDomain } = useRuntimeConfig().public;
 
         if (tokens) {
             setCookie(event, 'access_token', tokens.access_token.token, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
             });
             setCookie(event, 'refresh_token', tokens.refresh_token.token, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
             });
             setCookie(event, 'expire_time', tokens.expire_time, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",

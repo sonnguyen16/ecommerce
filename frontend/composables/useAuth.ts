@@ -11,14 +11,10 @@ export const useAuth = () => {
        return user.value
     }
 
-    const isLoggedIn = async () => {
-        return Boolean(await getUser())
-    }
-
     const fetchUser = async () => {
         const { data } = await useServerFetch("profile");
         user.value = data.value ?? null;
     }
 
-    return { user, getUser, isLoggedIn, fetchUser };
+    return { user, getUser, fetchUser };
 };

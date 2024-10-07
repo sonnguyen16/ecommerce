@@ -8,12 +8,13 @@ import {
     CameraIcon
 } from "@heroicons/vue/24/outline";
 import type {User} from "~/lib/schema";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
    layout: 'profile',
    middleware: 'auth'
 })
+
+const { mediaUrl } = useRuntimeConfig().public
 
 const genderOptions = [
   {code: 1, name: 'Nam'},
@@ -67,7 +68,7 @@ if (profileData?.value) {
 
   watchEffect(() => {
     if(divAvatar.value){
-      divAvatar.value.style.backgroundImage = `url(${MEDIA_ENDPOINT + profileData?.value?.avatar})`
+      divAvatar.value.style.backgroundImage = `url(${mediaUrl + profileData?.value?.avatar})`
       divAvatar.value.style.backgroundSize = 'cover'
       divAvatar.value.style.backgroundPosition = 'center'
     }
@@ -173,61 +174,59 @@ const clearError = () => {
 </script>
 <template>
     <div class="bg-white rounded-md p-4">
-      <div class="grid grid-cols-10">
-        <div class="col-span-6  border-r-[1px] pr-10">
+      <div class="grid md:grid-cols-10">
+        <div class="col-span-6 md:border-r-[1px] md:pr-10">
           <form @submit.prevent="onSubmit">
-            <div class="grid grid-cols-5 gap-5">
+            <div class="grid md:grid-cols-5">
               <div class="col-span-5">
-                <h3 class="text-xl font-semibold">Thông tin cá nhân</h3>
+                <h3 class="text-xl font-semibold mb-5">Thông tin cá nhân</h3>
               </div>
-              <div class="flex space-x-4">
-                <div ref="divAvatar" class="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center relative">
-                  <div class="absolute bottom-0 right-0 bg-gray-200 rounded-full p-1 border border-white">
-                    <label for="avatar" class="cursor-pointer">
-                      <CameraIcon class="h-6 w-6 text-gray-600" />
-                    </label>
-                    <input @change="onFileChange" type="file" id="avatar" class="hidden" />
-                  </div>
+              <div ref="divAvatar" class="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center relative md:mb-0 mb-5 mx-auto">
+                <div class="absolute bottom-0 right-0 bg-gray-200 rounded-full p-1 border border-white">
+                  <label for="avatar" class="cursor-pointer">
+                    <CameraIcon class="h-6 w-6 text-gray-600" />
+                  </label>
+                  <input @change="onFileChange" type="file" id="avatar" class="hidden" />
                 </div>
               </div>
-              <div class="col-span-4">
+              <div class="col-span-5 md:col-span-4 ms-3">
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700 font-medium">Họ & Tên</label>
-                  <Input class="w-4/5" v-model="form.name" type="text" placeholder="Nhập họ tên" :errors="errorList.name?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700 font-medium">Họ & Tên</label>
+                  <Input class="md:w-4/5 w-4/6" v-model="form.name" type="text" placeholder="Nhập họ tên" :errors="errorList.name?.[0]"/>
                 </div>
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700">Ngày sinh</label>
-                  <Input class="w-4/5" v-model="form.birthday" type="date" :errors="errorList.birthday?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Ngày sinh</label>
+                  <Input class="md:w-4/5 w-4/6" v-model="form.birthday" type="date" :errors="errorList.birthday?.[0]"/>
                 </div>
               </div>
               <div class="col-span-5 ms-3">
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700">Giới tính</label>
-                  <Select class="w-4/5" optionDefault="Chọn giới tính" :options="genderOptions" v-model="form.gender" :errors="errorList.gender?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Giới tính</label>
+                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn giới tính" :options="genderOptions" v-model="form.gender" :errors="errorList.gender?.[0]"/>
                 </div>
 
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700">Tỉnh/Thành phố</label>
-                  <Select class="w-4/5" optionDefault="Chọn tỉnh/thành phố" v-model="form.province" :options="provincesData" :errors="errorList.province?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Tỉnh/T.phố</label>
+                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn tỉnh/thành phố" v-model="form.province" :options="provincesData" :errors="errorList.province?.[0]"/>
                 </div>
 
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700">Quận/Huyện</label>
-                  <Select class="w-4/5" optionDefault="Chọn quận/huyện" v-model="form.district" :options="districts"  :errors="errorList.district?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Quận/Huyện</label>
+                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn quận/huyện" v-model="form.district" :options="districts"  :errors="errorList.district?.[0]"/>
                 </div>
 
                 <div class="flex">
-                  <label class="w-1/5 text-gray-700">Phường/Xã</label>
-                  <Select class="w-4/5" optionDefault="Chọn phường/xã" v-model="form.ward" :options="wards"  :errors="errorList.ward?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Phường/Xã</label>
+                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn phường/xã" v-model="form.ward" :options="wards"  :errors="errorList.ward?.[0]"/>
                 </div>
 
                 <div class="flex ">
-                  <label class="w-1/5 text-gray-700">Địa chỉ</label>
-                  <Input class="w-4/5" v-model="form.address" type="text" placeholder="Nhập địa chỉ" :errors="errorList.address?.[0]"/>
+                  <label class="md:w-1/5 w-2/6 text-gray-700">Địa chỉ</label>
+                  <Input class="md:w-4/5 w-4/6" v-model="form.address" type="text" placeholder="Nhập địa chỉ" :errors="errorList.address?.[0]"/>
                 </div>
 
                 <button type="submit"
-                        class="bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 ms-[20%]">
+                        class="bg-blue-500 text-white rounded py-2 px-4 hover:bg-blue-600 md:ms-[20%]">
                   <Loading v-if="submitting" />
                   <span v-else>Cập nhật</span>
                 </button>
@@ -236,7 +235,7 @@ const clearError = () => {
           </form>
         </div>
 
-        <div class="col-span-4 ps-10 space-y-8">
+        <div class="col-span-4 md:ps-10 ps-3 md:mt-0 mt-5 space-y-8">
           <div class="mt-5">
             <h2 class="font-bold text-gray-800">Số điện thoại và email</h2>
             <div class="flex items-center justify-between py-3">

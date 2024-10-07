@@ -24,9 +24,9 @@ const total = computed(() => {
       .reduce((acc, c) => acc + c.product.sale_price * c.quantity, 0)
 })
 
-const { isLoggedIn } = useAuth()
+const user = await useAuth().getUser()
 
-if(await isLoggedIn()) {
+if(user) {
   const { data } : any = await useClientFetch('cart');
   cart = data || []
 }
@@ -72,7 +72,7 @@ const deleteProduct = (id: number) => {
 };
 
 const updateCart = async () => {
-  if(await isLoggedIn()){
+  if(user){
     await useClientFetch(
       'add-many-to-cart', {
         body: { carts: cart.value || [] },
@@ -95,7 +95,7 @@ const order = async () => {
     return
   }
 
-  if(!await isLoggedIn()){
+  if(!user){
     showToastFunction('Vui lòng đăng nhập', 'error')
     return
   }
@@ -174,50 +174,54 @@ const addProduct = (id: number) => {
 <template>
     <div class="">
         <h1 class="text-2xl mb-3 font-semibold">Giỏ hàng</h1>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:gap-4 md:space-y-0 space-y-4">
           <!-- Left Column -->
           <div class="col-span-3 space-y-4">
             <!-- Cart Header -->
 
             <!-- Cart Header with 7 Columns -->
-            <div class="bg-white p-4 rounded-lg">
-              <div class="grid grid-cols-8 items-center">
-                <!-- First Column: Checkbox and Text -->
-                <div class="flex items-center col-span-3">
-                  <input @change="addAllProduct" type="checkbox" class="h-5 w-5 border border-gray-300 rounded-md"/>
-                  <span class="ml-2 text-gray-700 font-semibold">Tất cả ({{ cart?.length }} sản phẩm)</span>
+            <div class="w-full overflow-x-auto">
+              <div class="min-w-[600px] space-y-4">
+                <div class="bg-white p-4 rounded-lg">
+                  <div class="grid grid-cols-8 items-center">
+                    <!-- First Column: Checkbox and Text -->
+                    <div class="flex items-center col-span-3">
+                      <input @change="addAllProduct" type="checkbox" class="h-5 w-5 border border-gray-300 rounded-md"/>
+                      <span class="ml-2 text-gray-700 font-semibold">Tất cả ({{ cart?.length }} sản phẩm)</span>
+                    </div>
+                    <!-- Second to Seventh Column: Labels -->
+                    <div class="text-gray-500 col-span-2 text-center">Đơn giá</div>
+                    <div class="text-gray-500 text-center">Số lượng</div>
+                    <div class="text-gray-500 text-end">Thành tiền</div>
+                    <div class="text-end">
+                      <TrashIcon class="h-5 w-5 ms-auto" />
+                    </div>
+                  </div>
                 </div>
-                <!-- Second to Seventh Column: Labels -->
-                <div class="text-gray-500 col-span-2 text-center">Đơn giá</div>
-                <div class="text-gray-500 text-center">Số lượng</div>
-                <div class="text-gray-500 text-end">Thành tiền</div>
-                <div class="text-end">
-                  <TrashIcon class="h-5 w-5 ms-auto" />
+
+                <div class="bg-white p-4 rounded-lg">
+                  <!-- Promotion -->
+                  <div class="bg-orange-100 p-2 rounded-lg text-orange-600 text-sm">
+                    Mua 3, giảm 5%
+                  </div>
+
+
+                  <div v-if="cart">
+                    <ProductCart
+                        v-for="c in cart"
+                        :key="c.id"
+                        :product="c.product"
+                        :quantity="c.quantity"
+                        :checked="ticked.includes(c.id)"
+                        @ticked="addProduct"
+                        @increment="increment"
+                        @decrement="decrement"
+                        @delete="deleteProduct"
+                    />
+                  </div>
+
                 </div>
               </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-lg">
-              <!-- Promotion -->
-              <div class="bg-orange-100 p-2 rounded-lg text-orange-600 text-sm">
-                Mua 3, giảm 5%
-              </div>
-
-
-              <template v-if="cart">
-                <ProductCart
-                    v-for="c in cart"
-                    :key="c.id"
-                    :product="c.product"
-                    :quantity="c.quantity"
-                    :checked="ticked.includes(c.id)"
-                    @ticked="addProduct"
-                    @increment="increment"
-                    @decrement="decrement"
-                    @delete="deleteProduct"
-                />
-              </template>
-
             </div>
           </div>
 
@@ -265,18 +269,9 @@ const addProduct = (id: number) => {
                 <span v-else>Mua Hàng ({{ ticked?.length }})</span>
               </button>
             </div>
-
-            <div class="bg-white p-4 rounded-lg">
-              <!-- Promotional Banner -->
-              <div class="">
-                <img src="/slide.jpg" alt="Promotion" class="rounded-lg" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
   <Toast :message="message" :type="status" :show="showToast"/>
 </template>
 
-<style scoped>
-</style>

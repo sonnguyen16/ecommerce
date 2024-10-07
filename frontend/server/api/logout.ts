@@ -2,7 +2,7 @@ import { H3Event } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
     const accessToken = getCookie(event, 'access_token');
-    const { apiUrl } = useRuntimeConfig().public;
+    const { apiUrl } = useRuntimeConfig().private;
 
     try {
         await $fetch("logout", {

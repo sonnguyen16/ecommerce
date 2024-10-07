@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { DocumentIcon, PencilSquareIcon} from "@heroicons/vue/24/outline";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 import type {Category, PaginationData} from "~/lib/schema";
 
 definePageMeta({
@@ -27,6 +26,8 @@ const goToPage = async (p: number) => {
     await fetchData(p)
   }
 }
+
+const { mediaUrl } = useRuntimeConfig().public
 </script>
 
 <template>
@@ -38,7 +39,7 @@ const goToPage = async (p: number) => {
     </div>
 
     <div class="flex gap-4">
-      <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg basis-1/6">
+      <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
         <div class="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full">
           <DocumentIcon class="w-6 h-6" />
         </div>
@@ -49,31 +50,35 @@ const goToPage = async (p: number) => {
       </div>
     </div>
 
-    <div class="mt-6 bg-gray-100 p-4 rounded-lg">
-      <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
-        <div class="flex items-center">
-          <span class="ml-2">Mã danh mục</span>
+    <div class="w-full overflow-x-auto">
+      <div class="min-w-[800px]">
+        <div class="mt-6 bg-gray-100 p-4 rounded-lg">
+          <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
+            <div class="flex items-center">
+              <span class="ml-2">Mã danh mục</span>
+            </div>
+            <div>Hình ảnh</div>
+            <div>Tên danh mục</div>
+            <div>Ngày tạo</div>
+            <div>Thao tác</div>
+          </div>
         </div>
-        <div>Hình ảnh</div>
-        <div>Tên danh mục</div>
-        <div>Ngày tạo</div>
-        <div>Thao tác</div>
-      </div>
-    </div>
-    <div v-if="data?.data?.length > 0">
-      <div v-for="(category, i) in data.data" :class="i === 0 ? 'px-4 pb-4' : 'p-4'" class="grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
-        <div class="flex items-center">
-          <NuxtLink :to="`/manage/categories/${category.id}`" class="ml-2 text-blue-500 hover:underline">{{ category.id }}</NuxtLink>
-        </div>
-        <div>
-          <img :src="MEDIA_ENDPOINT + category.image" alt="category" class="w-16 h-16 object-cover rounded-lg">
-        </div>
-        <div>{{ category.name }}</div>
-        <div>{{ new Date(category.created_at).toLocaleDateString() }}</div>
-        <div>
-          <NuxtLink :to="`/manage/categories/${category.id}`" class="text-indigo-500 p-3">
-            <PencilSquareIcon class="w-5 h-5 inline-block" />  Sửa
-          </NuxtLink>
+        <div v-if="data?.data?.length > 0">
+          <div v-for="(category, i) in data.data" class="px-4 grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
+            <div class="flex items-center">
+              <NuxtLink :to="`/manage/categories/${category.id}`" class="ml-2 text-blue-500 hover:underline">{{ category.id }}</NuxtLink>
+            </div>
+            <div class="py-[5px]">
+              <img :src="mediaUrl + category.image" alt="category" class="w-11 h-11 object-cover rounded-lg">
+            </div>
+            <div>{{ category.name }}</div>
+            <div>{{ new Date(category.created_at).toLocaleDateString() }}</div>
+            <div>
+              <NuxtLink :to="`/manage/categories/${category.id}`" class="text-indigo-500 p-3">
+                <PencilSquareIcon class="w-5 h-5 inline-block" />  Sửa
+              </NuxtLink>
+            </div>
+          </div>
         </div>
       </div>
     </div>

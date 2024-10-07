@@ -94,10 +94,10 @@ const showToastFunc = (msg: string, toastType: string) => {
 <template>
     <h1 class="text-2xl">Quản lý đơn hàng</h1>
     <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5 grid md:grid-cols-3 gap-10">
-      <div class="col-span-2">
+      <div class="col-span-2 w-full overflow-x-auto">
         <div class="ps-3 space-y-3">
           <h2 class="text-xl font-semibold mb-3 text-indigo-700">Thông tin khách hàng</h2>
-         <div class="flex gap-6">
+         <div class="flex gap-6 min-w-[600px]">
            <div class="space-y-3">
              <p><strong>Tên: </strong>{{ order?.name }}</p>
              <p><strong>Số điện thoại: </strong>{{ order?.phone }}</p>
@@ -113,18 +113,20 @@ const showToastFunc = (msg: string, toastType: string) => {
         </div>
         <div class="ps-3 mt-5">
           <h2 class="text-xl font-semibold mb-3 text-indigo-700">Chi tiết đơn hàng</h2>
-          <div class="grid-cols-7 grid items-center bg-gray-200 p-3 rounded-xl mb-3">
-            <div class="col-span-2 text-gray-500">
-              <p class="text-gray-700 ps-3">
-                Mã đơn hàng: <span class="text-blue-700">{{ order_detail?.id }}</span>
-              </p>
-            </div>
-            <div class="col-span-2 text-gray-500 text-center">Trạng thái</div>
-            <div class="col-span-1 text-gray-500 text-center">Đơn giá</div>
-            <div class="col-span-1 text-gray-500 text-center">Số lượng</div>
-            <div class="col-span-1 text-gray-500 text-end">Tổng tiền</div>
+          <div class="">
+              <div class="grid-cols-7 grid items-center bg-gray-200 p-3 rounded-xl mb-3 min-w-[600px]">
+                <div class="col-span-2 text-gray-500">
+                  <p class="text-gray-700 ps-3">
+                    Mã đơn hàng: <span class="text-blue-700">{{ order_detail?.id }}</span>
+                  </p>
+                </div>
+                <div class="col-span-2 text-gray-500 text-center">Trạng thái</div>
+                <div class="col-span-1 text-gray-500 text-center">Đơn giá</div>
+                <div class="col-span-1 text-gray-500 text-center">Số lượng</div>
+                <div class="col-span-1 text-gray-500 text-end">Tổng tiền</div>
+              </div>
+              <OrderDetail class="min-w-[600px]" v-if="order_detail" :orderdetail="order_detail" />
           </div>
-          <OrderDetail v-if="order_detail" :orderdetail="order_detail" />
         </div>
         <div class="ps-3 mt-5">
           <h2 class="text-xl font-semibold mb-3 text-indigo-700">Cập nhật trạng thái</h2>

@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
     if (url?.startsWith("/api") && event.node.req.headers.authorization) {
         return;
     }
-    const { apiUrl } = useRuntimeConfig().public;
+    const { apiUrl } = useRuntimeConfig().private;
     let accessToken = getCookie(event, 'access_token');
     let expireTime = getCookie(event, 'expire_time');
     if (!isTokenValid(expireTime ?? null) || !accessToken) {

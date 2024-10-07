@@ -51,7 +51,7 @@ const statuses = [
       </div>
 
       <div class="flex gap-4">
-          <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg basis-1/6">
+          <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
             <div class="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full">
               <DocumentIcon class="w-6 h-6" />
             </div>
@@ -61,7 +61,7 @@ const statuses = [
             </div>
           </div>
 
-          <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg basis-1/6">
+          <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
             <div class="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full">
               <CurrencyDollarIcon class="w-6 h-6" />
             </div>
@@ -72,37 +72,41 @@ const statuses = [
           </div>
       </div>
 
-      <div class="mt-6 bg-gray-100 p-4 rounded-lg">
-        <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
-          <div class="flex items-center">
-            <span class="ml-2">Mã Đơn Hàng</span>
+      <div class="w-full overflow-x-auto">
+        <div class="min-w-[900px]">
+          <div class="mt-5 bg-gray-100 p-4 rounded-lg overflow-x-auto">
+            <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500 min-w-[800px]">
+              <div class="flex items-center">
+                <span class="ml-2">Mã Đơn Hàng</span>
+              </div>
+              <div>Trạng Thái</div>
+              <div>Khách Hàng</div>
+              <div>Tổng Tiền</div>
+              <div>PT. Thanh Toán</div>
+              <div>Ngày Đặt Hàng</div>
+              <div>Thao tác</div>
+            </div>
           </div>
-          <div>Trạng Thái</div>
-          <div>Khách Hàng</div>
-          <div>Tổng Tiền</div>
-          <div>PT. Thanh Toán</div>
-          <div>Ngày Đặt Hàng</div>
-          <div>Thao tác</div>
-        </div>
-      </div>
-      <div v-if="data?.orders?.data?.length">
-        <div v-for="(ord_detail, _) in data?.orders?.data" :class="_ === 0 ? 'px-4 pb-4' : 'p-4'" class="grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
-          <div class="flex items-center">
-            <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="ml-2 text-blue-500 hover:underline">{{ ord_detail.id }}</NuxtLink>
-          </div>
-          <div>
+          <div v-if="data?.orders?.data?.length">
+            <div v-for="ord_detail in data?.orders?.data" class=" p-4 grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
+              <div class="flex items-center">
+                <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="ml-2 text-blue-500 hover:underline">{{ ord_detail.id }}</NuxtLink>
+              </div>
+              <div>
             <span :class="statuses.find(status => status.id === ord_detail.status).color" class="px-2 py-1 rounded-full">
               {{ statuses.find(s => s.id === ord_detail.status).value }}
             </span>
-          </div>
-          <div>{{ ord_detail.order.name }}</div>
-          <div>{{ formatCash(ord_detail.total.toString()) }} đ</div>
-          <div>Tiền mặt</div>
-          <div>{{ new Date(ord_detail.created_at).toLocaleString() }}</div>
-          <div class="flex gap-4">
-            <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="text-blue-500 hover:underline flex items-center">
-              <EyeIcon class="w-5 h-5" /> Xem
-            </NuxtLink>
+              </div>
+              <div>{{ ord_detail.order.name }}</div>
+              <div>{{ formatCash(ord_detail.total.toString()) }} đ</div>
+              <div>Tiền mặt</div>
+              <div>{{ new Date(ord_detail.created_at).toLocaleString() }}</div>
+              <div class="flex gap-4">
+                <NuxtLink :to="`/manage/orders/${ord_detail.id}`" class="text-blue-500 hover:underline flex items-center">
+                  <EyeIcon class="w-5 h-5" /> Xem
+                </NuxtLink>
+              </div>
+            </div>
           </div>
         </div>
       </div>

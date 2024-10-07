@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type {Category} from "~/lib/schema";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
   layout: 'admin',
   middleware: 'auth'
 })
+
+const { mediaUrl } = useRuntimeConfig().public
+
+const { app_url } = useAppConfig()
 
 const id = useRoute().params.id
 
@@ -105,7 +108,7 @@ const onFileChange = (e: any) => {
                    class="rounded-lg border border-gray-300 w-full">
             <InputError :message="errorList?.image?.[0]" />
             <img id="img_thumbnail" alt="thumbnail" v-if="form.image"
-                 :src="MEDIA_ENDPOINT + form.image" class="w-28 h-28 object-cover rounded-lg" />
+                 :src="mediaUrl + form.image" class="w-28 h-28 object-cover rounded-lg" />
           </div>
 
           <div class="mt-[10px] flex gap-2">

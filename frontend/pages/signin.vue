@@ -79,7 +79,7 @@ const clearError = () => {
             <span v-else>Đăng nhập</span>
           </button>
         </form>
-        <span class="text-gray-500 block text-center">Chưa có tài khoản? <nuxt-link to="/register" class="text-blue-500">Đăng ký</nuxt-link></span>
+        <span class="text-gray-500 block text-center">Chưa có tài khoản? <nuxt-link to="/signup" class="text-blue-500">Đăng ký</nuxt-link></span>
       </div>
     </div>
   <Toast :show="showToast"

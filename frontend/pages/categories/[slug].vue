@@ -19,23 +19,24 @@
 </template>
 <script setup lang="ts">
 import type {Category, Product} from "~/lib/schema";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 
 definePageMeta({
   layout: 'main'
 })
 
+const { mediaUrl, appUrl } = useRuntimeConfig().public
+
 const { data } = await useServerFetch<Product[]>('products')
 
 const { data: categories } = await useServerFetch<Category[]>('categories')
 
-const category_id = useRoute().params.category_id
+const { slug } = useRoute().params
 
-const category = categories?.value?.find((c: any) => c.id == category_id)
+const category = categories?.value?.find((c: Category) => c.slug == slug) || null
 
-const filterProducts = data?.value?.filter((product: any) => product.category_id == category_id)
+const filterProducts = data?.value?.filter((product: any) => product.category_id == category?.id)
 
-const { title, app_url, icon, description } = useAppConfig()
+const { title, icon, description } = useAppConfig()
 
 const seo_title = title + ' - ' + category?.name
 
@@ -44,13 +45,13 @@ useSeoMeta({
   description: seo_title,
   ogTitle: seo_title,
   ogDescription: seo_title,
-  ogImage: MEDIA_ENDPOINT + category?.image,
-  ogUrl: app_url + `/${category_id}/${category?.slug}`,
+  ogImage: mediaUrl + category?.image,
+  ogUrl: appUrl + `/${category?.slug}`,
   ogSiteName: seo_title,
   ogType: 'article',
   twitterTitle: seo_title,
   twitterDescription: seo_title,
-  twitterImage: MEDIA_ENDPOINT + category?.image,
+  twitterImage: mediaUrl + category?.image,
   twitterCard: 'summary_large_image'
 })
 

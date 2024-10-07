@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { TrashIcon } from "@heroicons/vue/24/outline";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
 
@@ -35,6 +34,9 @@ const decrement = () => {
 const deleteProduct = () => {
   emits("delete", props.product.id);
 }
+
+const { mediaUrl } = useRuntimeConfig().public
+
 </script>
 <template>
   <div class="">
@@ -50,12 +52,12 @@ const deleteProduct = () => {
           class="h-5 w-5 border border-gray-300 rounded-md me-2"
         />
         <img
-          :src="MEDIA_ENDPOINT + product.thumbnail"
+          :src="mediaUrl + product.thumbnail"
           alt="Product Image"
           class="w-24 rounded-xl"
         />
         <div class="ms-2">
-          <p class="font-semibold text-gray-700">
+          <p class="font-semibold text-gray-700 line-clamp-2">
             {{ product.name }}
           </p>
           <img src="/chinhhang.png" alt="chinhhang" class="w-[80px] lg:block inline-block mt-2">

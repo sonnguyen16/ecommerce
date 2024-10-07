@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen">
-    <div :class="isCollapsed ? 'w-[50px]' : 'w-[280px]'" class="transition-all duration-300">
+    <div :class="isCollapsed ? 'w-[50px]' : 'w-[280px]'" class="transition-all duration-300 md:block hidden">
       <div  :class="isCollapsed ? 'justify-center' : ''" class="flex items-center h-[56px] px-4 bg-blue-500 text-white ">
         <button @click="toggleSidebar">
           <Bars3Icon class="h-7 w-7" />

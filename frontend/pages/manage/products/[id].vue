@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 import type {Category} from "~/lib/schema";
 
 definePageMeta({
   layout: 'admin',
   middleware: 'auth'
 })
+
+const { mediaUrl } = useRuntimeConfig().public
 
 const { data } = await useClientFetch<Category[]>(`categories`)
 
@@ -245,12 +246,9 @@ const onImagesChange =  (e: any) => {
               <label for="attributes" class="block text-gray-600">Thuộc tính</label>
               <TextArea v-model="form.attributes" :errors="error_list?.attributes?.[0]" />
             </div>
-
           </div>
 
           <div>
-
-
             <div class="">
               <label for="thumbnail" class="block text-gray-600">Thumbnail</label>
               <input @change="onFileChange" type="file" id="thumbnail"
@@ -258,7 +256,7 @@ const onImagesChange =  (e: any) => {
                      class="rounded-lg border border-gray-300 w-full">
               <InputError :message="error_list?.thumbnail?.[0]" />
               <img id="img_thumbnail" alt="thumbnail" v-if="form.thumbnail"
-                   :src="MEDIA_ENDPOINT + form.thumbnail" class="w-28 h-28 object-cover rounded-lg mb-5" />
+                   :src="mediaUrl + form.thumbnail" class="w-28 h-28 object-cover rounded-lg mb-5" />
             </div>
 
             <div class="">
@@ -269,7 +267,7 @@ const onImagesChange =  (e: any) => {
               <InputError :message="error_list?.images?.[0]" />
               <div class="flex-wrap flex gap-4">
                 <template v-for="(image, index) in form.images">
-                  <img alt="image" :id="`image${index}`" :src="MEDIA_ENDPOINT + image.path" class="w-28 h-28 object-cover rounded-lg" />
+                  <img alt="image" :id="`image${index}`" :src="mediaUrl + image.path" class="w-28 h-28 object-cover rounded-lg" />
                 </template>
               </div>
             </div>

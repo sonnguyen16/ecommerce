@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon} from "@heroicons/vue/24/solid";
 import {ref} from "vue";
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {Product} from "~/lib/schema";
 
@@ -9,7 +8,7 @@ definePageMeta({
   layout: 'main'
 })
 
-const { app_url } = useAppConfig()
+const { mediaUrl, appUrl } = useRuntimeConfig().public
 
 const { data } = await useServerFetch<Product[]>('products')
 
@@ -17,14 +16,14 @@ const showFullDescription = ref<Boolean>(false);
 
 const route = useRoute()
 
-const id = route.params.id
+const { slug } = route.params
 
-const product: Product = data?.value?.find((item: Product) => String(item.id ) === id) as Product
+const product: Product = data?.value?.find((item: Product) => item.slug === slug) as Product
 
 const discount = Math.round((product.price - product.sale_price) / product.price * 100);
 
 const form = ref({
-  product_id: id,
+  product_id: product.id,
   quantity: 1,
   total: product.sale_price
 })
@@ -44,13 +43,13 @@ useSeoMeta({
   description: product.seo_description,
   ogTitle: product.seo_title,
   ogDescription: product.seo_description,
-  ogImage: MEDIA_ENDPOINT + product.thumbnail,
-  ogUrl: app_url + `/products/${id}/${product.seo_url}`,
+  ogImage: mediaUrl + product.thumbnail,
+  ogUrl: appUrl + `/products/${product.seo_url}`,
   ogSiteName: product.seo_title,
   ogType: 'article',
   twitterTitle: product.seo_title,
   twitterDescription: product.seo_description,
-  twitterImage: MEDIA_ENDPOINT + product.thumbnail,
+  twitterImage: mediaUrl + product.thumbnail,
   twitterCard: 'summary_large_image'
 })
 
@@ -67,15 +66,15 @@ const decreaseQuantity = () => {
 }
 
 const addToCart = async () => {
-  const { isLoggedIn } = useAuth()
+  const user = await useAuth().getUser()
 
-  if(!await isLoggedIn()){
+  if(user){
     let cart = []
     if(localStorage.getItem('cart')){
       cart = JSON.parse(localStorage.getItem('cart') as string)
     }
 
-    const productIndex = cart.findIndex((item: any) => item.product_id === id)
+    const productIndex = cart.findIndex((item: any) => item.product_id === product.id)
     if(productIndex > -1){
       cart[productIndex].quantity += form.value.quantity
     }else{
@@ -126,11 +125,11 @@ const showToastFunction = (msg: string, s: string) => {
         <div class="col-span-1">
           <div class="bg-white rounded-xl p-5 space-y-4 sticky top-3">
             <div class="image-gallery">
-                <img :src="MEDIA_ENDPOINT + product.thumbnail" alt="Book Cover" class="w-full rounded-lg border">
+                <img :src="mediaUrl + product.thumbnail" alt="Book Cover" class="w-full rounded-lg border">
             </div>
             <div class="flex space-x-2">
               <template v-for="image in product.images">
-                <img :src="MEDIA_ENDPOINT + image.path" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
+                <img :src="mediaUrl + image.path" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-md border">
               </template>
             </div>
             <div class="text-gray-700 mt-4">
@@ -228,7 +227,7 @@ const showToastFunction = (msg: string, s: string) => {
             <p class="text-xl mb-3">Sản phẩm tương tự</p>
             <div class="flex gap-3 lg:flex-wrap lg:overflow-hidden overflow-x-auto">
               <template v-for="p in data">
-                <Product v-if="p.id != id && p.category_id == product.category_id" class="basis-[130px]" :product="p"/>
+                <Product v-if="p.id !== product.id && p.category_id == product.category_id" class="basis-[130px]" :product="p"/>
               </template>
             </div>
           </div>

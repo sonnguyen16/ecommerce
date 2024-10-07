@@ -47,6 +47,22 @@ Route::middleware('auth:sanctum')->group(function (){
     });
 });
 
+Route::get('media/{filename}', function ($filename){
+    $path = storage_path('app/public/' . $filename);
+    if (!file_exists($path)){
+        abort(404);
+    }
+    return response()->file($path);
+});
+
+Route::get('media/{folder}/{filename}', function ($folder, $filename){
+    $path = storage_path('app/public/' . $folder . '/' . $filename);
+    if (!file_exists($path)){
+        abort(404);
+    }
+    return response()->file($path);
+});
+
 Route::get('provinces', function (){
     $jsonContent = Storage::disk('local')->get('province.json');
     $data = json_decode($jsonContent, true);

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {MEDIA_ENDPOINT} from "~/lib/constants";
 import {formatCash} from "~/lib/utils";
 import type {OrderDetail} from "~/lib/schema";
 
@@ -23,6 +22,8 @@ const viewDetail = () => {
   }
 }
 
+const { mediaUrl } = useRuntimeConfig().public
+
 </script>
 
 <template>
@@ -31,7 +32,7 @@ const viewDetail = () => {
       <div class="col-span-2">
         <div class="flex items-center space-x-2">
           <img
-              :src="MEDIA_ENDPOINT + orderdetail.product.thumbnail"
+              :src="mediaUrl + orderdetail.product.thumbnail"
               alt="Product Image"
               class="w-24"
           />

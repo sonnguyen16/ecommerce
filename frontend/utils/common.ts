@@ -23,25 +23,25 @@ export const refreshTokenFunc = async (event: H3Event, apiUrl: string) => {
             }
         });
 
-        const domain = 'brtgo.vn';
+        const { cookieDomain } = useRuntimeConfig().public;
 
         if (tokens) {
             setCookie(event, 'access_token', tokens.access_token.token, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
             });
             setCookie(event, 'refresh_token', tokens.refresh_token.token, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
             });
             setCookie(event, 'expire_time', tokens.expire_time, {
-                domain: domain,
+                domain: cookieDomain,
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",

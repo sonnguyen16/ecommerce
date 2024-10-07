@@ -7,7 +7,8 @@
 </template>
 <script setup lang="ts">
 
-const { title, app_url, icon, description } = useAppConfig()
+const { title, icon, description } = useAppConfig()
+const { appUrl } = useRuntimeConfig().public
 
 useHead({
   title: title,
@@ -29,7 +30,7 @@ useSeoMeta({
   ogTitle: title,
   ogDescription: description,
   ogImage: icon,
-  ogUrl: app_url,
+  ogUrl: appUrl,
   twitterTitle: title,
   twitterDescription: description,
   twitterImage: icon,
@@ -37,4 +38,12 @@ useSeoMeta({
 })
 
 </script>
+
+<style scoped>
+*{
+  scrollbar-width: thin;
+  scrollbar-color: #f3f4f6 #d1d5db;
+}
+</style>
+
 

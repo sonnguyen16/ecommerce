@@ -29,14 +29,27 @@ const links = [
     to: '/manage/orders'
   }
 ]
+
+const showCategoryMenu = ref(false)
+const showCategories = () => {
+  showCategoryMenu.value = !showCategoryMenu.value
+}
+
+if(process.client){
+  document.addEventListener('click', (e: any) => {
+    if(e.target.closest('#mobile-navigation') === null){
+      showCategoryMenu.value = false
+    }
+  })
+}
 </script>
 <template>
   <HomeNavbar />
   <div id="body" class="bg-[#f5f5fa] py-4">
     <div class="container">
       <span class="text-gray-400 font-normal">Trang chủ > Tài khoản</span>
-      <div class="grid grid-cols-10 gap-4 mt-3">
-        <div class="col-span-2">
+      <div class="grid md:grid-cols-10 gap-4 mt-3">
+        <div class="md:block hidden col-span-2">
           <ul class="space-y-2">
             <li v-for="link in links">
               <NuxtLink :class="[route.path === link.to && 'bg-gray-200', 'flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md']" :to="link.to">
@@ -56,6 +69,9 @@ const links = [
       </div>
     </div>
   </div>
+  <MobileNavigation @show-categories="showCategories" />
+  <MobileCategoryMenu :show="showCategoryMenu" />
+
   <div class="bg-white container my-8">
     <HomeFooter />
   </div>
