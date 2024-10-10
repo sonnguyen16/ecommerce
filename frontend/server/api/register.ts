@@ -17,21 +17,21 @@ export default defineEventHandler(async (event: H3Event) => {
             setCookie(event, 'access_token', tokens.access_token.token, {
                 domain: cookieDomain,
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
             });
             setCookie(event, 'refresh_token', tokens.refresh_token.token, {
                 domain: cookieDomain,
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.refresh_token.expires_at),
             });
             setCookie(event, 'expire_time', tokens.expire_time, {
                 domain: cookieDomain,
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: "strict",
                 expires: new Date(tokens.access_token.expires_at),
             });

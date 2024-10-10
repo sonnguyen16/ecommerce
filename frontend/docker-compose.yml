@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+  nuxt-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nuxt-app
+    container_name: nuxt-app
+    working_dir: /var/www
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+      - node_modules:/var/www/node_modules
+      - output:/var/www/.output
+    networks: 
+      - fe-network
+
+  webserver:
+    image: nginx:alpine
+    container_name: nginx-webserver-2
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - fe-network
+
+networks:
+  fe-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  output:
