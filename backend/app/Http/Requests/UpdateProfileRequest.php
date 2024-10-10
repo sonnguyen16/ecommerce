@@ -29,7 +29,7 @@ class UpdateProfileRequest extends FormRequest
             'district' => ['required', 'integer'],
             'ward' => ['required', 'integer'],
             'address' => ['required', 'string', 'max:255'],
-            'avatar' => ['nullable'],
+            'avatar' => ['nullable', 'max:2048'],
         ];
     }
 
