@@ -30,12 +30,12 @@ class StoreProductRequest extends FormRequest
             'unit' => 'required|string|max:255',
             'sale_price' => 'required|numeric|lte:price|min:1000',
             'quantity' => 'required|numeric',
-            'thumbnail' => 'required_without:id',
+            'thumbnail' => 'required_without:id|max:2048',
             'attributes' => 'required|string',
             'seo_title' => 'nullable|string',
             'seo_description' => 'nullable|string',
             'seo_url' => 'nullable|string',
-            'images[]' => 'nullable',
+            'images[]' => 'nullable|max:10240',
         ];
     }
 
@@ -67,11 +67,12 @@ class StoreProductRequest extends FormRequest
             'quantity.required' => 'Số lượng sản phẩm không được để trống',
             'quantity.numeric' => 'Số lượng sản phẩm phải là số',
             'thumbnail.required_without' => 'Ảnh sản phẩm không được để trống',
-            'thumbnail.image' => 'Ảnh sản phẩm phải là ảnh',
+            'thumbnail.max' => 'Ảnh sản phẩm không được vượt quá 2MB',
             'attributes.required' => 'Thuộc tính sản phẩm không được để trống',
             'attributes.string' => 'Thuộc tính sản phẩm phải là chuỗi',
             'seo_title.string' => 'Tiêu đề SEO phải là chuỗi',
             'seo_description.string' => 'Mô tả SEO phải là chuỗi',
+            'images[].max' => 'Ảnh sản phẩm không được vượt quá 10MB',
         ];
     }
 

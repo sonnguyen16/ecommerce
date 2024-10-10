@@ -133,6 +133,9 @@ const onSubmit = async () => {
     if(error.value) {
       if(error.value.status === 422){
         errorList.value = error.value.data.errors
+        if(error.value.data.errors.avatar){
+          showToastFunc(error.value.data.errors.avatar[0], 'error')
+        }
       }else {
         showToastFunc('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
       }

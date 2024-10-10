@@ -24,7 +24,7 @@ class StoreCategoryRequest extends FormRequest
         return [
             'id' => '',
             'name' => 'required|string|max:255',
-            'image' => 'required_without:id',
+            'image' => 'required_without:id|max:2048',
         ];
     }
 
@@ -40,6 +40,7 @@ class StoreCategoryRequest extends FormRequest
             'name.string' => 'Tên danh mục phải là chuỗi',
             'name.max' => 'Tên danh mục không được vượt quá 255 ký tự',
             'image.required_without' => 'Hình ảnh không được để trống',
+            'image.max' => 'Hình ảnh không được vượt quá 2MB',
         ];
     }
 }
