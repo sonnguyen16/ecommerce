@@ -56,6 +56,7 @@ class UpdateProfileRequest extends FormRequest
             'address.required' => 'Địa chỉ không được để trống',
             'address.string' => 'Địa chỉ phải là chuỗi',
             'address.max' => 'Địa chỉ không được quá 255 ký tự',
+            'avatar.max' => 'Hình ảnh không được vượt quá 2MB',
         ];
     }
 }
