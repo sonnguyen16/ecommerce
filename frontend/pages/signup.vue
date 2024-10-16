@@ -4,13 +4,6 @@ definePageMeta({
   layout: 'main'
 })
 
-let data = ref<any>([])
-
-onBeforeMount(async () => {
-  const { data: resData } = await useClientFetch<any>('provinces')
-  data.value = resData.value
-})
-
 const form = ref({
   name: '',
   phone: '',
@@ -20,6 +13,33 @@ const form = ref({
   district: '',
   ward: ''
 })
+
+let provinces  = ref<any | null>([])
+let districts = ref<any | null>([])
+let wards = ref<any | null>([])
+
+onBeforeMount(async () => {
+  const provinceData = await useClientFetch('provinces')
+  provinces.value = provinceData.data.value
+})
+
+watch(() => form.value.province, async (newVal) => {
+  if(newVal){
+    const { data } = await useClientFetch(`districts/${newVal}`)
+    districts.value = data.value
+    form.value.district = ''
+    form.value.ward = ''
+  }
+})
+
+watch(() => form.value.district, async (newVal) => {
+  if(newVal){
+    const { data } = await useClientFetch(`wards/${newVal}`)
+    wards.value = data.value
+    form.value.ward = ''
+  }
+})
+
 
 const submitting = ref(false)
 const showToast = ref(false)
@@ -34,20 +54,6 @@ const errorList = ref({
   province: [],
   district: [],
   ward: []
-})
-
-const districts = computed(() => {
-  if(form.value.province){
-    return data.value.find((item: any) => item.code === form.value.province)?.districts
-  }
-  return []
-})
-
-const wards = computed(() => {
-  if(form.value.district){
-    return districts.value.find((item: any) => item.code === form.value.district)?.wards
-  }
-  return []
 })
 
 const onSubmit = async () => {
@@ -116,7 +122,7 @@ const clearError = () => {
 
             <div class="">
               <Select optionDefault="Chọn tỉnh/thành phố"
-                      v-model="form.province" :options="data"
+                      v-model="form.province" :options="provinces"
                       :errors="errorList.province?.[0]"/>
             </div>
 

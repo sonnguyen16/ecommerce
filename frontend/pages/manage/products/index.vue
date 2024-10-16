@@ -14,6 +14,8 @@ let data : Ref<PaginationData<Product> | null> = ref(null)
 
 let { data: categoriesData } = await useClientFetch<Category[]>(`categories`)
 
+let num = ref(0)
+
 const fetchData = async (page: number) => {
   const { data: newData, error } = await useClientFetch<PaginationData<Product>>(`shop/products?page=${page}`)
 

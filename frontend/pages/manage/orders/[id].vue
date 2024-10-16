@@ -8,8 +8,15 @@ definePageMeta({
 
 const id = useRoute().params.id
 
-let { data: order_detail } = await useClientFetch<OrderDetail>(`shop/orders/${id}`)
-let { data: provincesData } = await useClientFetch<any>('provinces')
+let order_detail = ref<OrderDetail | null>()
+
+onMounted(async () => {
+  const { data } = await useClientFetch<OrderDetail>(`orders/${id}`)
+  order_detail.value = data.value
+  form.value.status = String(order_detail.value?.status)
+})
+
+const order = computed<any>(() => order_detail?.value?.order)
 
 const statuses = [
   { id: 1, name: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-600' },
@@ -18,17 +25,9 @@ const statuses = [
   { id: 4, name: 'Đã hủy', color: 'bg-red-100 text-red-600' },
 ]
 
-const order = order_detail?.value?.order
-
-const province = provincesData?.value?.find((p: any) => p?.code == order?.province)
-
-const district = province?.districts?.find((d: any) => d?.code === order?.district)
-
-const wards = district?.wards?.find((w: any) => w?.code === order?.ward)
-
 const form = ref({
   order_detail_id: id,
-  status: order_detail?.value?.status,
+  status: '',
   address: '',
   note: ''
 })
@@ -84,9 +83,6 @@ const showToastFunc = (msg: string, toastType: string) => {
   showToast.value = true
   message.value = msg
   type.value = toastType
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
 }
 
 </script>
@@ -105,9 +101,9 @@ const showToastFunc = (msg: string, toastType: string) => {
              <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
            </div>
            <div class="space-y-3">
-             <p><strong>Phường/Xã: </strong>{{ wards?.name }}</p>
-             <p><strong>Quận/Huyện: </strong>{{ district?.name }}</p>
-             <p><strong>Tỉnh/Thành phố: </strong>{{ province?.name }}</p>
+             <p><strong>Phường/Xã: </strong>{{ order?.ward?.name }}</p>
+             <p><strong>Quận/Huyện: </strong>{{ order?.district?.name }}</p>
+             <p><strong>Tỉnh/Thành phố: </strong>{{ order?.province?.name }}</p>
            </div>
          </div>
         </div>

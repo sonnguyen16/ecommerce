@@ -52,61 +52,47 @@ const errorList = ref({
 
 const divAvatar = ref<HTMLElement | null>(null);
 
-let profileData = ref<User | null>(await useAuth().getUser())
-let provincesData  = ref<any>([])
+let profile = await useAuth().getUser()
+let provinces  = ref<any | null>([])
+let districts = ref<any | null>([])
+let wards = ref<any | null>([])
 
 onBeforeMount(async () => {
-  const { data } = await useClientFetch<any>('provinces')
-  provincesData.value = data.value
-})
+  const provinceData = await useClientFetch('provinces')
+  provinces.value = provinceData.data.value
 
-if (profileData?.value) {
-  form.value = {
-    ...profileData.value,
-    province: profileData.value.province || '',
-    district: profileData.value.district || '',
-    ward: profileData.value.ward || '',
-    gender: profileData.value.gender || 1,
-    birthday: profileData.value.birthday || '2000-01-01',
-    address: profileData.value.address || ''
-  }
+  if (profile) {
+    form.value = profile
 
-  watchEffect(() => {
     if(divAvatar.value){
-      divAvatar.value.style.backgroundImage = `url(${mediaUrl + profileData?.value?.avatar})`
+      divAvatar.value.style.backgroundImage = `url(${mediaUrl + profile?.avatar})`
       divAvatar.value.style.backgroundSize = 'cover'
       divAvatar.value.style.backgroundPosition = 'center'
     }
-  })
-}
-
-const districts = computed(() => {
-  if(form.value.province){
-    return provincesData?.value?.find((item: any) => item.code == form.value.province)?.districts
-  }
-  return []
-})
-
-const wards = computed(() => {
-  if(form.value.district){
-    return districts?.value?.find((item: any) => item.code == form.value.district)?.wards
-  }
-  return []
-})
-
-watch(() => form.value.province, () => {
-  if(!districts.value.find((item: any) => item.code == form.value.district)){
-    form.value.district = ''
-    form.value.ward = ''
   }
 })
 
-watch(() => form.value.district, () => {
-  if(!wards.value.find((item: any) => item.code == form.value.ward)){
-    form.value.ward = ''
+
+watch(() => form.value.province, async (newVal, oldValue) => {
+  if(newVal){
+    const { data } = await useClientFetch(`districts/${newVal}`)
+    districts.value = data.value
+    if(oldValue){
+      form.value.district = ''
+      form.value.ward = ''
+    }
   }
 })
 
+watch(() => form.value.district, async (newVal, oldValue) => {
+  if(newVal){
+    const { data } = await useClientFetch(`wards/${newVal}`)
+    wards.value = data.value
+    if(oldValue){
+      form.value.ward = ''
+    }
+  }
+})
 
 const onFileChange = (e: any) => {
   const file = e.target.files[0]
@@ -124,13 +110,11 @@ const onFileChange = (e: any) => {
 
 const onSubmit = async () => {
     clearError()
-
     let formData = new FormData()
     for (const key in form.value) {
        //@ts-ignore
        formData.append(key, form.value[key])
     }
-
     submitting.value = true
     const { error } : any = await useClientFetch('profile/update', {method: 'POST', body: formData})
     submitting.value = false
@@ -215,7 +199,7 @@ const clearError = () => {
 
                 <div class="flex">
                   <label class="md:w-1/5 w-2/6 text-gray-700">Tỉnh/T.phố</label>
-                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn tỉnh/thành phố" v-model="form.province" :options="provincesData" :errors="errorList.province?.[0]"/>
+                  <Select class="md:w-4/5 w-4/6" optionDefault="Chọn tỉnh/thành phố" v-model="form.province" :options="provinces" :errors="errorList.province?.[0]"/>
                 </div>
 
                 <div class="flex">

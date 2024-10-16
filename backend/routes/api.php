@@ -8,9 +8,11 @@ use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProductController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Shop\ShipmentLocationController;
 use App\Http\Controllers\Shop\ShopCategoryController;
+use App\Models\Province;
+use App\Models\District;
+use App\Models\Ward;
 
 Route::get('products', [ProductController::class, 'getProducts']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
@@ -64,8 +66,17 @@ Route::get('media/{folder}/{filename}', function ($folder, $filename){
 });
 
 Route::get('provinces', function (){
-    $jsonContent = Storage::disk('local')->get('province.json');
-    $data = json_decode($jsonContent, true);
-    return response()->json($data);
+    $provinces = Province::all();
+    return response()->json($provinces);
+});
+
+Route::get('districts/{province_code}', function ($province_code){
+    $districts = District::where('province_code', $province_code)->get();
+    return response()->json($districts);
+});
+
+Route::get('wards/{district_code}', function ($district_code){
+    $wards = Ward::where('district_code', $district_code)->get();
+    return response()->json($wards);
 });
 

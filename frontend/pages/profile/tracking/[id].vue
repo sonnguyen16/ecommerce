@@ -8,27 +8,14 @@ definePageMeta({
 
 const id = useRoute().params.id
 
-let provincesData = ref<any>([])
-
 let order_detail = ref<OrderDetail | null>()
 
 onBeforeMount(async () => {
-  const [order, provinces] = await Promise.all([
-    useClientFetch<OrderDetail>(`orders/${id}`),
-    useClientFetch<any>('provinces')
-  ])
-
-  order_detail.value = order?.data.value
-  provincesData.value = provinces?.data.value
+  const { data } = await useClientFetch<OrderDetail>(`orders/${id}`)
+  order_detail.value = data.value
 })
 
-const order = computed(() => order_detail?.value?.order)
-
-const province = computed(() => provincesData.value.find((p: any) => p?.code === order?.value?.province))
-
-const district = computed(() => province?.value?.districts?.find((d: any) => d?.code === order?.value?.district))
-
-const wards = computed(() => district?.value?.wards?.find((w: any) => w?.code === order?.value?.ward))
+const order = computed<any>(() => order_detail?.value?.order)
 
 </script>
 <template>
@@ -44,9 +31,9 @@ const wards = computed(() => district?.value?.wards?.find((w: any) => w?.code ==
               <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
             </div>
             <div class="space-y-3">
-              <p><strong>Phường/Xã: </strong>{{ wards?.name }}</p>
-              <p><strong>Quận/Huyện: </strong>{{ district?.name }}</p>
-              <p><strong>Tỉnh/Thành phố: </strong>{{ province?.name }}</p>
+              <p><strong>Phường/Xã: </strong>{{ order?.province.name }}</p>
+              <p><strong>Quận/Huyện: </strong>{{  order?.district?.name }}</p>
+              <p><strong>Tỉnh/Thành phố: </strong>{{  order?.province?.name }}</p>
             </div>
           </div>
         </div>

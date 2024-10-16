@@ -64,7 +64,7 @@ class OrderController extends Controller
             ->where('id', $order_detail_id)
             ->whereHas('order', function ($query) {
                 $query->where('user_id', Auth::id());
-            })->with(['product', 'order', 'locations'])->first();
+            })->with(['product', 'order', 'locations', 'order.province', 'order.district', 'order.ward'])->first();
 
         return response()->json($order);
     }

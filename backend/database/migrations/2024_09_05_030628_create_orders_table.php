@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('user_id')->unsigned();
             $table->string('name');
             $table->string('phone');
-            $table->integer('province')->unsigned();
-            $table->integer('district')->unsigned();
-            $table->integer('ward')->unsigned();
+            $table->string('province');
+            $table->string('district');
+            $table->string('ward');
             $table->string('address');
             $table->integer('total')->unsigned();
             $table->timestamps();

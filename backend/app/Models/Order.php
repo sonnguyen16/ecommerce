@@ -10,7 +10,6 @@ class Order extends Model
     use HasFactory;
 
     protected $table = 'orders';
-
     protected $fillable = [
         'user_id',
         'total',
@@ -31,5 +30,20 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district', 'code');
+    }
+
+    public function ward()
+    {
+        return $this->belongsTo(Ward::class, 'ward', 'code');
     }
 }

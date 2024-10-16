@@ -24,6 +24,7 @@ class StoreShipmentLocationRequest extends FormRequest
         return [
             'order_detail_id' => ['required', 'integer'],
             'note' => ['nullable', 'string'],
+            'status' => ['required'],
             'address' => ['required', 'string'],
         ];
     }
@@ -38,6 +39,7 @@ class StoreShipmentLocationRequest extends FormRequest
         return [
             'order_detail_id.required' => 'Vui lòng nhập order_detail_id',
             'order_detail_id.integer' => 'order_detail_id phải là số',
+            'status.required' => 'Vui lòng nhập trạng thái',
             'note.string' => 'Ghi chú phải là chuỗi',
             'address.required' => 'Vui lòng nhập địa chỉ',
             'address.string' => 'Địa chỉ phải là chuỗi',
