@@ -57,7 +57,7 @@ let provinces  = ref<any | null>([])
 let districts = ref<any | null>([])
 let wards = ref<any | null>([])
 
-onBeforeMount(async () => {
+onMounted(async () => {
   const provinceData = await useClientFetch('provinces')
   provinces.value = provinceData.data.value
 
