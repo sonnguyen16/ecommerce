@@ -9,6 +9,7 @@ import {
 const route = useRoute()
 const logout = async () => {
   await useClientFetch('logout')
+  useAuth().user.value = null
   navigateTo('/signin')
 }
 

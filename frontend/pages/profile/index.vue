@@ -52,8 +52,13 @@ const errorList = ref({
 
 const divAvatar = ref<HTMLElement | null>(null);
 
-let profileData = ref(await useAuth().getUser())
-let { data: provincesData }  = await useClientFetch("provinces")
+let profileData = ref<User | null>(await useAuth().getUser())
+let provincesData  = ref<any>([])
+
+onBeforeMount(async () => {
+  const { data } = await useClientFetch<any>('provinces')
+  provincesData.value = data.value
+})
 
 if (profileData?.value) {
   form.value = {
@@ -84,7 +89,7 @@ const districts = computed(() => {
 
 const wards = computed(() => {
   if(form.value.district){
-    return districts.value.find((item: any) => item.code == form.value.district)?.wards
+    return districts?.value?.find((item: any) => item.code == form.value.district)?.wards
   }
   return []
 })

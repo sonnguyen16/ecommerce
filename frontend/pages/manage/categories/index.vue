@@ -19,7 +19,9 @@ const fetchData = async (page: number) => {
   }
 }
 
-await fetchData(1)
+onBeforeMount(async () => {
+  await fetchData(1)
+})
 
 const goToPage = async (p: number) => {
   if (data.value && p > 0 && p <= data.value.last_page) {

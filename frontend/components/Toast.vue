@@ -17,11 +17,22 @@ const props = defineProps({
   }
 })
 
+const refShow = ref(props.show)
+
+watch(() => props.show, (value) => {
+  refShow.value = value
+  if(value){
+    setTimeout(() => {
+      refShow.value = false
+    }, 3000)
+  }
+})
+
 
 </script>
 
 <template>
-  <div id="toast-top-right" :class="show ? 'right-5' : '-right-[300px]'" class="bottom-5 bg-white z-10 transition-all fixed duration-500 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg border border-1  dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">
+  <div id="toast-top-right" :class="refShow ? 'right-5' : '-right-[300px]'" class="bottom-5 bg-white z-10 transition-all fixed duration-500 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg border border-1  dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">
     <CheckBadgeIcon v-if="type === 'success'" class="w-8 h-8 text-green-500"/>
     <XCircleIcon v-else class="w-8 h-8 text-red-500"/>
     <div class="text-lg font-normal ps-3">{{ message }}</div>

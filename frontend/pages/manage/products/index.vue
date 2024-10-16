@@ -24,7 +24,9 @@ const fetchData = async (page: number) => {
   }
 }
 
-await fetchData(1)
+onBeforeMount(async () => {
+  await fetchData(1)
+})
 
 const goToPage = async (p: number) => {
   if (data.value && p > 0 && p <= data.value.last_page) {
@@ -52,7 +54,7 @@ const goToPage = async (p: number) => {
           </div>
           <div>
             <p class="text-sm font-medium text-gray-500">Tổng sản phẩm</p>
-            <p class="text-2xl font-semibold text-gray-900">{{ data.total }}</p>
+            <p class="text-2xl font-semibold text-gray-900">{{ data?.total }}</p>
           </div>
         </div>
       </div>
@@ -72,7 +74,7 @@ const goToPage = async (p: number) => {
               <div>Thao tác</div>
             </div>
           </div>
-          <div v-if="data.data.length > 0" class="mb-5">
+          <div v-if="data?.data?.length > 0" class="mb-5">
             <div v-for="(product, i) in data.data" class="grid px-4 grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
               <div class="flex items-center">
                 <NuxtLink :to="`/manage/products/${product.id}`" class="ml-2 text-blue-500 hover:underline">{{ product.id }}</NuxtLink>

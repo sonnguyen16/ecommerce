@@ -17,12 +17,10 @@ const errorList = ref({
 const onSubmit = async () => {
      clearError()
      submitting.value = true
-
      const { error } : any = await useClientFetch('login', {
        method: 'POST',
        body: form.value
      })
-
      submitting.value = false
 
      if(error.value){
@@ -46,9 +44,6 @@ const showToastFunc = (msg: string, toastType: string) => {
   showToast.value = true
   message.value = msg
   type.value = toastType
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
 }
 
 const clearError = () => {
@@ -67,19 +62,26 @@ const clearError = () => {
 
         <form @submit.prevent="onSubmit">
           <div class="">
-            <Input v-model="form.phone" type="text" placeholder="Nhập số điện thoại" :errors="errorList.phone?.[0]" />
+            <Input v-model="form.phone" type="text"
+                   placeholder="Nhập số điện thoại"
+                   :errors="errorList.phone?.[0]" />
           </div>
 
           <div class="">
-            <Input v-model="form.password" type="password" placeholder="Nhập mật khẩu" :errors="errorList.password?.[0]" />
+            <Input v-model="form.password" type="password"
+                   placeholder="Nhập mật khẩu"
+                   :errors="errorList.password?.[0]" />
           </div>
 
-          <button :disabled="submitting" type="submit" class="w-full bg-red-700 text-white py-2 mb-3 rounded-lg">
+          <button :disabled="submitting" type="submit"
+                  class="w-full bg-red-700 text-white py-2 mb-3 rounded-lg">
             <Loading v-if="submitting" />
             <span v-else>Đăng nhập</span>
           </button>
         </form>
-        <span class="text-gray-500 block text-center">Chưa có tài khoản? <nuxt-link to="/signup" class="text-blue-500">Đăng ký</nuxt-link></span>
+        <span class="text-gray-500 block text-center">
+          Chưa có tài khoản? <nuxt-link to="/signup" class="text-blue-500">Đăng ký</nuxt-link>
+        </span>
       </div>
     </div>
   <Toast :show="showToast"

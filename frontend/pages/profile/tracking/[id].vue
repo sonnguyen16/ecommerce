@@ -8,17 +8,27 @@ definePageMeta({
 
 const id = useRoute().params.id
 
-let { data: provincesData }  = await useClientFetch(`provinces`)
+let provincesData = ref<any>([])
 
-let { data: order_detail } = await useClientFetch<OrderDetail>(`orders/${id}`)
+let order_detail = ref<OrderDetail | null>()
 
-const order = order_detail?.value?.order
+onBeforeMount(async () => {
+  const [order, provinces] = await Promise.all([
+    useClientFetch<OrderDetail>(`orders/${id}`),
+    useClientFetch<any>('provinces')
+  ])
 
-const province = provincesData?.value?.find((p: any) => p?.code == order?.province)
+  order_detail.value = order?.data.value
+  provincesData.value = provinces?.data.value
+})
 
-const district = province?.districts?.find((d: any) => d?.code === order?.district)
+const order = computed(() => order_detail?.value?.order)
 
-const wards = district?.wards?.find((w: any) => w?.code === order?.ward)
+const province = computed(() => provincesData.value.find((p: any) => p?.code === order?.value?.province))
+
+const district = computed(() => province?.value?.districts?.find((d: any) => d?.code === order?.value?.district))
+
+const wards = computed(() => district?.value?.wards?.find((w: any) => w?.code === order?.value?.ward))
 
 </script>
 <template>

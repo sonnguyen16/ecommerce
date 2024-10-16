@@ -9,8 +9,6 @@ definePageMeta({
 
 let cart: Ref<Cart[]> = ref([]);
 
-const { data: profileData } = await useServerFetch('profile')
-
 const ticked: Ref<number[]> = ref([])
 
 const message = ref('Thêm vào giỏ hàng thành công')
@@ -27,8 +25,8 @@ const total = computed(() => {
 const user = await useAuth().getUser()
 
 if(user) {
-  const { data } : any = await useClientFetch('cart');
-  cart = data || []
+  const { data } : any = await useClientFetch<Cart[]>('cart');
+  cart.value = data.value || []
 }
 
 if(process.client){
@@ -100,9 +98,9 @@ const order = async () => {
     return
   }
 
-  if(!profileData?.value?.phone || !profileData?.value?.province
-      || !profileData?.value?.district || !profileData?.value?.ward
-      || !profileData?.value?.address){
+  if(!user?.phone || !user?.province
+      || !user?.district || !user?.ward
+      || !user?.address){
     showToastFunction('Vui lòng cập nhật thông tin cá nhân', 'error')
     return
   }
@@ -120,12 +118,12 @@ const order = async () => {
   submitting.value = true
   const { error } = await useClientFetch('order', {
     body: {
-      name: profileData?.value?.name,
-      phone: profileData?.value?.phone,
-      province: profileData?.value?.province,
-      district: profileData?.value?.district,
-      ward: profileData?.value?.ward,
-      address: profileData?.value?.address,
+      name: user?.name,
+      phone: user?.phone,
+      province: user?.province,
+      district: user?.district,
+      ward: user?.ward,
+      address: user?.address,
       total,
       products
     },
@@ -146,9 +144,6 @@ const showToastFunction = (msg: string, s: string) => {
   message.value = msg
   status.value = s
   showToast.value = true
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
 }
 
 const addAllProduct = (e: any) => {
