@@ -15,7 +15,6 @@ jobs:
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       SSH_USER: ${{ secrets.SSH_USER }}
       ECOSYSTEM_PATH: ./ecosystem.config.cjs
-      NODE_PATH: /root/.nvm/versions/node/v22.9.0/bin/node
       YARN_PATH: /root/.nvm/versions/node/v22.9.0/bin/yarn
       PM2_PATH: /root/.nvm/versions/node/v22.9.0/bin/pm2
     outputs:
