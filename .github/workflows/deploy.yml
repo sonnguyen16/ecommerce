@@ -49,7 +49,7 @@ jobs:
 
             # Check process
             if pm2 list | grep '${{ env.PROCESS_NAME }}'; then
-              echo "Dừng và xoá process..."
+              echo "Dừng và xoá process.."
               pm2 stop ${{ env.PROCESS_NAME }}
               pm2 delete ${{ env.PROCESS_NAME }}
             else
