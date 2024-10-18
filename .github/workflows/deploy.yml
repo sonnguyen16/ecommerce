@@ -32,6 +32,12 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Add npm and yarn global packages to PATH
+        run: |
+          echo "${HOME}/.npm-global/bin" >> $GITHUB_ENV
+          echo "${HOME}/.yarn/bin" >> $GITHUB_ENV
+          echo "$(npm config get prefix)/bin" >> $GITHUB_ENV
+
       - name: Install yarn
         run: npm install -g yarn
 
