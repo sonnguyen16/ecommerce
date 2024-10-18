@@ -1,0 +1,46 @@
+name: deploy_nuxt_app
+
+on:
+  push:
+    branches:
+      - main  # Chạy workflow khi có code được đẩy lên nhánh "main"
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code từ repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Thiết lập Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'  # Phiên bản Node.js phù hợp cho Nuxt.js
+
+      # Cài đặt dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Deploy lên server bằng SSH (sử dụng rsync hoặc scp)
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Khóa SSH đã được cấu hình trong GitHub Secrets
+          SERVER_USER: ${{ secrets.SERVER_USER }}          # Tên user SSH (root hoặc user khác)
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}          # Địa chỉ IP hoặc domain của server
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}          # Thư mục deploy trên server
+        run: |
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+          
+          # Pull code về và stop PM2 process ID 5
+          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && git pull origin main && pm2 stop 5"
+
+          # Build project
+          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && npm install && npm run build"
+
+          # Start lại PM2 process ID 5
+          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && pm2 start 5"
