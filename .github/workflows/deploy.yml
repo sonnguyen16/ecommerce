@@ -10,20 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code từ repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Thiết lập Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22.x'  # Phiên bản Node.js phù hợp cho Nuxt.js
-
-      # Cài đặt dependencies
-      - name: Install dependencies
-        run: npm install
-
+      - name: Get Commit Message
+        id: get_commit_message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+          echo "::set-output name=commit_message::$COMMIT_MESSAGE"
       # Deploy lên server bằng SSH (sử dụng rsync hoặc scp)
       - name: Deploy to server
         env:
@@ -32,6 +26,8 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}          # Địa chỉ IP hoặc domain của server
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}          # Thư mục deploy trên server
         run: |
+          echo "Deploying..."
+          
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           mkdir -p ~/.ssh
           ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
@@ -44,3 +40,5 @@ jobs:
 
           # Start lại PM2 process ID 5
           ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && pm2 start 5"
+          
+          echo 'Deploy thành công!'
