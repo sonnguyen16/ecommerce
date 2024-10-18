@@ -60,7 +60,7 @@ jobs:
             fi
 
             # Chạy pm2
-            ${{ env.PM2_PATH }} start ${{ env.ECOSYSTEM_PATH }} --env production
+            ${{ env.PM2_PATH }} start ${{ env.ECOSYSTEM_PATH }} ----interpreter /root/.nvm/versions/node/v22.9.0/bin/node --env production
 
             echo 'Deploy thành công!'
           EOF
