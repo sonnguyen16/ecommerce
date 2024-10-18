@@ -25,9 +25,9 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:6',
-            'province' => 'required|integer',
-            'district' => 'required|integer',
-            'ward' => 'required|integer',
+            'province' => 'required|string',
+            'district' => 'required|string',
+            'ward' => 'required|string',
             'address' => 'required|string',
         ];
     }
