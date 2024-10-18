@@ -15,17 +15,13 @@ jobs:
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       SSH_USER: ${{ secrets.SSH_USER }}
       ECOSYSTEM_PATH: ./ecosystem.config.cjs
-      YARN_PATH: /root/.nvm/versions/node/v22.9.0/bin/yarn
+      NPM_PATH: /root/.nvm/versions/node/v22.9.0/bin/npm
       PM2_PATH: /root/.nvm/versions/node/v22.9.0/bin/pm2
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '22'
 
       - name: Get Commit Message
         id: get_commit_message
@@ -50,8 +46,8 @@ jobs:
             git pull 
           
             # Cài đặt các dependencies
-            ${{ env.YARN_PATH }} install
-            ${{ env.YARN_PATH }} build
+            ${{ env.NPM_PATH }} install
+            ${{ env.NPM_PATH }} build
 
             # Check process
             if ${{ env.PM2_PATH }} list | grep '${{ env.PROCESS_NAME }}'; then
