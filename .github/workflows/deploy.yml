@@ -44,7 +44,7 @@ jobs:
             git pull 
           
             # Cài đặt các dependencies
-            npm install
+            npm i
             npm run build
 
             # Check process
