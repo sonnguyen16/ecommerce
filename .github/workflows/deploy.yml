@@ -9,12 +9,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROCESS_NAME: nuxt-app
+      PROCESS_NAME: index
       PROJECT_PATH: /var/www/ecommerce/frontend
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       SSH_USER: ${{ secrets.SSH_USER }}
       ECOSYSTEM_PATH: ./ecosystem.config.cjs
+      YARN_PATH: /root/.nvm/versions/node/v22.9.0/bin/yarn
+      PM2_PATH: /root/.nvm/versions/node/v22.9.0/bin/pm2
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
@@ -44,14 +46,14 @@ jobs:
             git pull 
           
             # Cài đặt các dependencies
-            yarn install
-            yarn build
+            ${{ env.YARN_PATH }} install
+            ${{ env.YARN_PATH }} build
 
             # Check process
-            if pm2 list | grep '${{ env.PROCESS_NAME }}'; then
+            if ${{ env.PM2_PATH }} list | grep '${{ env.PROCESS_NAME }}'; then
               echo "Dừng và xoá process..."
-              pm2 stop ${{ env.PROCESS_NAME }}
-              pm2 delete ${{ env.PROCESS_NAME }}
+              ${{ env.PM2_PATH }} stop ${{ env.PROCESS_NAME }}
+              ${{ env.PM2_PATH }} delete ${{ env.PROCESS_NAME }}
             else
               echo "Không có process hoạt động."
             fi
