@@ -19,28 +19,13 @@ jobs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Get Commit Message
         id: get_commit_message
         run: |
           COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
           echo "::set-output name=commit_message::$COMMIT_MESSAGE"
-
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22'
-
-      - name: Add npm and yarn global packages to PATH
-        run: |
-          echo "PATH=${HOME}/.npm-global/bin:${HOME}/.yarn/bin:$(npm config get prefix)/bin:$PATH" >> $GITHUB_ENV
-
-      - name: Install yarn
-        run: npm install -g yarn
-
-      - name: Install pm2
-        run: npm install -g pm2
 
       - name: Set up SSH
         run: |
