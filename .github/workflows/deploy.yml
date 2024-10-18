@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROCESS_NAME: index
+      PROCESS_NAME: nuxt-app
       PROJECT_PATH: /var/www/ecommerce/frontend
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
@@ -18,18 +18,6 @@ jobs:
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22' # hoặc phiên bản Node.js bạn đang sử dụng
-
-      - name: Install PM2
-        run: |
-          npm install -g pm2
-
       - name: Get Commit Message
         id: get_commit_message
         run: |
@@ -49,15 +37,15 @@ jobs:
           sshpass -p "$SSH_PASSWORD" ssh $SSH_USER@$SSH_HOST << EOF
             cd ${{ env.PROJECT_PATH }}
             # Pull từ git về 
-            git checkout -- package-lock.json package.json
+            git checkout -- yarn.lock package-lock.json package.json
             git pull 
           
             # Cài đặt các dependencies
-            npm install
-            npm run build
+            yarn install
+            yarn build
 
             # Check process
-            if pm2 list | grep -q '${{ env.PROCESS_NAME }}'; then
+            if pm2 list | grep '${{ env.PROCESS_NAME }}'; then
               echo "Dừng và xoá process..."
               pm2 stop ${{ env.PROCESS_NAME }}
               pm2 delete ${{ env.PROCESS_NAME }}
