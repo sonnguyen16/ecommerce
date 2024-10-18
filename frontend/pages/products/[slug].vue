@@ -68,7 +68,7 @@ const decreaseQuantity = () => {
 const addToCart = async () => {
   const user = await useAuth().getUser()
 
-  if(user){
+  if(!user){
     let cart = []
     if(localStorage.getItem('cart')){
       cart = JSON.parse(localStorage.getItem('cart') as string)
