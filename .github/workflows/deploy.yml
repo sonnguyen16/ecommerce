@@ -1,14 +1,22 @@
-name: deploy_nuxt_app
+name: nuxt_deploy
 
 on:
   push:
     branches:
-      - main  # Chạy workflow khi có code được đẩy lên nhánh "main"
+      - main
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    env:
+      PROCESS_NAME: index
+      PROJECT_PATH: /var/www/ecommerce/frontend
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      ECOSYSTEM_PATH: ./ecosystem.config.cjs
+    outputs:
+      commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -18,27 +26,38 @@ jobs:
         run: |
           COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
           echo "::set-output name=commit_message::$COMMIT_MESSAGE"
-      # Deploy lên server bằng SSH (sử dụng rsync hoặc scp)
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
       - name: Deploy to server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Khóa SSH đã được cấu hình trong GitHub Secrets
-          SERVER_USER: ${{ secrets.SERVER_USER }}          # Tên user SSH (root hoặc user khác)
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}          # Địa chỉ IP hoặc domain của server
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}          # Thư mục deploy trên server
+        id: deploy
         run: |
           echo "Deploying..."
+          sshpass -p "$SSH_PASSWORD" ssh $SSH_USER@$SSH_HOST << EOF
+            cd ${{ env.PROJECT_PATH }}
+            # Pull từ git về 
+            git checkout -- yarn.lock package-lock.json package.json
+            git pull 
           
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          mkdir -p ~/.ssh
-          ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
-          
-          # Pull code về và stop PM2 process ID 5
-          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && git pull origin main && pm2 stop 5"
+            # Cài đặt các dependencies
+            yarn install
+            yarn build
 
-          # Build project
-          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && npm install && npm run build"
+            # Check process
+            if pm2 list | grep -q '${{ env.PROCESS_NAME }}'; then
+              echo "Dừng và xoá process..."
+              pm2 stop ${{ env.PROCESS_NAME }}
+              pm2 delete ${{ env.PROCESS_NAME }}
+            else
+              echo "Không có process hoạt động."
+            fi
 
-          # Start lại PM2 process ID 5
-          ssh $SERVER_USER@$SERVER_HOST "cd $DEPLOY_PATH && pm2 start 5"
-          
-          echo 'Deploy thành công!'
+            # Chạy pm2
+            pm2 start ${{ env.ECOSYSTEM_PATH }} --env production
+
+            echo 'Deploy thành công!'
+          EOF
