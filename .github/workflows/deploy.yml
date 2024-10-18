@@ -46,9 +46,6 @@ jobs:
             git checkout -- yarn.lock package-lock.json package.json
             git pull 
           
-            # Cài đặt các dependencies
-            ${{ env.YARN_PATH }} install
-            ${{ env.YARN_PATH }} build
 
             # Check process
             if ${{ env.PM2_PATH }} list | grep '${{ env.PROCESS_NAME }}'; then
@@ -60,7 +57,7 @@ jobs:
             fi
 
             # Chạy pm2
-            ${{ env.PM2_PATH }} start ${{ env.ECOSYSTEM_PATH }} --interpreter {{ env.NODE_PATH }} --env production
+            ${{ env.PM2_PATH }} start npm run dev --interpreter {{ env.NODE_PATH }} --env production
 
             echo 'Deploy thành công!'
           EOF
