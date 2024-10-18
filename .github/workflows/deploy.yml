@@ -12,7 +12,7 @@ jobs:
     steps:
       # Checkout code từ repository
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Thiết lập Node.js
       - name: Set up Node.js
