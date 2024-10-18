@@ -18,6 +18,9 @@ jobs:
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Get Commit Message
         id: get_commit_message
         run: |
