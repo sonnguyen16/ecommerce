@@ -19,7 +19,16 @@ jobs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22' # hoặc phiên bản Node.js bạn đang sử dụng
+
+      - name: Install PM2
+        run: |
+          npm install -g pm2
 
       - name: Get Commit Message
         id: get_commit_message
@@ -44,7 +53,7 @@ jobs:
             git pull 
           
             # Cài đặt các dependencies
-            npm i
+            npm install
             npm run build
 
             # Check process
