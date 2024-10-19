@@ -17,6 +17,7 @@ jobs:
       ECOSYSTEM_PATH: ./ecosystem.config.cjs
       YARN_PATH: /root/.nvm/versions/node/v22.9.0/bin/yarn
       PM2_PATH: /root/.nvm/versions/node/v22.9.0/bin/pm2
+      NVM_PATH: /root/.nvm/nvm.sh
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
     steps:
@@ -45,7 +46,7 @@ jobs:
             git checkout -- yarn.lock package-lock.json package.json
             git pull 
           
-            nvm use 22
+            ${{ env.NVM_PATH }} use 22
           
             # Cài đặt các dependencies
             ${{ env.YARN_PATH }} install
