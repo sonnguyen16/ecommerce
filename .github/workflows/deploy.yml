@@ -45,6 +45,8 @@ jobs:
             git checkout -- yarn.lock package-lock.json package.json
             git pull 
           
+            nvm use 22
+          
             # Cài đặt các dependencies
             ${{ env.YARN_PATH }} install
             ${{ env.YARN_PATH }} build
