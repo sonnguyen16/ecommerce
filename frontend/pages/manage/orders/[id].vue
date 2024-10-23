@@ -11,7 +11,7 @@ const id = useRoute().params.id
 let order_detail = ref<OrderDetail | null>()
 
 onMounted(async () => {
-  const { data } = await useClientFetch<OrderDetail>(`orders/${id}`)
+  const { data } = await useClientFetch<OrderDetail>(`/shop/orders/${id}`)
   order_detail.value = data.value
   form.value.status = String(order_detail.value?.status)
 })

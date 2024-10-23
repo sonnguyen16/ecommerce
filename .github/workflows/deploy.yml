@@ -15,7 +15,7 @@ jobs:
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       SSH_USER: ${{ secrets.SSH_USER }}
       ECOSYSTEM_PATH: ./ecosystem.config.cjs
-      NPM_PATH: /root/.nvm/versions/node/v22.9.0/bin/npm
+      YARN_PATH: /root/.nvm/versions/node/v22.9.0/bin/yarn
       PM2_PATH: /root/.nvm/versions/node/v22.9.0/bin/pm2
     outputs:
       commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
@@ -46,8 +46,8 @@ jobs:
             git pull 
           
             # Cài đặt các dependencies
-            ${{ env.NPM_PATH }} install
-            ${{ env.NPM_PATH }} build
+            ${{ env.YARN_PATH }} install
+            ${{ env.YARN_PATH }} build
 
             # Check process
             if ${{ env.PM2_PATH }} list | grep '${{ env.PROCESS_NAME }}'; then
