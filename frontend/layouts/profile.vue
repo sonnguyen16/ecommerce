@@ -1,10 +1,5 @@
 <script lang="ts" setup>
-import {
-  UserCircleIcon,
-  ClipboardDocumentListIcon,
-  ShoppingCartIcon,
-   XCircleIcon
-} from "@heroicons/vue/24/outline";
+import { UserCircleIcon, ClipboardDocumentListIcon, ShoppingCartIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const logout = async () => {
@@ -12,6 +7,7 @@ const logout = async () => {
   useAuth().user.value = null
   navigateTo('/signin')
 }
+const user = await useAuth().getUser()
 
 const links = [
   {
@@ -36,9 +32,9 @@ const showCategories = () => {
   showCategoryMenu.value = !showCategoryMenu.value
 }
 
-if(process.client){
+if (process.client) {
   document.addEventListener('click', (e: any) => {
-    if(e.target.closest('#mobile-navigation') === null){
+    if (e.target.closest('#mobile-navigation') === null) {
       showCategoryMenu.value = false
     }
   })
@@ -53,7 +49,14 @@ if(process.client){
         <div class="md:block hidden col-span-2">
           <ul class="space-y-2">
             <li v-for="link in links">
-              <NuxtLink :class="[route.path === link.to && 'bg-gray-200', 'flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md']" :to="link.to">
+              <NuxtLink
+                v-if="(user?.role != 1 && link.to != '/manage/orders') || user?.role == 1"
+                :class="[
+                  route.path === link.to && 'bg-gray-200',
+                  'flex items-center space-x-3 py-2 px-5 hover:bg-gray-200  rounded-md'
+                ]"
+                :to="link.to"
+              >
                 <component :is="link.icon" class="h-6 w-6 text-gray-600" />
                 <span class="text-gray-700 font-medium">{{ link.name }}</span>
               </NuxtLink>
@@ -82,4 +85,3 @@ if(process.client){
   font-weight: 400 !important;
 }
 </style>
-

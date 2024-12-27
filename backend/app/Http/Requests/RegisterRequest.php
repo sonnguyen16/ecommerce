@@ -25,10 +25,6 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:6',
-            'province' => 'required|string',
-            'district' => 'required|string',
-            'ward' => 'required|string',
-            'address' => 'required|string',
         ];
     }
 
@@ -45,10 +41,6 @@ class RegisterRequest extends FormRequest
             'phone.unique' => 'Số điện thoại đã tồn tại',
             'password.required' => 'Mật khẩu không được để trống',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
-            'province.required' => 'Tỉnh/Thành phố không được để trống',
-            'district.required' => 'Quận/Huyện không được để trống',
-            'ward.required' => 'Phường/Xã không được để trống',
-            'address.required' => 'Địa chỉ không được để trống',
         ];
     }
 }
