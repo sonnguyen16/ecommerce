@@ -31,7 +31,7 @@ const links = [
   <nav class="py-[10px] border-b lg:block hidden">
     <div class="container flex justify-between items-center">
       <NuxtLink to="/">
-        <img src="/logo.png" alt="Logo" />
+        <img class="w-[200px]" src="/logo.png" alt="Logo" />
       </NuxtLink>
       <div class="flex-1 mx-20">
         <div class="relative">

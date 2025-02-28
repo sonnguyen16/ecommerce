@@ -98,7 +98,7 @@
         <h2 class="font-semibold">Kết nối với chúng tôi</h2>
         <img src="/mxh.png" alt="mxh" width="150" />
         <h2 class="font-semibold">Dịch vụ giao hàng</h2>
-        <img src="/logo.svg" width="120" alt="GoSellNOW" />
+        <img class="w-[200px]" src="/logo.png" alt="Logo" />
       </div>
     </div>
   </footer>
