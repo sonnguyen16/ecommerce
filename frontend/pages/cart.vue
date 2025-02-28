@@ -13,7 +13,7 @@ const ticked: Ref<number[]> = ref([])
 
 const message = ref('Thêm vào giỏ hàng thành công')
 
-const status = ref('success')
+const status = ref<'success' | 'error'>('success')
 
 const showToast = ref(false)
 
@@ -137,7 +137,7 @@ const order = async () => {
   ticked.value = []
 }
 
-const showToastFunction = (msg: string, s: string) => {
+const showToastFunction = (msg: string, s: any) => {
   message.value = msg
   status.value = s
   showToast.value = true

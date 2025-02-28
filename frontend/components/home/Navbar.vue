@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { HomeIcon } from "@heroicons/vue/24/solid";
-import { FaceSmileIcon } from "@heroicons/vue/24/outline";
-import { ShoppingCartIcon } from "@heroicons/vue/24/outline";
-import { MapPinIcon } from "@heroicons/vue/24/outline";
-import { CheckBadgeIcon } from "@heroicons/vue/24/solid";
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+import { HomeIcon } from '@heroicons/vue/24/solid'
+import { FaceSmileIcon } from '@heroicons/vue/24/outline'
+import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { MapPinIcon } from '@heroicons/vue/24/outline'
+import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
+import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 
@@ -25,31 +25,21 @@ const links = [
     to: '/cart'
   }
 ]
-
 </script>
 
 <template>
   <nav class="py-[10px] border-b lg:block hidden">
     <div class="container flex justify-between items-center">
       <NuxtLink to="/">
-        <img
-          src="/logo.svg"
-          alt="Logo"
-        />
+        <img src="/logo.png" alt="Logo" />
       </NuxtLink>
       <div class="flex-1 mx-20">
         <div class="relative">
-          <span
-            class="absolute top-1/2 left-3 -translate-y-1/2 flex text-gray-700 font-normal"
-          >
+          <span class="absolute top-1/2 left-3 -translate-y-1/2 flex text-gray-700 font-normal">
             <MagnifyingGlassIcon class="w-6 h-6 me-1" />
             Tìm kiếm sản phẩm
           </span>
-          <input
-              class="rounded-lg border-gray-300 w-full focus:border-blue-400"
-              type="text"
-              id="search"
-          />
+          <input class="rounded-lg border-gray-300 w-full focus:border-blue-400" type="text" id="search" />
         </div>
         <ul class="flex gap-3 mt-2">
           <li class="text-gray-700 font-normal">điện gia dụng</li>
@@ -60,28 +50,23 @@ const links = [
       </div>
       <div>
         <ul class="flex gap-6 items-center">
-
-         <template v-for="link in links">
-           <li>
-             <NuxtLink
-                 :class="[route.path === link.to ? 'text-blue-700' : 'text-gray-500']"
-                 :to="link.to"
-                 class="flex justify-center items-center space-x-1"
-             >
-               <component :is="link.icon" class="w-6 h-6" />
-               <span class="">{{ link.name }}</span>
-             </NuxtLink>
-           </li>
-         </template>
-
+          <template v-for="link in links">
+            <li>
+              <NuxtLink
+                :class="[route.path === link.to ? 'text-blue-700' : 'text-gray-500']"
+                :to="link.to"
+                class="flex justify-center items-center space-x-1"
+              >
+                <component :is="link.icon" class="w-6 h-6" />
+                <span class="">{{ link.name }}</span>
+              </NuxtLink>
+            </li>
+          </template>
         </ul>
         <div class="mt-4">
           <NuxtLink to="/" class="flex space-x-1">
             <MapPinIcon class="w-6 h-6 text-gray-500" />
-            <span class="text-gray-500"
-              >Giao đến:
-              <span class="text-black underline">Hà Nội, Việt Nam</span></span
-            >
+            <span class="text-gray-500">Giao đến: <span class="text-black underline">Hà Nội, Việt Nam</span></span>
           </NuxtLink>
         </div>
       </div>
