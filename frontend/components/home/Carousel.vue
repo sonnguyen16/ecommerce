@@ -71,10 +71,10 @@ onMounted(() => {
         <div id="carousel-item-1" class="hidden duration-500 ease-in-out" data-carousel-item>
           <div class="grid grid-cols-2 gap-5">
             <div class="col-span-1">
-              <img src="/slide.jpg" class="block rounded-xl" alt="...">
+              <img src="/phu_minh_quang.jpg" class="block rounded-xl" alt="...">
             </div>
             <div class="col-span-1">
-              <img src="/slide1.jpg" class="block rounded-xl" alt="...">
+              <img src="/phu_minh_quang_2.jpg" class="block rounded-xl" alt="...">
             </div>
           </div>
         </div>
@@ -82,10 +82,10 @@ onMounted(() => {
         <div id="carousel-item-2" class="hidden duration-500 ease-in-out" data-carousel-item>
           <div class="grid grid-cols-2 gap-5">
             <div class="col-span-1">
-              <img src="/slide2.jpg" class="block rounded-xl" alt="...">
+              <img src="/phu_minh_quang.jpg" class="block rounded-xl" alt="...">
             </div>
             <div class="col-span-1">
-              <img src="/slide3.jpg" class="block rounded-xl" alt="...">
+              <img src="/phu_minh_quang_2.jpg" class="block rounded-xl" alt="...">
             </div>
           </div>
         </div>
