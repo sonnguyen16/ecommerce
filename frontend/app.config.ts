@@ -1,5 +1,5 @@
 export default defineAppConfig({
-    title: 'Go Sell',
+    title: 'BRTGo',
     icon: '/favicon.ico',
-    description: 'Go Sell là nơi mua bán trực tuyến dễ dàng, nhanh chóng và an toàn',
+    description: 'BRTGo là nơi mua bán trực tuyến dễ dàng, nhanh chóng và an toàn',
 })
