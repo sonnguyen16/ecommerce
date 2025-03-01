@@ -6,7 +6,7 @@
       <div>
         <h2 class="font-semibold mb-2">Hỗ trợ khách hàng</h2>
         <ul class="space-y-1">
-          <li>Hotline: <span class="font-semibold">1900-6035</span></li>
+          <li>Hotline: <span class="font-semibold">0908.202.570</span></li>
           <li class="text-gray-500 text-sm mb-3">(1000 đ/phút, 8-21h kể cả T7, CN)</li>
           <li>
             <a href="#" class="font-normal text-gray-500 hover:underline">Các câu hỏi thường gặp</a>
@@ -30,25 +30,25 @@
             <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách hàng nhập khẩu</a>
           </li>
           <li>
-            <a href="mailto:hotro@gosell.vn" class="font-normal text-gray-500 hover:underline"
-              >Hỗ trợ khách hàng: hotro@gosell.vn</a
+            <a href="mailto:hotro@BRTGo.vn" class="font-normal text-gray-500 hover:underline"
+              >Hỗ trợ khách hàng: hotro@BRTGo.vn</a
             >
           </li>
           <li>
-            <a href="mailto:security@gosell.vn" class="font-normal text-gray-500 hover:underline"
-              >Báo lỗi bảo mật: security@gosell.vn</a
+            <a href="mailto:security@BRTGo.vn" class="font-normal text-gray-500 hover:underline"
+              >Báo lỗi bảo mật: security@BRTGo.vn</a
             >
           </li>
         </ul>
       </div>
       <div>
-        <h2 class="font-semibold mb-4">Về GoSell</h2>
+        <h2 class="font-semibold mb-4">Về BRTGo</h2>
         <ul class="space-y-1">
           <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu GoSell</a>
+            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu BRTGo</a>
           </li>
           <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">GoSell Blog</a>
+            <a href="#" class="font-normal text-gray-500 hover:underline">BRTGo Blog</a>
           </li>
           <li>
             <a href="#" class="font-normal text-gray-500 hover:underline">Tuyển dụng</a>
@@ -66,10 +66,10 @@
             <a href="#" class="font-normal text-gray-500 hover:underline">Điều khoản sử dụng</a>
           </li>
           <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu GoSell Xu</a>
+            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu BRTGo Xu</a>
           </li>
           <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Tiếp thị liên kết cùng GoSell</a>
+            <a href="#" class="font-normal text-gray-500 hover:underline">Tiếp thị liên kết cùng BRTGo</a>
           </li>
           <li>
             <a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng doanh nghiệp</a>
@@ -83,7 +83,7 @@
             <a href="#" class="font-normal text-gray-500 hover:underline">Quy chế hoạt động Sàn GDTMĐT</a>
           </li>
           <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng GoSell</a>
+            <a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng BRTGo</a>
           </li>
         </ul>
         <div class="mt-4">

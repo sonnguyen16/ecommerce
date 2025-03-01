@@ -66,7 +66,7 @@ const links = [
         <div class="mt-4">
           <NuxtLink to="/" class="flex space-x-1">
             <MapPinIcon class="w-6 h-6 text-gray-500" />
-            <span class="text-gray-500">Giao đến: <span class="text-black underline">Hà Nội, Việt Nam</span></span>
+            <span class="text-gray-500">Giao đến: <span class="text-black underline">HCM, Việt Nam</span></span>
           </NuxtLink>
         </div>
       </div>

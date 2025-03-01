@@ -29,8 +29,8 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Nhà sách Gosell',
-                'slug' => Str::slug('Nhà sách Gosell'),
+                'name' => 'Nhà sách brtgo',
+                'slug' => Str::slug('Nhà sách brtgo'),
                 'image' => 'sach.png',
                 'created_at' => now(),
                 'updated_at' => now(),

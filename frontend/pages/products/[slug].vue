@@ -178,7 +178,7 @@ const showToastFunction = (msg: string, s: string) => {
             <div class="">
               <p class="text-gray-600">Thông tin vận chuyển</p>
               <div class="flex items-center justify-between">
-                <p class="font-normal">Giao đến Hà Nội, Việt Nam</p>
+                <p class="font-normal">Giao đến HCM, Việt Nam</p>
                 <p class="text-indigo-700 cursor-pointer">Đổi</p>
               </div>
             </div>
@@ -238,7 +238,7 @@ const showToastFunction = (msg: string, s: string) => {
                 <div class="flex items-center">
                   <img src="/logo.svg" alt="Tiki Logo" class="w-20 mr-2">
                   <div>
-                    <p>GoSell Trading</p>
+                    <p>BRTGo Trading</p>
                     <div class="flex items-center">
                       <CheckBadgeIcon class="h-4 w-4 text-indigo-700 me-1"></CheckBadgeIcon>
                       <p class="text-indigo-700"> OFFICIAL</p>
