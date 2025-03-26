@@ -32,9 +32,10 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('order', [OrderController::class, 'order']);
     Route::get('orders', [OrderController::class, 'getOrders']);
     Route::get('orders/{order_detail_id}', [OrderController::class, 'getOrder']);
-
+    Route::get('orders-list', [OrderController::class, 'listOrder']);
     Route::prefix('shop')->group(function (){
         Route::get('orders', [ShopOrderController::class, 'getOrders']);
+        Route::get('orders-list', [ShopOrderController::class, 'listOrder']);
         Route::get('orders/{order_detail_id}', [ShopOrderController::class, 'getOrder']);
         Route::post('orders/update', [ShipmentLocationController::class, 'store']);
 

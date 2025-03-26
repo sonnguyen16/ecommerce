@@ -22,7 +22,6 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'total' => 'required|numeric|min:0',
             'name' => 'required|string',
             'phone' => 'required|string',
             'province' => 'required|string',
@@ -32,8 +31,6 @@ class OrderRequest extends FormRequest
             'products' => 'required|array',
             'products.*.product_id' => 'required|integer|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
-            'products.*.price' => 'required|numeric|min:0',
-            'products.*.total' => 'required|numeric|min:0',
         ];
     }
 }

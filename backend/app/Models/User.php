@@ -62,4 +62,26 @@ class User extends Authenticatable
     public function shop(){
         return $this->hasOne(Shop::class);
     }
+
+    /**
+     * Kiểm tra xem user có phải là khách hàng không
+     *
+     * @return bool
+     */
+    public function isCustomer()
+    {
+        return $this->role === 2;
+    }
+
+    public function ward(){
+        return $this->belongsTo(Ward::class, 'ward', 'code');
+    }
+
+    public function district(){
+        return $this->belongsTo(District::class, 'district', 'code');
+    }
+
+    public function province(){
+        return $this->belongsTo(Province::class, 'province', 'code');
+    }
 }
