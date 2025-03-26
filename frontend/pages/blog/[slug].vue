@@ -1,10 +1,10 @@
 <template>
-  <div class="container mx-auto px-4 py-6">
+  <div class="container mx-auto px-4 pb-5 pt-1">
     <!-- Breadcrumb -->
     <div v-if="blog" class="text-gray-600 mb-4 font-normal">
-      <NuxtLink to="/" class="hover:underline">Trang chủ</NuxtLink> &gt;
-      <NuxtLink to="/blog" class="hover:underline">Blog</NuxtLink> &gt;
-      <span>{{ blog.title }}</span>
+      <NuxtLink to="/" class="hover:underline text-gray-600 font-normal">Trang chủ</NuxtLink> &gt;
+      <NuxtLink to="/blog" class="hover:underline text-gray-600 font-normal">Blog</NuxtLink> &gt;
+      <span class="text-gray-600 font-normal">{{ blog.title }}</span>
     </div>
 
     <div v-if="blog" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
