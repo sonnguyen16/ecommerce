@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('thumbnail');
             $table->longText('content');
             $table->boolean('is_public')->default(false);
