@@ -1,89 +1,54 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { Blog } from '~/lib/schema'
+
+const blogs = ref<Blog[]>([])
+
+const fetchBlogs = async () => {
+  try {
+    const { data: blogData, error } = await useClientFetch<{ success: boolean; data: Blog[] }>('blogs')
+
+    if (!error.value && blogData.value.success) {
+      blogs.value = blogData.value.data.filter((blog) => blog.is_public)
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải danh sách blog:', error)
+  }
+}
+
+onMounted(() => {
+  fetchBlogs()
+})
+</script>
 
 <template>
   <footer class="">
     <div class="grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 hidden md:grid">
       <div>
-        <h2 class="font-semibold mb-2">Hỗ trợ khách hàng</h2>
         <ul class="space-y-1">
-          <li>Hotline: <span class="font-semibold">0908.202.570</span></li>
-          <li class="text-gray-500 text-sm mb-3">(1000 đ/phút, 8-21h kể cả T7, CN)</li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Các câu hỏi thường gặp</a>
+          <h2 class="font-semibold mb-2">Danh sách bài viết</h2>
+          <li v-for="blog in blogs" :key="blog.id">
+            <NuxtLink :to="`/blog/${blog.slug}`" class="font-normal text-gray-500 hover:underline">
+              {{ blog.title }}
+            </NuxtLink>
           </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Gửi yêu cầu hỗ trợ</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Hướng dẫn đặt hàng</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Phương thức vận chuyển</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách đổi trả</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Hướng dẫn trả góp</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách hàng nhập khẩu</a>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="mb-2">Hỗ trợ khách hàng</h2>
+        <ul class="space-y-1">
+          <li class="font-normal text-gray-500">
+            <a href="tel:0908202570" class="font-normal text-gray-500 hover:underline">Hotline: 0908.202.570</a>
           </li>
           <li>
             <a href="mailto:hotro@BRTGo.vn" class="font-normal text-gray-500 hover:underline"
-              >Hỗ trợ khách hàng: hotro@BRTGo.vn</a
+              >Hỗ trợ khách hàng: hotro@teenshop.vn</a
             >
           </li>
           <li>
             <a href="mailto:security@BRTGo.vn" class="font-normal text-gray-500 hover:underline"
-              >Báo lỗi bảo mật: security@BRTGo.vn</a
+              >Báo lỗi bảo mật: security@teenshop.vn</a
             >
-          </li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="font-semibold mb-4">Về BRTGo</h2>
-        <ul class="space-y-1">
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu BRTGo</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">BRTGo Blog</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Tuyển dụng</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách bảo mật thanh toán</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách bảo mật thông tin cá nhân</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Chính sách giải quyết khiếu nại</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Điều khoản sử dụng</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Giới thiệu BRTGo Xu</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Tiếp thị liên kết cùng BRTGo</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng doanh nghiệp</a>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="font-semibold mb-4">Hợp tác và liên kết</h2>
-        <ul class="space-y-1">
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Quy chế hoạt động Sàn GDTMĐT</a>
-          </li>
-          <li>
-            <a href="#" class="font-normal text-gray-500 hover:underline">Bán hàng cùng BRTGo</a>
           </li>
         </ul>
         <div class="mt-4">
@@ -97,6 +62,8 @@
       <div class="">
         <h2 class="font-semibold">Kết nối với chúng tôi</h2>
         <img src="/mxh.png" alt="mxh" width="150" />
+      </div>
+      <div>
         <h2 class="font-semibold">Dịch vụ giao hàng</h2>
         <img class="w-[200px]" src="/logo.png" alt="Logo" />
       </div>

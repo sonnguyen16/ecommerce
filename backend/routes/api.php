@@ -13,6 +13,7 @@ use App\Http\Controllers\Shop\ShopCategoryController;
 use App\Models\Province;
 use App\Models\District;
 use App\Models\Ward;
+use App\Http\Controllers\Shop\BlogController;
 
 Route::get('products', [ProductController::class, 'getProducts']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
@@ -84,4 +85,11 @@ Route::get('wards/{district_code}', function ($district_code){
     $wards = Ward::where('district_code', $district_code)->get();
     return response()->json($wards);
 });
+
+// Blog routes
+Route::get('blogs', [BlogController::class, 'getBlogs']);
+Route::get('blogs/{slug}', [BlogController::class, 'getBlog']);
+Route::post('blogs', [BlogController::class, 'storeBlog']);
+Route::delete('blogs/{blog_id}', [BlogController::class, 'deleteBlog']);
+Route::post('upload-image', [BlogController::class, 'uploadImage']);
 

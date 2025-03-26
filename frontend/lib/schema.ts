@@ -114,3 +114,15 @@ export interface PaginationData<T> {
   prev_page_url: string | null
   next_page_url: string | null
 }
+
+export interface Blog {
+  id: number
+  title: string
+  slug: string
+  thumbnail: string
+  content: string
+  is_public: boolean
+  deleted_at?: string | null
+  created_at: string
+  updated_at: string
+}
