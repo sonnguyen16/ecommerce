@@ -1,13 +1,13 @@
 <template>
   <div class="h-screen">
     <div :class="isCollapsed ? 'w-[50px]' : 'w-[280px]'" class="transition-all duration-300 md:block hidden">
-      <div  :class="isCollapsed ? 'justify-center' : ''" class="flex items-center h-[56px] px-4 bg-blue-500 text-white ">
+      <div :class="isCollapsed ? 'justify-center' : ''" class="flex items-center h-[56px] px-4 bg-blue-500 text-white">
         <button @click="toggleSidebar">
           <Bars3Icon class="h-7 w-7" />
         </button>
         <span v-show="!isCollapsed" class="flex gap-5 text-lg mx-auto">
           <NuxtLink to="/profile/tracking">
-          <img class="w-[120px]" src="/logo.png" alt="Logo" />
+            <img class="w-[120px]" src="/logo.png" alt="Logo" />
           </NuxtLink>
           <!--<svg xmlns="http://www.w3.org/2000/svg" width="120" height="47" viewBox="0 0 120 47" fill="none">
             <g clip-path="url(#clip0_1053_11233)">
@@ -29,7 +29,11 @@
       <nav>
         <ul class="">
           <template v-for="link in links">
-            <NuxtLink :to="link.to" :class="[isCollapsed && 'justify-center',link.to === route.path && 'bg-gray-200']" class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200">
+            <NuxtLink
+              :to="link.to"
+              :class="[isCollapsed && 'justify-center', link.to === route.path && 'bg-gray-200']"
+              class="flex items-center gap-3 py-4 px-6 text-sm hover:bg-gray-200"
+            >
               <component :is="link.icon" class="h-6 w-6 text-gray-400 min-w-6" />
               <span class="ml-2 text-gray-700 font-normal" v-show="!isCollapsed">{{ link.text }}</span>
             </NuxtLink>
@@ -41,41 +45,38 @@
 </template>
 
 <script setup lang="ts">
-import {
-    Bars3Icon,
-    ShoppingCartIcon,
-    DocumentIcon,
+import { Bars3Icon, ShoppingCartIcon, DocumentIcon } from '@heroicons/vue/24/outline'
 
-} from "@heroicons/vue/24/outline";
-
-const isCollapsed = ref(false);
+const isCollapsed = ref(false)
 
 const toggleSidebar = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
+  isCollapsed.value = !isCollapsed.value
+}
 
 const route = useRoute()
 
 const links = [
   {
     icon: DocumentIcon,
-    text: "Đơn Hàng",
-    to: "/manage/orders",
+    text: 'Đơn Hàng',
+    to: '/manage/orders'
   },
   {
     icon: ShoppingCartIcon,
-    text: "Sản Phẩm",
-    to: "/manage/products",
+    text: 'Sản Phẩm',
+    to: '/manage/products'
   },
   {
     icon: DocumentIcon,
-    text: "Danh mục",
-    to: "/manage/categories",
+    text: 'Danh mục',
+    to: '/manage/categories'
   },
-];
+  {
+    icon: DocumentIcon,
+    text: 'Bài viết',
+    to: '/manage/blogs'
+  }
+]
 </script>
 
-
-
-<style scoped>
-</style>
+<style scoped></style>

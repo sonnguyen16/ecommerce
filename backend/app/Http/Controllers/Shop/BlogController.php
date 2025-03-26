@@ -17,9 +17,12 @@ class BlogController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $total = Blog::whereNull('deleted_at')->count();
+
         return response()->json([
             'success' => true,
-            'data' => $blogs
+            'data' => $blogs,
+            'total' => $total
         ]);
     }
 
