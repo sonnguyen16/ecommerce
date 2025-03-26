@@ -47,7 +47,7 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
-        return response()->json(User::query()->where('id',Auth::id())->with('shop', 'ward', 'district', 'province')->first());
+        return response()->json(User::query()->where('id',Auth::id())->with('shop')->first());
     }
 
     public function generateTokens($user, $rtExpireTime = null): array
