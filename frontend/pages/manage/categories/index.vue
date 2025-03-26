@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { DocumentIcon, PencilSquareIcon} from "@heroicons/vue/24/outline";
-import type {Category, PaginationData} from "~/lib/schema";
+import { DocumentIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import type { Category, PaginationData } from '~/lib/schema'
 
 definePageMeta({
   layout: 'admin',
   middleware: 'auth'
 })
 
-let data : Ref<PaginationData<Category> | null> = ref(null)
+let data: Ref<PaginationData<Category> | null> = ref(null)
 
 const fetchData = async (page: number) => {
   const { data: newData, error } = await useClientFetch<PaginationData<Category>>(`shop/categories?page=${page}`)
 
-  if(!error.value) {
+  if (!error.value) {
     data.value = newData.value
-  }else{
+  } else {
     console.log(error)
   }
 }
@@ -29,6 +29,22 @@ const goToPage = async (p: number) => {
   }
 }
 
+const deleteCategory = async (categoryId: number) => {
+  if (
+    confirm('Bạn có chắc chắn muốn xóa danh mục này không? Tất cả sản phẩm trong danh mục này cũng sẽ không hiển thị.')
+  ) {
+    const { error } = await useClientFetch(`shop/categories/${categoryId}`, {
+      method: 'DELETE'
+    })
+
+    if (!error.value) {
+      await fetchData(data.value?.current_page || 1)
+    } else {
+      alert('Có lỗi xảy ra khi xóa danh mục')
+    }
+  }
+}
+
 const { mediaUrl } = useRuntimeConfig().public
 </script>
 
@@ -36,8 +52,14 @@ const { mediaUrl } = useRuntimeConfig().public
   <h1 class="text-2xl">Quản lý sản phẩm</h1>
   <div class="bg-white rounded-xl p-4 mt-5 min-h-[calc(100vh-9.5rem)] space-y-5">
     <div class="flex flex-wrap items-center gap-4">
-      <NuxtLink :to="`/manage/categories/${null}`" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Thêm danh mục</NuxtLink>
-      <input type="text" placeholder="Tìm theo từ khóa" class="px-4 py-2 w-60 focus:outline-none focus:ring focus:ring-blue-300 border border-gray-300 rounded-lg">
+      <NuxtLink :to="`/manage/categories/${null}`" class="px-4 py-2 bg-blue-500 text-white rounded-lg"
+        >Thêm danh mục</NuxtLink
+      >
+      <input
+        type="text"
+        placeholder="Tìm theo từ khóa"
+        class="px-4 py-2 w-60 focus:outline-none focus:ring focus:ring-blue-300 border border-gray-300 rounded-lg"
+      />
     </div>
 
     <div class="flex gap-4">
@@ -55,44 +77,48 @@ const { mediaUrl } = useRuntimeConfig().public
     <div class="w-full overflow-x-auto">
       <div class="min-w-[800px]">
         <div class="mt-6 bg-gray-100 p-4 rounded-lg">
-          <div class="grid grid-cols-7 gap-4 text-sm font-medium text-gray-500">
+          <div class="grid grid-cols-8 gap-4 text-sm font-medium text-gray-500">
             <div class="flex items-center">
               <span class="ml-2">Mã danh mục</span>
             </div>
             <div>Hình ảnh</div>
             <div>Tên danh mục</div>
             <div>Ngày tạo</div>
-            <div>Thao tác</div>
+            <div colspan="2">Thao tác</div>
           </div>
         </div>
         <div v-if="data?.data?.length > 0">
-          <div v-for="(category, i) in data.data" class="px-4 grid grid-cols-7 gap-4 items-center text-sm text-gray-700 border-b border-gray-200">
+          <div
+            v-for="(category, i) in data.data"
+            class="px-4 grid grid-cols-8 gap-4 items-center text-sm text-gray-700 border-b border-gray-200"
+          >
             <div class="flex items-center">
-              <NuxtLink :to="`/manage/categories/${category.id}`" class="ml-2 text-blue-500 hover:underline">{{ category.id }}</NuxtLink>
+              <NuxtLink :to="`/manage/categories/${category.id}`" class="ml-2 text-blue-500 hover:underline">{{
+                category.id
+              }}</NuxtLink>
             </div>
             <div class="py-[5px]">
-              <img :src="mediaUrl + category.image" alt="category" class="w-11 h-11 object-cover rounded-lg">
+              <img :src="mediaUrl + category.image" alt="category" class="w-11 h-11 object-cover rounded-lg" />
             </div>
             <div>{{ category.name }}</div>
             <div>{{ new Date(category.created_at).toLocaleDateString() }}</div>
             <div>
               <NuxtLink :to="`/manage/categories/${category.id}`" class="text-indigo-500 p-3">
-                <PencilSquareIcon class="w-5 h-5 inline-block" />  Sửa
+                <PencilSquareIcon class="w-5 h-5 inline-block" /> Sửa
               </NuxtLink>
+            </div>
+            <div>
+              <button @click="deleteCategory(category.id)" class="text-red-500 p-3">
+                <TrashIcon class="w-5 h-5 inline-block" /> Xóa
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <AdminPagination
-        v-if="data"
-        :pagination_data="data"
-        @page-change="goToPage"
-    />
+    <AdminPagination v-if="data" :pagination_data="data" @page-change="goToPage" />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

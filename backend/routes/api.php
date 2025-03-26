@@ -43,10 +43,12 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::get('products/{product_id}', [ShopProductController::class, 'getProduct']);
         Route::post('products/store', [ShopProductController::class, 'storeProduct']);
         Route::delete('products/delete-image', [ShopProductController::class, 'deleteImage']);
+        Route::delete('products/{product_id}', [ShopProductController::class, 'deleteProduct']);
 
         Route::get('categories', [ShopCategoryController::class, 'getCategories']);
         Route::get('categories/{category_id}', [ShopCategoryController::class, 'getCategory']);
         Route::post('categories/store', [ShopCategoryController::class, 'storeCategory']);
+        Route::delete('categories/{category_id}', [ShopCategoryController::class, 'deleteCategory']);
 
         Route::get('customers', [CustomerController::class, 'index']);
     });

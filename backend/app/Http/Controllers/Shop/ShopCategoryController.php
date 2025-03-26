@@ -5,19 +5,20 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
 class ShopCategoryController extends Controller
 {
     public function getCategories()
     {
-        $categories = Category::paginate(6);
+        $categories = Category::whereNull('deleted_at')->paginate(6);
         return response()->json($categories);
     }
 
     public function getCategory($category_id)
     {
-        $category = Category::find($category_id);
+        $category = Category::whereNull('deleted_at')->find($category_id);
         return response()->json($category);
     }
 
@@ -33,5 +34,19 @@ class ShopCategoryController extends Controller
             $validated
         );
         return response()->json($category);
+    }
+
+    public function deleteCategory($category_id): JsonResponse
+    {
+        $category = Category::find($category_id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Không tìm thấy danh mục'], 404);
+        }
+
+        // Xóa danh mục sẽ soft delete
+        $category->delete();
+
+        return response()->json(['message' => 'Xóa danh mục thành công']);
     }
 }

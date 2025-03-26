@@ -19,6 +19,10 @@ class ShopProductController extends Controller
 
         $products = Product::query()
             ->where('shop_id', $shop_id)
+            ->whereNull('deleted_at')
+            ->whereHas('category', function($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with(['category','images'])
             ->orderBy('created_at', 'desc');
 
@@ -32,6 +36,7 @@ class ShopProductController extends Controller
         $product = Product::query()
             ->where('id', $product_id)
             ->where('shop_id', $shop_id)
+            ->whereNull('deleted_at')
             ->with(['category','images'])
             ->first();
 
@@ -93,5 +98,23 @@ class ShopProductController extends Controller
         $image = ProductImage::find($request->image_id);
         $image->delete();
         return response()->json(['message' => 'Xóa ảnh thành công']);
+    }
+
+    public function deleteProduct($product_id): JsonResponse
+    {
+        $shop_id = Auth::user()->shop->id;
+
+        $product = Product::query()
+            ->where('id', $product_id)
+            ->where('shop_id', $shop_id)
+            ->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Không tìm thấy sản phẩm'], 404);
+        }
+
+        $product->delete();
+
+        return response()->json(['message' => 'Xóa sản phẩm thành công']);
     }
 }
