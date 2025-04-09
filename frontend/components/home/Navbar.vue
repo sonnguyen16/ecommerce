@@ -5,8 +5,17 @@ import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { MapPinIcon } from '@heroicons/vue/24/outline'
 import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+import { useCartEvents } from '~/composables/useCartEvents'
 
 const route = useRoute()
+
+// Sử dụng cartCount từ composable
+const { cartCount, updateCartCount } = useCartEvents()
+
+onMounted(async () => {
+  // Cập nhật số lượng sản phẩm trong giỏ hàng khi component được mount
+  await updateCartCount()
+})
 
 const links = [
   {
@@ -55,10 +64,18 @@ const links = [
               <NuxtLink
                 :class="[route.path === link.to ? 'text-blue-700' : 'text-gray-500']"
                 :to="link.to"
-                class="flex justify-center items-center space-x-1"
+                class="flex justify-center items-center space-x-1 relative"
               >
                 <component :is="link.icon" class="w-6 h-6" />
                 <span class="">{{ link.name }}</span>
+
+                <!-- Hiển thị số lượng sản phẩm trong giỏ hàng -->
+                <span
+                  v-if="link.to === '/cart' && cartCount > 0"
+                  class="absolute -top-2 -right-5 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                >
+                  {{ cartCount > 99 ? '99+' : cartCount }}
+                </span>
               </NuxtLink>
             </li>
           </template>

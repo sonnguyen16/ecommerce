@@ -30,7 +30,7 @@ const order = computed<any>(() => order_detail?.value?.order)
             <p><strong>Địa chỉ: </strong>{{ order?.address }}</p>
           </div>
           <div class="space-y-3">
-            <p><strong>Phường/Xã: </strong>{{ order?.ward.name }}</p>
+            <p><strong>Phường/Xã: </strong>{{ order?.ward?.name }}</p>
             <p><strong>Quận/Huyện: </strong>{{ order?.district?.name }}</p>
             <p><strong>Tỉnh/Thành phố: </strong>{{ order?.province?.name }}</p>
           </div>

@@ -3,6 +3,8 @@ import { CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon } from '@heroicons/vue/24
 import { ref } from 'vue'
 import { formatCash } from '~/lib/utils'
 import type { Product } from '~/lib/schema'
+import { useCartEvents } from '~/composables/useCartEvents'
+import { useAuth } from '~/composables/useAuth'
 
 definePageMeta({
   layout: 'main'
@@ -33,6 +35,11 @@ const message = ref('Thêm vào giỏ hàng thành công')
 const status = ref('success')
 
 const showToast = ref(false)
+
+// Sử dụng cartCount từ composable
+const { increaseCartCount, updateCartCount } = useCartEvents()
+const auth = useAuth()
+const quantityInput = ref(1)
 
 function toggleDescription() {
   showFullDescription.value = !showFullDescription.value
@@ -85,6 +92,9 @@ const addToCart = async () => {
     }
     localStorage.setItem('cart', JSON.stringify(cart))
     showToastFunction('Thêm vào giỏ hàng thành công', 'success')
+
+    // Cập nhật số lượng giỏ hàng
+    increaseCartCount(form.value.quantity)
     return
   }
 
@@ -94,6 +104,9 @@ const addToCart = async () => {
     showToastFunction('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
   } else {
     showToastFunction('Thêm vào giỏ hàng thành công', 'success')
+
+    // Cập nhật số lượng giỏ hàng
+    increaseCartCount(form.value.quantity)
   }
 }
 

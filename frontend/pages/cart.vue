@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { TrashIcon, TicketIcon } from '@heroicons/vue/24/outline'
 import type { Cart } from '~/lib/schema'
-import { formatCash } from '~/lib/utils'
+import { formatCash, setToastMessage } from '~/lib/utils'
+import { useCartEvents } from '~/composables/useCartEvents'
 
 definePageMeta({
   layout: 'main'
 })
+
+// Lấy các methods để phát sự kiện giỏ hàng
+const { decreaseCartCount } = useCartEvents()
 
 let cart: Ref<Cart[]> = ref([])
 
@@ -30,7 +34,7 @@ if (user) {
   cart.value = data.value || []
 }
 
-if (process.client) {
+if (typeof window !== 'undefined') {
   const cartLocal = JSON.parse(localStorage.getItem('cart') || '[]')
 
   if (cartLocal.length > 0) {
@@ -64,7 +68,11 @@ const decrement = (id: number) => {
 const deleteProduct = (id: number) => {
   const index = cart.value.findIndex((c) => c.product.id === id)
   if (index !== -1) {
+    // Phát sự kiện xóa sản phẩm khỏi giỏ hàng
+    // Xóa sản phẩm khỏi giỏ hàng
     cart.value.splice(index, 1)
+
+    decreaseCartCount(1)
   }
   ticked.value = ticked.value.filter((t) => t !== id)
 }
@@ -98,7 +106,9 @@ const order = async () => {
   }
 
   if (!user?.phone || !user?.province || !user?.district || !user?.ward || !user?.address) {
-    showToastFunction('Vui lòng cập nhật thông tin cá nhân', 'error')
+    setToastMessage('Vui lòng cập nhật thông tin cá nhân', 'error')
+
+    navigateTo('/profile')
     return
   }
 
@@ -131,10 +141,21 @@ const order = async () => {
     showToastFunction('Đã có lỗi xảy ra, vui lòng thử lại sau', 'error')
     console.log(error.value)
   } else {
-    showToastFunction('Đặt hàng thành công', 'success')
+    setToastMessage('Đặt hàng thành công', 'success')
+
+    // Xóa các sản phẩm đã đặt khỏi giỏ hàng
+    const removedCount = ticked.value.length
+    cart.value = cart.value.filter((c) => !ticked.value.includes(c.id))
+    ticked.value = []
+
+    // Phát sự kiện xóa sản phẩm khỏi giỏ hàng
+    emitCartRemove(removedCount)
+
+    // Phát sự kiện cập nhật giỏ hàng
+    emitCartUpdate()
+
+    navigateTo('/profile/tracking')
   }
-  cart.value = cart.value.filter((c) => !ticked.value.includes(c.id))
-  ticked.value = []
 }
 
 const showToastFunction = (msg: string, s: any) => {

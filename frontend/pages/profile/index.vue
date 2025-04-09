@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PhoneIcon, EnvelopeIcon, LockClosedIcon, KeyIcon, TrashIcon, CameraIcon } from '@heroicons/vue/24/outline'
 import type { User } from '~/lib/schema'
+import { getToastMessage } from '~/lib/utils'
 
 definePageMeta({
   layout: 'profile',
@@ -62,6 +63,12 @@ onMounted(async () => {
       divAvatar.value.style.backgroundSize = 'cover'
       divAvatar.value.style.backgroundPosition = 'center'
     }
+  }
+
+  // Kiểm tra thông báo từ sessionStorage bằng hàm getToastMessage
+  const toast = getToastMessage()
+  if (toast) {
+    showToastFunc(toast.message, toast.type)
   }
 })
 

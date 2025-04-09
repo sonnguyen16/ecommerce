@@ -11,11 +11,6 @@
       <!-- Main Content -->
       <div class="lg:col-span-8">
         <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-          <!-- Featured Image -->
-          <div class="w-full aspect-video overflow-hidden">
-            <img :src="mediaUrl + blog.thumbnail" :alt="blog.title" class="w-full h-full object-cover" />
-          </div>
-
           <!-- Blog Content -->
           <div class="p-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ blog.title }}</h1>
