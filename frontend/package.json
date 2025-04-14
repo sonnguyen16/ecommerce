@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
+    "@nuxt/scripts": "^0.11.5",
     "@pinia/nuxt": "^0.5.4",
+    "@unhead/vue": "^2.0.5",
     "flowbite": "^2.5.1",
     "nuxt": "^3.12.4",
     "pinia": "latest",

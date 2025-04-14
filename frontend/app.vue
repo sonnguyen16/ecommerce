@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 const { title, icon, description } = useAppConfig()
-const { appUrl, googleAnalyticsId = 'G-MMTGWLG5P3' } = useRuntimeConfig().public
+const { appUrl } = useRuntimeConfig().public
 
 useHead({
   title: title,
@@ -19,22 +19,6 @@ useHead({
       rel: 'icon',
       type: 'image/x-icon',
       href: icon
-    }
-  ],
-  script: [
-    {
-      src: `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`,
-      async: true
-    },
-    {
-      children: `window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '${googleAnalyticsId}', {
-        'send_page_view': true,
-        'debug_mode': true
-      });`,
-      type: 'text/javascript'
     }
   ]
 })
