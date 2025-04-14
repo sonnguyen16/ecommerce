@@ -20,8 +20,10 @@ class ShopOrderController extends Controller
             })->with(['product', 'order', 'locations'])->orderBy('created_at', 'desc');
 
         $total_money = $orders->sum('total');
+        $total = $orders->count();
 
         return response()->json([
+            'total' => $total,
             'orders' => $orders->paginate(10),
             'total_money' => $total_money
         ]);

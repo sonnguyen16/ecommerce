@@ -12,8 +12,12 @@ class ShopCategoryController extends Controller
 {
     public function getCategories()
     {
-        $categories = Category::whereNull('deleted_at')->paginate(6);
-        return response()->json($categories);
+        $categories = Category::whereNull('deleted_at')->paginate(10);
+        $total = Category::whereNull('deleted_at')->count();
+        return response()->json([
+            'data' => $categories,
+            'total' => $total
+        ]);
     }
 
     public function getCategory($category_id)

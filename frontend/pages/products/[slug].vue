@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CheckBadgeIcon, PlusIcon, StarIcon, MinusIcon } from '@heroicons/vue/24/solid'
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { formatCash } from '~/lib/utils'
 import type { Product } from '~/lib/schema'
 import { useCartEvents } from '~/composables/useCartEvents'
@@ -12,28 +12,66 @@ definePageMeta({
 
 const { mediaUrl, appUrl } = useRuntimeConfig().public
 
-const { data } = await useServerFetch<Product[]>('products')
+const route = useRoute()
+const { slug } = route.params
+
+// Lấy thông tin sản phẩm hiện tại
+const { data: productData, error: productError } = await useServerFetch<Product>(`products/${slug}`)
+const product = ref<Product | null>(productData.value)
+const isLoading = ref(true)
+
+// Kiểm tra xem sản phẩm có tồn tại không
+if (!product.value || productError.value) {
+  isLoading.value = false
+}
+
+// Lấy 12 sản phẩm tương tự thay vì sử dụng phân trang
+const similarProducts = ref<Product[]>([])
+
+// Hàm lấy sản phẩm tương tự
+const fetchSimilarProducts = async () => {
+  if (!product.value) return
+
+  const { data, error } = await useClientFetch<Product[]>(
+    `products?category_id=${product.value.category_id}&limit=12&orderBy=created_at&orderDirection=desc`
+  )
+
+  if (!error.value && data.value) {
+    // Lọc ra sản phẩm khác với sản phẩm hiện tại
+    similarProducts.value = data.value.filter((p) => p.id !== product.value?.id).slice(0, 12)
+  }
+
+  isLoading.value = false
+}
+
+// Gọi API lấy sản phẩm tương tự khi component được mounted
+onMounted(async () => {
+  if (product.value) {
+    await fetchSimilarProducts()
+  }
+})
 
 const showFullDescription = ref<Boolean>(false)
 
-const route = useRoute()
+// Chỉ tính toán discount khi có dữ liệu sản phẩm
+const discount = computed(() => {
+  if (!product.value) return 0
+  return Math.round(((product.value.price - product.value.sale_price) / product.value.price) * 100)
+})
 
-const { slug } = route.params
+// Sử dụng computed để đảm bảo form luôn được cập nhật khi product thay đổi
+const form = computed(() => {
+  if (!product.value) return { product_id: 0, quantity: 1, total: 0 }
 
-const product: Product = data?.value?.find((item: Product) => item.slug === slug) as Product
-
-const discount = Math.round(((product.price - product.sale_price) / product.price) * 100)
-
-const form = ref({
-  product_id: product.id,
-  quantity: 1,
-  total: product.sale_price
+  return {
+    product_id: product.value.id,
+    quantity: quantityInput.value,
+    total: quantityInput.value * product.value.sale_price
+  }
 })
 
 const message = ref('Thêm vào giỏ hàng thành công')
-
 const status = ref('success')
-
 const showToast = ref(false)
 
 // Sử dụng cartCount từ composable
@@ -45,34 +83,37 @@ function toggleDescription() {
   showFullDescription.value = !showFullDescription.value
 }
 
-useSeoMeta({
-  title: product.seo_title,
-  description: product.seo_description,
-  ogTitle: product.seo_title,
-  ogDescription: product.seo_description,
-  ogImage: mediaUrl + product.thumbnail,
-  ogUrl: appUrl + `/products/${product.seo_url}`,
-  ogSiteName: product.seo_title,
-  ogType: 'article',
-  twitterTitle: product.seo_title,
-  twitterDescription: product.seo_description,
-  twitterImage: mediaUrl + product.thumbnail,
-  twitterCard: 'summary_large_image'
-})
+// Chỉ thiết lập SEO meta khi có dữ liệu sản phẩm
+if (product.value) {
+  useSeoMeta({
+    title: product.value.seo_title,
+    description: product.value.seo_description,
+    ogTitle: product.value.seo_title,
+    ogDescription: product.value.seo_description,
+    ogImage: mediaUrl + product.value.thumbnail,
+    ogUrl: appUrl + `/products/${product.value.seo_url}`,
+    ogSiteName: product.value.seo_title,
+    ogType: 'article',
+    twitterTitle: product.value.seo_title,
+    twitterDescription: product.value.seo_description,
+    twitterImage: mediaUrl + product.value.thumbnail,
+    twitterCard: 'summary_large_image'
+  })
+}
 
 const increaseQuantity = () => {
-  form.value.quantity++
-  form.value.total = form.value.quantity * product.sale_price
+  quantityInput.value++
 }
 
 const decreaseQuantity = () => {
-  if (form.value.quantity > 1) {
-    form.value.quantity--
-    form.value.total = form.value.quantity * product.sale_price
+  if (quantityInput.value > 1) {
+    quantityInput.value--
   }
 }
 
 const addToCart = async () => {
+  if (!product.value) return
+
   const user = await useAuth().getUser()
 
   if (user === null) {
@@ -81,13 +122,13 @@ const addToCart = async () => {
       cart = JSON.parse(localStorage.getItem('cart') as string)
     }
 
-    const productIndex = cart.findIndex((item: any) => item.product_id === product.id)
+    const productIndex = cart.findIndex((item: any) => item.product_id === product.value?.id)
     if (productIndex > -1) {
       cart[productIndex].quantity += form.value.quantity
     } else {
       cart.push({
         ...form.value,
-        product: product
+        product: product.value
       })
     }
     localStorage.setItem('cart', JSON.stringify(cart))
@@ -126,7 +167,11 @@ const showToastFunction = (msg: string, s: string) => {
 </script>
 
 <template>
-  <div class="">
+  <div v-if="isLoading" class="flex justify-center items-center min-h-[50vh]">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+  </div>
+
+  <div v-else-if="product" class="">
     <!-- Breadcrumb -->
     <div class="text-gray-600 mb-4 font-normal">Trang chủ > {{ product.name }}</div>
 
@@ -238,7 +283,7 @@ const showToastFunction = (msg: string, s: string) => {
         <div class="bg-white rounded-xl p-5">
           <p class="text-xl mb-3">Sản phẩm tương tự</p>
           <div class="flex gap-3 lg:flex-wrap lg:overflow-hidden overflow-x-auto">
-            <template v-for="p in data">
+            <template v-for="p in similarProducts">
               <Product
                 v-if="p.id !== product.id && p.category_id == product.category_id"
                 class="basis-[130px]"
@@ -283,7 +328,7 @@ const showToastFunction = (msg: string, s: string) => {
               <input
                 type="text"
                 class="w-10 h-8 text-center border-t border-b border-gray-300"
-                v-model="form.quantity"
+                v-model="quantityInput"
               />
               <button
                 aria-label="increase"
@@ -311,6 +356,11 @@ const showToastFunction = (msg: string, s: string) => {
         </div>
       </div>
     </div>
+  </div>
+  <div v-else class="flex flex-col items-center justify-center min-h-[50vh]">
+    <h1 class="text-2xl font-semibold mb-4">Không tìm thấy sản phẩm</h1>
+    <p class="text-gray-500 mb-6">Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+    <NuxtLink to="/" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Quay lại trang chủ</NuxtLink>
   </div>
   <Toast :message="message" :type="status as 'success' | 'error'" :show="showToast" />
 </template>

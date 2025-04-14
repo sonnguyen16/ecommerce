@@ -14,14 +14,13 @@ class BlogController extends Controller
     public function getBlogs()
     {
         $blogs = Blog::whereNull('deleted_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+
 
         $total = Blog::whereNull('deleted_at')->count();
 
         return response()->json([
-            'success' => true,
-            'data' => $blogs,
+            'data' => $blogs->paginate(6),
             'total' => $total
         ]);
     }

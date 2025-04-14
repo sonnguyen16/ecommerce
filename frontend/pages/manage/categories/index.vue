@@ -24,7 +24,7 @@ onBeforeMount(async () => {
 })
 
 const goToPage = async (p: number) => {
-  if (data.value && p > 0 && p <= data.value.last_page) {
+  if (data.value && p > 0 && p <= data.value.data.last_page) {
     await fetchData(p)
   }
 }
@@ -38,7 +38,7 @@ const deleteCategory = async (categoryId: number) => {
     })
 
     if (!error.value) {
-      await fetchData(data.value?.current_page || 1)
+      await fetchData(data.value?.data.current_page || 1)
     } else {
       alert('Có lỗi xảy ra khi xóa danh mục')
     }
@@ -87,9 +87,9 @@ const { mediaUrl } = useRuntimeConfig().public
             <div colspan="2">Thao tác</div>
           </div>
         </div>
-        <div v-if="data?.data?.length > 0">
+        <div v-if="data?.data?.data?.length > 0">
           <div
-            v-for="(category, i) in data.data"
+            v-for="(category, i) in data.data.data"
             class="px-4 grid grid-cols-8 gap-4 items-center text-sm text-gray-700 border-b border-gray-200"
           >
             <div class="flex items-center">
@@ -117,7 +117,7 @@ const { mediaUrl } = useRuntimeConfig().public
       </div>
     </div>
 
-    <AdminPagination v-if="data" :pagination_data="data" @page-change="goToPage" />
+    <AdminPagination v-if="data?.data" :pagination_data="data.data" @page-change="goToPage" />
   </div>
 </template>
 

@@ -26,7 +26,18 @@ class ShopProductController extends Controller
             ->with(['category','images'])
             ->orderBy('created_at', 'desc');
 
-        return response()->json($products->paginate(6));
+            $total = Product::query()
+            ->where('shop_id', $shop_id)
+            ->whereNull('deleted_at')
+            ->whereHas('category', function($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->count();
+
+        return response()->json([
+            'data' => $products->paginate(6),
+            'total' => $total
+        ]);
     }
 
     public function getProduct($product_id)

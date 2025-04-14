@@ -16,6 +16,7 @@ use App\Models\Ward;
 use App\Http\Controllers\Shop\BlogController;
 
 Route::get('products', [ProductController::class, 'getProducts']);
+Route::get('products/{slug}', [ProductController::class, 'getProductBySlug']);
 Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
