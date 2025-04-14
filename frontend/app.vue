@@ -1,14 +1,13 @@
 <template>
-    <div>
-        <NuxtLayout>
-           <NuxtPage/>
-        </NuxtLayout>
-    </div>
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
 <script setup lang="ts">
-
 const { title, icon, description } = useAppConfig()
-const { appUrl } = useRuntimeConfig().public
+const { appUrl, googleAnalyticsId = 'G-MMTGWLG5P3' } = useRuntimeConfig().public
 
 useHead({
   title: title,
@@ -20,6 +19,19 @@ useHead({
       rel: 'icon',
       type: 'image/x-icon',
       href: icon
+    }
+  ],
+  script: [
+    {
+      src: `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`,
+      async: true
+    },
+    {
+      innerHTML: `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${googleAnalyticsId}');`,
+      type: 'text/javascript'
     }
   ]
 })
@@ -34,16 +46,13 @@ useSeoMeta({
   twitterTitle: title,
   twitterDescription: description,
   twitterImage: icon,
-  twitterCard: 'summary_large_image',
+  twitterCard: 'summary_large_image'
 })
-
 </script>
 
 <style scoped>
-*{
+* {
   scrollbar-width: thin;
   scrollbar-color: #f3f4f6 #d1d5db;
 }
 </style>
-
-
