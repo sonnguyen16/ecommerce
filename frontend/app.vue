@@ -27,10 +27,13 @@ useHead({
       async: true
     },
     {
-      innerHTML: `window.dataLayer = window.dataLayer || [];
+      children: `window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '${googleAnalyticsId}');`,
+      gtag('config', '${googleAnalyticsId}', {
+        'send_page_view': true,
+        'debug_mode': true
+      });`,
       type: 'text/javascript'
     }
   ]
