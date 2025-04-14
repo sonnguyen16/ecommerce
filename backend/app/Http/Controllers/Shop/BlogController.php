@@ -20,7 +20,7 @@ class BlogController extends Controller
         $total = Blog::whereNull('deleted_at')->count();
 
         return response()->json([
-            'data' => $blogs->paginate(6),
+            'data' => $blogs->paginate(10),
             'total' => $total
         ]);
     }

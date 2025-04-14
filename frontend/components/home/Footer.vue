@@ -7,8 +7,8 @@ const fetchBlogs = async () => {
   try {
     const { data: blogData, error } = await useClientFetch<{ success: boolean; data: Blog[] }>('blogs')
 
-    if (!error.value && blogData.value.success) {
-      blogs.value = blogData.value.data.filter((blog) => blog.is_public)
+    if (blogData.value) {
+      blogs.value = blogData.value.data.data.filter((blog) => blog.is_public)
     }
   } catch (error) {
     console.error('Lỗi khi tải danh sách blog:', error)

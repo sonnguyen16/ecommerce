@@ -35,7 +35,7 @@ class ShopProductController extends Controller
             ->count();
 
         return response()->json([
-            'data' => $products->paginate(6),
+            'data' => $products->paginate(8),
             'total' => $total
         ]);
     }
