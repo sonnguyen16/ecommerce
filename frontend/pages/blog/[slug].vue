@@ -132,7 +132,7 @@ const fetchRelatedBlogs = async () => {
 
   const { data: blogsData, error } = await useClientFetch<{ success: boolean; data: Blog[] }>('blogs')
 
-  if (!error.value && blogsData.value?.success) {
+  if (blogsData.value) {
     // Lọc ra các bài viết khác (không bao gồm bài viết hiện tại) và có trạng thái công khai
     relatedBlogs.value = blogsData.value.data.data.filter((b) => b.id !== blog.value?.id && b.is_public).slice(0, 3) // Chỉ lấy tối đa 3 bài viết
   }
