@@ -134,7 +134,7 @@ const fetchRelatedBlogs = async () => {
 
   if (!error.value && blogsData.value?.success) {
     // Lọc ra các bài viết khác (không bao gồm bài viết hiện tại) và có trạng thái công khai
-    relatedBlogs.value = blogsData.value.data.filter((b) => b.id !== blog.value?.id && b.is_public).slice(0, 3) // Chỉ lấy tối đa 3 bài viết
+    relatedBlogs.value = blogsData.value.data.data.filter((b) => b.id !== blog.value?.id && b.is_public).slice(0, 3) // Chỉ lấy tối đa 3 bài viết
   }
 }
 
