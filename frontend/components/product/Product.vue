@@ -18,7 +18,7 @@ const discount = Math.round(((props.product.price - props.product?.sale_price) /
       <img
         :src="product.thumbnail.toString() !== 'undefined' ? mediaUrl + product.thumbnail : mediaUrl + 'icoy.png'"
         alt="product"
-        class="w-full rounded-tl-xl rounded-tr-xl max-h-[186px] object-cover"
+        class="w-full rounded-tl-xl rounded-tr-xl h-[186px] object-cover"
       />
       <img src="/topdeal2.png" alt="topdeal" class="lg:w-[80px] w-[40px] lg:block inline-block ms-2 mt-2" />
       <img src="/chinhhang.png" alt="chinhhang" class="lg:w-[90px] w-[50px] lg:block inline-block ms-2 mt-2" />
