@@ -48,10 +48,17 @@ const fetchSimilarProducts = async () => {
 onMounted(async () => {
   if (product.value) {
     await fetchSimilarProducts()
+
+    // Kiểm tra độ dài của mô tả sản phẩm
+    if (product.value.description && product.value.description.length > MAX_DESCRIPTION_LENGTH) {
+      descriptionIsTooLong.value = true
+    }
   }
 })
 
 const showFullDescription = ref<Boolean>(false)
+const descriptionIsTooLong = ref(false)
+const MAX_DESCRIPTION_LENGTH = 300 // Số ký tự tối đa trước khi hiển thị nút "Xem thêm"
 
 // Chỉ tính toán discount khi có dữ liệu sản phẩm
 const discount = computed(() => {
@@ -270,12 +277,12 @@ const showToastFunction = (msg: string, s: string) => {
 
         <div class="bg-white rounded-xl p-5 flex flex-col">
           <h2 class="text-lg font-semibold mb-2">Mô tả sản phẩm</h2>
-          <div :class="{ blurred: !showFullDescription }" class="text-gray-700">
+          <div :class="{ blurred: !showFullDescription && descriptionIsTooLong }" class="text-gray-700">
             <div class="space-y-2 text-justify font-normal">
               {{ product.description }}
             </div>
           </div>
-          <button @click="toggleDescription" class="text-indigo-700 mt-2">
+          <button v-if="descriptionIsTooLong" @click="toggleDescription" class="text-indigo-700 mt-2">
             {{ showFullDescription ? 'Thu gọn' : 'Xem thêm' }}
           </button>
         </div>
