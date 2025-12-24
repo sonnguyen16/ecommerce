@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+    font-family: "Inter", sans-serif;
+}
+
+.container {
+    max-width: 1280px;
+}
