@@ -78,6 +78,13 @@ const deleteProduct = (id) => {
         cartData.value.splice(index, 1);
     }
     ticked.value = ticked.value.filter((t) => t !== id);
+
+    // Dispatch event để Navbar cập nhật số lượng
+    window.dispatchEvent(
+        new CustomEvent("cart-updated", {
+            detail: { count: cartData.value.length },
+        })
+    );
 };
 
 const updateCart = async () => {
